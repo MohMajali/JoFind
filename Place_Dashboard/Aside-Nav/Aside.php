@@ -15,13 +15,13 @@
     </li>
         
     <li class="nav-item">
-      <a class="nav-link collapsed" href="./New_Requestes.php">
-        <i class="bi bi-clipboard-minus-fill"></i><span>New Requestes</span>
+      <a class="nav-link collapsed" href="./Offers.php">
+        <i class="bi bi-clipboard-minus-fill"></i><span>Offers</span>
       </a>
     </li>
 
     
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <a class="nav-link collapsed" href="./Subscriptions.php">
         <i class="bi bi-calendar-week"></i><span>Subscriptions</span>
       </a>
@@ -37,7 +37,7 @@
       <a class="nav-link collapsed" href="./Reservations.php">
         <i class="bi bi-calendar3"></i><span>Reservations</span>
       </a>
-    </li>
+    </li> -->
 
 
 

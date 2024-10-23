@@ -3,28 +3,47 @@ session_start();
 
 include "../Connect.php";
 
-$A_ID = $_SESSION['A_Log'];
+$P_ID = $_SESSION['P_Log'];
 
-$place_id = $_GET['place_id'];
-
-if (!$A_ID) {
+if (!$P_ID) {
 
     echo '<script language="JavaScript">
-     document.location="../Login.php";
+     document.location="../Place_Login.php";
     </script>';
 
 } else {
 
-    $sql1 = mysqli_query($con, "select * from users where id='$A_ID'");
+    $sql1 = mysqli_query($con, "select * from users where id='$P_ID'");
     $row1 = mysqli_fetch_array($sql1);
 
     $name = $row1['name'];
     $email = $row1['email'];
 
-    $sql2 = mysqli_query($con, "select * from places where id='$place_id'");
-    $row2 = mysqli_fetch_array($sql2);
+    if (isset($_POST['Submit'])) {
 
-    $venue_name = $row2['name'];
+        $place_id = $_POST['place_id'];
+        $offer = $_POST['offer'];
+        $discount = $_POST['discount'];
+        $start_date = date('Y-m-d', strtotime($_POST['start_date']));
+        $end_date = date('Y-m-d', strtotime($_POST['end_date']));
+
+        $stmt = $con->prepare("INSERT INTO offers (place_id, offer, discount, start_date, end_date) VALUES (?, ?, ?, ?, ?) ");
+
+        $stmt->bind_param("isdss", $place_id, $offer, $discount, $start_date, $end_date);
+
+        if ($stmt->execute()) {
+
+            echo "<script language='JavaScript'>
+            alert ('A New Offer Has Been Added Successfully !');
+       </script>";
+
+            echo "<script language='JavaScript'>
+      document.location='./Offers.php';
+         </script>";
+
+        }
+
+    }
 }
 
 ?>
@@ -35,7 +54,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title><?php echo $venue_name ?> Offers - JoFind</title>
+    <title>Offers - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -127,17 +146,107 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1><?php echo $venue_name ?> Offers</h1>
+        <h1>Offers</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item"><?php echo $venue_name ?> Offers</li>
+            <li class="breadcrumb-item">Offers</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
+      <div class="mb-3">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#verticalycentered"
+          >
+            Add New Offer
+          </button>
+        </div>
 
+
+
+        <div class="modal fade" id="verticalycentered" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Category Information</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+
+                <form method="POST" action="./Offers.php" enctype="multipart/form-data">
+
+<input type="hidden" name="place_id" value="<?php echo $P_ID ?>">
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Offer</label
+                    >
+                    <div class="col-sm-8">
+                      <input type="text" name="offer" class="form-control" />
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Discount</label
+                    >
+                    <div class="col-sm-8">
+                    <input type="number" name="discount" class="form-control" step="0.01" />
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Start Date</label
+                    >
+                    <div class="col-sm-8">
+                      <input type="date" name="start_date" class="form-control" min="<?php echo date('Y-m-d') ?>"/>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >End Date</label
+                    >
+                    <div class="col-sm-8">
+                      <input type="date" name="end_date" class="form-control" min="<?php echo date('Y-m-d') ?>"/>
+                    </div>
+                  </div>
+
+
+
+                  <div class="row mb-3">
+                    <div class="text-end">
+                      <button type="submit" name="Submit" class="btn btn-primary">
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
 
 
@@ -150,18 +259,18 @@ if (!$A_ID) {
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
-                      <th scope="col">Venue Name</th>
                       <th scope="col">Offer</th>
                       <th scope="col">Start Date</th>
                       <th scope="col">End Date</th>
                       <th scope="col">discount</th>
                       <th scope="col">Status</th>
                       <th scope="col">Created At</th>
+                      <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from offers WHERE place_id = '$place_id' ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * from offers WHERE place_id = '$P_ID' ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
@@ -176,13 +285,28 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     ?>
                     <tr>
                       <th scope="row"><?php echo $offer_id ?></th>
-                      <th scope="row"><?php echo $venue_name ?></th>
                       <th scope="row"><?php echo $offer ?></th>
                       <th scope="row"><?php echo date('Y-m-d', strtotime($start_date)) ?></th>
                       <th scope="row"><?php echo date('Y-m-d', strtotime($end_date)) ?></th>
                       <th scope="row"><?php echo $discount ?></th>
                       <th scope="row"><?php echo $active == 1 ? 'Active' : 'In-Active' ?></th>
                       <th scope="row"><?php echo $created_at ?></th>
+
+                      <th>
+                      <a href="./Edit_Offer.php?offer_id=<?php echo $offer_id ?>" class="btn btn-success me-2"
+                          >Edit</a
+                        >
+
+                        <?php if ($active == 1) {?>
+
+<a href="./DeleteOrRestoreOffer.php?offer_id=<?php echo $offer_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
+
+<?php } else {?>
+
+  <a href="./DeleteOrRestoreOffer.php?offer_id=<?php echo $offer_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
+
+<?php }?>
+                      </th>
                     </tr>
 <?php
 }?>
@@ -214,7 +338,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(2) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(3) .nav-link').classList.remove('collapsed')
    });
 </script>
 

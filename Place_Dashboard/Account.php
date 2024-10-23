@@ -8,7 +8,7 @@ $P_ID = $_SESSION['P_Log'];
 if (!$P_ID) {
 
     echo '<script language="JavaScript">
-     document.location="../Manager_Login.php";
+     document.location="../Place_Login.php";
     </script>';
 
 } else {
