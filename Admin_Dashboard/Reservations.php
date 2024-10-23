@@ -18,7 +18,6 @@ if (!$A_ID) {
 
     $name = $row1['name'];
     $email = $row1['email'];
-
 }
 
 ?>
@@ -29,7 +28,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Rejected Gyms - JoFind</title>
+    <title>Users - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -121,18 +120,16 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Gyms</h1>
+        <h1>Reservation</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Gyms</li>
+            <li class="breadcrumb-item">Reservation</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
-
-
 
         <div class="row">
           <div class="col-lg-12">
@@ -143,50 +140,73 @@ if (!$A_ID) {
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
-                      <th scope="col">Image</th>
-                      <th scope="col">Manager Name</th>
-                      <th scope="col">Title</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Phone</th>
-                      <th scope="col">City</th>
+                      <th scope="col">Customer Name</th>
+                      <th scope="col">Customer Email</th>
+                      <th scope="col">Venue Name</th>
+                      <th scope="col">Start Date</th>
+                      <th scope="col">End Date</th>
+                      <th scope="col">Offer</th>
+                      <th scope="col">Price</th>
+                      <th scope="col">Total Price</th>
                       <th scope="col">Status</th>
                       <th scope="col">Created At</th>
                     </tr>
                   </thead>
                   <tbody>
+
+
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from gyms WHERE status = 'Rejected' ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * from reservations ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $gym_id = $row1['id'];
-    $manager_id = $row1['manager_id'];
-    $gym_image = $row1['image'];
-    $gym_name = $row1['title'];
-    $gym_email = $row1['email'];
-    $gym_phone = $row1['phone'];
-    $gym_city = $row1['city'];
-    $status = $row1['status'];
-    $active = $row1['active'];
+    $reservation_id = $row1['id'];
+    $place_id = $row1['place_id'];
+    $customer_id = $row1['customer_id'];
+    $status_id = $row1['status_id'];
+    $offer_id = $row1['offer_id'];
+    $start_date = $row1['start_date'];
+    $end_date = $row1['end_date'];
+    $price = $row1['price'];
+    $total_price = $row1['id'];
     $created_at = $row1['created_at'];
 
-    $sql2 = mysqli_query($con, "SELECT * from users WHERE id = '$manager_id'");
+    $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
     $row2 = mysqli_fetch_array($sql2);
 
-    $manager_name = $row2['name'];
+    $venue_name = $row2['name'];
+
+    
+    $sql3 = mysqli_query($con, "SELECT * from users WHERE id = '$customer_id'");
+    $row3 = mysqli_fetch_array($sql3);
+
+    $customer_name = $row3['name'];
+    $customer_email = $row3['email'];
+
+    
+    $sql4 = mysqli_query($con, "SELECT * from statuses WHERE id = '$status_id'");
+    $row4 = mysqli_fetch_array($sql4);
+
+    $status = $row4['name'];
+    
+    $sql5 = mysqli_query($con, "SELECT * from offers WHERE id = '$offer_id'");
+    $row5 = mysqli_fetch_array($sql5);
+
+    $offer = $row5['offer'];
 
     ?>
                     <tr>
-                      <th scope="row"><?php echo $gym_id ?></th>
-                      <th scope="row"><img src="../Gym_Dashboard/<?php echo $gym_image ?>" alt="" width="150px" height="150px"></th>
-                      <th scope="row"><?php echo $manager_name ?></th>
-                      <td><?php echo $gym_name ?></td>
-                      <td><?php echo $gym_email ?></td>
-                      <td><?php echo $gym_phone ?></td>
-                      <td><?php echo $gym_city ?></td>
-                      <td><?php echo $status ?></td>
+                      <th scope="row"><?php echo $reservation_id ?></th>
+                      <td scope="row"><?php echo $customer_name ?></td>
+                      <td scope="row"><?php echo $customer_email ?></td>
+                      <td scope="row"><?php echo $venue_name ?></td>
+                      <td scope="row"><?php echo $start_date ?></td>
+                      <th scope="row"><?php echo $end_date ?></th>
+                      <th scope="row"><?php echo $offer ?></th>
+                      <th scope="row"><?php echo $price ?></th>
+                      <th scope="row"><?php echo $total_price ?></th>
+                      <th scope="row"><?php echo $status ?></th>
                       <th scope="row"><?php echo $created_at ?></th>
-
                     </tr>
 <?php
 }?>
@@ -218,7 +238,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(3) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(6) .nav-link').classList.remove('collapsed')
    });
 </script>
 

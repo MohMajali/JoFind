@@ -5,6 +5,8 @@ include "../Connect.php";
 
 $A_ID = $_SESSION['A_Log'];
 
+$place_id = $_GET['place_id'];
+
 if (!$A_ID) {
 
     echo '<script language="JavaScript">
@@ -19,31 +21,10 @@ if (!$A_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
-    if (isset($_POST['Submit'])) {
+    $sql2 = mysqli_query($con, "select * from places where id='$place_id'");
+    $row2 = mysqli_fetch_array($sql2);
 
-        $category_name = $_POST['name'];
-        $image = $_FILES["file"]["name"];
-        $image = 'Categories_Images/' . $image;
-
-        $stmt = $con->prepare("INSERT INTO categories (image, name) VALUES (?, ?) ");
-
-        $stmt->bind_param("ss", $image, $category_name);
-
-        if ($stmt->execute()) {
-
-            move_uploaded_file($_FILES["file"]["tmp_name"], "./Categories_Images/" . $_FILES["file"]["name"]);
-
-            echo "<script language='JavaScript'>
-              alert ('A New Category Has Been Added Successfully !');
-         </script>";
-
-            echo "<script language='JavaScript'>
-        document.location='./Categories.php';
-           </script>";
-
-        }
-
-    }
+    $venue_name = $row2['name'];
 }
 
 ?>
@@ -54,7 +35,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Categories - JoFind</title>
+    <title><?php echo $venue_name ?> Offers - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -146,85 +127,19 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Categories</h1>
+        <h1><?php echo $venue_name ?> Offers</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Categories</li>
+            <li class="breadcrumb-item"><?php echo $venue_name ?> Offers</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
-        <div class="mb-3">
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#verticalycentered"
-          >
-            Add New Category
-          </button>
-        </div>
-
-        <div class="modal fade" id="verticalycentered" tabindex="-1">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Category Information</h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-
-                <form method="POST" action="./Categories.php" enctype="multipart/form-data">
-
-                  <div class="row mb-3">
-                    <label for="inputText" class="col-sm-4 col-form-label"
-                      >Name</label
-                    >
-                    <div class="col-sm-8">
-                      <input type="text" name="name" class="form-control" />
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <label for="inputText" class="col-sm-4 col-form-label"
-                      >Image</label
-                    >
-                    <div class="col-sm-8">
-                      <input type="file" name="file" class="form-control" />
-                    </div>
-                  </div>
 
 
 
-                  <div class="row mb-3">
-                    <div class="text-end">
-                      <button type="submit" name="Submit" class="btn btn-primary">
-                        Submit
-                      </button>
-                    </div>
-                  </div>
-                </form>
-
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <div class="row">
           <div class="col-lg-12">
@@ -235,62 +150,39 @@ if (!$A_ID) {
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
-                      <th scope="col">Image</th>
-                      <th scope="col">Category Name</th>
+                      <th scope="col">Venue Name</th>
+                      <th scope="col">Offer</th>
+                      <th scope="col">Start Date</th>
+                      <th scope="col">End Date</th>
+                      <th scope="col">discount</th>
+                      <th scope="col">Status</th>
                       <th scope="col">Created At</th>
-                      <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from categories ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * from offers WHERE place_id = '$place_id' ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $category_id = $row1['id'];
-    $category_name = $row1['name'];
-    $category_image = $row1['image'];
+    $offer_id = $row1['id'];
+    $offer = $row1['offer'];
+    $discount = $row1['discount'];
+    $start_date = $row1['start_date'];
+    $end_date = $row1['end_date'];
     $active = $row1['active'];
     $created_at = $row1['created_at'];
 
     ?>
                     <tr>
-                      <th scope="row"><?php echo $category_id ?></th>
-                      <th scope="row"><img src="<?php echo $category_image ?>" alt="" width="150px" height="150px"></th>
-                      <td><?php echo $category_name ?></td>
+                      <th scope="row"><?php echo $offer_id ?></th>
+                      <th scope="row"><?php echo $venue_name ?></th>
+                      <th scope="row"><?php echo $offer ?></th>
+                      <th scope="row"><?php echo $start_date ?></th>
+                      <th scope="row"><?php echo $end_date ?></th>
+                      <th scope="row"><?php echo $discount ?></th>
+                      <th scope="row"><?php echo $active == 1 ? 'Active' : 'In-Active' ?></th>
                       <th scope="row"><?php echo $created_at ?></th>
-                      <td>
-
-              <div class="d-flex flex-column">
-              <div class="d-flex mb-2">
-                        <a href="./Edit-Category.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Edit</a
-                        >
-
-                        <?php if ($active == 1) {?>
-
-<a href="./DeleteOrRestoreCategory.php?category_id=<?php echo $category_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
-
-<?php } else {?>
-
-  <a href="./DeleteOrRestoreCategory.php?category_id=<?php echo $category_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
-
-<?php }?>
-                        </div>
-
-                        <div class="d-flex">
-
-                        <a href="./Places.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Venues</a
-                        >
-
-                        <a href="./Sub_Categories.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Sub Categories</a
-                        >
-                        </div>
-              </div>
-
-                      </td>
                     </tr>
 <?php
 }?>

@@ -3,21 +3,82 @@ session_start();
 
 include "../Connect.php";
 
-$A_ID = $_SESSION['A_Log'];
+$P_ID = $_SESSION['P_Log'];
 
-if (!$A_ID) {
+if (!$P_ID) {
 
     echo '<script language="JavaScript">
-     document.location="../Login.php";
+     document.location="../Manager_Login.php";
     </script>';
 
 } else {
 
-    $sql1 = mysqli_query($con, "select * from users where id='$A_ID'");
+    $sql1 = mysqli_query($con, "select * from places where id = '$P_ID'");
     $row1 = mysqli_fetch_array($sql1);
 
+    $place_id = $row1['id'];
     $name = $row1['name'];
     $email = $row1['email'];
+    $phone = $row1['phone'];
+    $category_id = $row1['category_id'];
+
+    $sql2 = mysqli_query($con, "select * from categories where id='$category_id'");
+    $row2 = mysqli_fetch_array($sql2);
+
+    $category_name = $row2['name'];
+
+    if (isset($_POST['Submit'])) {
+
+        $place_id = $_POST['place_id'];
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $phone = $_POST['phone'];
+        $password = $_POST['password'];
+        $image = $_FILES["file"]["name"];
+
+        if ($image) {
+
+            $image = 'Places_Images/' . $image;
+
+            $stmt = $con->prepare("UPDATE places SET name = ?, password = ?, phone = ?, email = ?, image = ? WHERE id = ? ");
+
+            $stmt->bind_param("sssssi", $name, $password, $phone, $email, $image, $place_id);
+
+            if ($stmt->execute()) {
+
+                move_uploaded_file($_FILES["file"]["tmp_name"], "./Places_Images/" . $_FILES["file"]["name"]);
+
+                echo "<script language='JavaScript'>
+                alert ('Account Updated Successfully !');
+           </script>";
+
+                echo "<script language='JavaScript'>
+          document.location='./Account.php';
+             </script>";
+
+            }
+
+        } else {
+
+            $stmt = $con->prepare("UPDATE places SET name = ?, password = ?, phone = ?, email = ? WHERE id = ? ");
+
+            $stmt->bind_param("ssssi", $name, $password, $phone, $email, $place_id);
+
+            if ($stmt->execute()) {
+
+                echo "<script language='JavaScript'>
+              alert ('Account Updated Successfully !');
+         </script>";
+
+                echo "<script language='JavaScript'>
+        document.location='./Account.php';
+           </script>";
+
+            }
+
+        }
+
+    }
 }
 
 ?>
@@ -28,7 +89,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Cafes - JoFind</title>
+    <title>Account - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -87,12 +148,12 @@ if (!$A_ID) {
                 alt="Profile"
                 class="rounded-circle"
               />
-              <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $name ?></span> </a
+              <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $title ?></span> </a
             >
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6><?php echo $name ?></h6>
+              <h6><?php echo $title ?></h6>
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -120,87 +181,86 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Cafes</h1>
+        <h1>Account</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Cafes</li>
+            <li class="breadcrumb-item">Account</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
-
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
               <div class="card-body">
-                <!-- Table with stripped rows -->
-                <table class="table datatable">
-                  <thead>
-                    <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Category Name</th>
-                      <th scope="col">Image</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Phome</th>
-                      <th scope="col">Created At</th>
-                      <th scope="col">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <?php
-$sql1 = mysqli_query($con, "SELECT * from places WHERE category_id = 1 ORDER BY id DESC");
+                <h5 class="card-title"></h5>
 
-while ($row1 = mysqli_fetch_array($sql1)) {
+                <!-- Horizontal Form -->
+                <form method="POST" action="./Account.php" enctype="multipart/form-data">
 
-    $cafe_id = $row1['id'];
-    $category_id = $row1['category_id'];
-    $cafe_name = $row1['name'];
-    $cafe_email = $row1['email'];
-    $cafe_phone = $row1['phone'];
-    $cafe_image = $row1['image'];
-    $active = $row1['active'];
-    $created_at = $row1['created_at'];
+                <input type="hidden" name="place_id" value="<?php echo $place_id ?>">
 
-    $sql2 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id'");
-    $row2 = mysqli_fetch_array($sql2);
+                  <div class="row mb-3">
+                    <label for="name" class="col-sm-2 col-form-label"
+                      >Name</label
+                    >
+                    <div class="col-sm-10">
+                      <input type="text" name="name" value="<?php echo $name ?>" class="form-control" id="name" />
+                    </div>
+                  </div>
 
-    $category_name = $row2['name'];
+                  <div class="row mb-3">
+                    <label for="email" class="col-sm-2 col-form-label"
+                      >Email</label
+                    >
+                    <div class="col-sm-10">
+                      <input type="text" name="email" value="<?php echo $email ?>" class="form-control" id="email" />
+                    </div>
+                  </div>
 
-    ?>
-                    <tr>
-                      <th scope="row"><?php echo $cafe_id ?></th>
-                      <th scope="row"><?php echo $category_name ?></th>
-                      <th scope="row"><img src="../Place_Dashboard/<?php echo $cafe_image ?>" alt="" width="150px" height="150px"></th>
-                      <td scope="row"><?php echo $cafe_name ?></td>
-                      <td scope="row"><?php echo $cafe_email ?></td>
-                      <td scope="row"><?php echo $cafe_phone ?></td>
-                      <th scope="row"><?php echo $created_at ?></th>
-                      <td>
+                  <div class="row mb-3">
+                    <label for="phone" class="col-sm-2 col-form-label"
+                      >Phone</label
+                    >
+                    <div class="col-sm-10">
+                      <input type="text" name="phone" value="<?php echo $phone ?>"
+                      pattern="[0-9]{10}" title="Phone Number Must Be 10 Numbers"
+                      class="form-control" id="phone" />
+                    </div>
+                  </div>
 
-                        <div class="d-flex flex-column">
-                        <?php if ($active == 1) {?>
+                  <div class="row mb-3">
+                    <label for="password" class="col-sm-2 col-form-label"
+                      >Password</label
+                    >
+                    <div class="col-sm-10">
+                      <input type="password" name="password" value="<?php echo $password ?>" class="form-control" id="password" />
+                    </div>
+                  </div>
 
-<a href="./DeleteOrRestoreCafe.php?cafe_id=<?php echo $cafe_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger mb-2">Delete</a>
+                  <div class="row mb-3">
+                    <label for="file" class="col-sm-2 col-form-label"
+                      >Image</label
+                    >
+                    <div class="col-sm-10">
+                      <input type="file" name="file" class="form-control" id="file" />
+                    </div>
+                  </div>
 
-<?php } else {?>
 
-  <a href="./DeleteOrRestoreCafe.php?cafe_id=<?php echo $cafe_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary mb-2">Restore</a>
 
-<?php }?>
-
-<a href="./Subscriptions.php?place_id=<?php echo $cafe_id ?>" class="btn btn-primary mb-2">Subscriptions</a>
-<a href="./Offers.php?place_id=<?php echo $cafe_id ?>" class="btn btn-primary">Offers</a>
-                        </div>
-                      </td>
-                    </tr>
-<?php
-}?>
-                  </tbody>
-                </table>
-                <!-- End Table with stripped rows -->
+                  <div class="text-end">
+                    <button type="submit" name="Submit" class="btn btn-primary">
+                      Submit
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                      Reset
+                    </button>
+                  </div>
+                </form>
+                <!-- End Horizontal Form -->
               </div>
             </div>
           </div>
@@ -226,7 +286,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(3) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(2) .nav-link').classList.remove('collapsed')
    });
 </script>
 

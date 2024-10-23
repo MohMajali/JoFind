@@ -4,7 +4,9 @@ session_start();
 include "../Connect.php";
 
 $A_ID = $_SESSION['A_Log'];
-$cafe_id = $_GET['cafe_id'];
+
+$category_id = $_GET['category_id'];
+$sub_category_id = $_GET['sub_category_id'];
 
 if (!$A_ID) {
 
@@ -20,64 +22,10 @@ if (!$A_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
-    $sql2 = mysqli_query($con, "select * from cafes where id='$cafe_id'");
+    $sql2 = $category_id ? mysqli_query($con, "select * from categories where id='$category_id'") : mysqli_query($con, "select * from sub_categories where id='$sub_category_id'");
     $row2 = mysqli_fetch_array($sql2);
 
-    $item_category_id = $row2['category_id'];
-    $title = $row2['title'];
-    $description = $row2['description'];
-    $quantity = $row2['quantity'];
-
-    if (isset($_POST['Submit'])) {
-
-        $cafe_id = $_POST['cafe_id'];
-        $category_id = $_POST['category_id'];
-        $title = $_POST['title'];
-        $description = $_POST['description'];
-        $quantity = $_POST['quantity'];
-        $image = $_FILES["file"]["name"];
-
-        if ($image) {
-
-            $image = 'Store_Items_Images/' . $image;
-
-            $stmt = $con->prepare("UPDATE store_items SET title = ?, description = ?, quantity = ?, image = ?, category_id = ? WHERE id = ? ");
-
-            $stmt->bind_param("sssssi", $title, $description, $quantity, $image, $category_id, $cafe_id);
-
-            if ($stmt->execute()) {
-
-                move_uploaded_file($_FILES["file"]["tmp_name"], "./Store_Items_Images/" . $_FILES["file"]["name"]);
-
-                echo "<script language='JavaScript'>
-                alert ('Item Has Been Updated Successfully !');
-           </script>";
-
-                echo "<script language='JavaScript'>
-          document.location='./Store_Items.php';
-             </script>";
-
-            }
-        } else {
-
-            $stmt = $con->prepare("UPDATE store_items SET title = ?, description = ?, quantity = ?, category_id = ? WHERE id = ? ");
-
-            $stmt->bind_param("ssssi", $title, $description, $quantity, $category_id, $cafe_id);
-
-            if ($stmt->execute()) {
-
-                echo "<script language='JavaScript'>
-                alert ('Item Has Been Updated Successfully !');
-           </script>";
-
-                echo "<script language='JavaScript'>
-          document.location='./Store_Items.php';
-             </script>";
-
-            }
-        }
-
-    }
+    $category_name = $row2['name'];
 }
 
 ?>
@@ -88,7 +36,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Item - JoFind</title>
+    <title><?php echo $category_name ?> - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -180,113 +128,99 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Item</h1>
+        <h1><?php echo $category_name ?></h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Item</li>
+            <li class="breadcrumb-item"><?php echo $category_name ?></li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
+
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title"></h5>
+                <!-- Table with stripped rows -->
+                <table class="table datatable">
+                  <thead>
+                    <tr>
+                      <th scope="col">Image</th>
+                      <th scope="col">ID</th>
+                      <th scope="col">Category Name</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Phone</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Created At</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <?php
+$sql1 = $category_id ? mysqli_query($con, "SELECT * from places WHERE category_id = '$category_id' ORDER BY id DESC") :
 
-                <!-- Horizontal Form -->
-                <form method="POST" action="./Edit-Item.php?cafe_id=<?php echo $cafe_id ?>" enctype="multipart/form-data">
-
-                <input type="hidden" name="cafe_id" value="<?php echo $cafe_id ?>">
-
-
-
-                <div class="row mb-3">
-                      <label for="locationId" class="col-sm-2 col-form-label"
-                          >Select Category</label
-                        >
-
-                        <div class="col-sm-10">
-
-
-
-                            <select name="category_id" class="form-select" id="locationId" required>
-
-            <?php $sql1 = mysqli_query($con, "SELECT * from categories WHERE active = 1 ORDER BY id DESC");
+mysqli_query($con, "SELECT * from places WHERE sub_category_id = '$sub_category_id' ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $category_id = $row1['id'];
-    $category_name = $row1['name'];
+    $place_id = $row1['id'];
+    $status_id = $row1['status_id'];
+    $place_name = $row1['name'];
+    $place_email = $row1['email'];
+    $place_phone = $row1['phone'];
+    $place_image = $row1['image'];
+    $active = $row1['active'];
+    $created_at = $row1['created_at'];
 
-    ?>
-                                <option value="<?php echo $category_id ?>" <?php
+    if ($category_id) {
 
-    if ($category_id === $item_category_id) {
-        echo 'selected';
+        $sql2 = mysqli_query($con, "SELECT * from sub_categories WHERE category_id = '$category_id'");
+        $row2 = mysqli_fetch_array($sql2);
+
+        $category_name = $row2['name'];
     }
 
+    $sql3 = mysqli_query($con, "SELECT * from statuses WHERE id = '$status_id'");
+    $row3 = mysqli_fetch_array($sql3);
+
+    $status_name = $row3['name'];
+
     ?>
-                                ><?php echo $category_name ?></option>
-    <?php
-}?>
-                            </select>
+                    <tr>
+                      <th scope="row"><img src="../Place_Dashboard/<?php echo $place_image ?>" alt="" width="150px" height="150px"></th>
+                      <th scope="row"><?php echo $place_id ?></th>
+                      <th scope="row"><?php echo $category_name ?></th>
+                      <td scope="row"><?php echo $place_name ?></td>
+                      <td scope="row"><?php echo $place_email ?></td>
+                      <td scope="row"><?php echo $place_phone ?></td>
+                      <td scope="row"><?php echo $status_name ?></td>
+                      <th scope="row"><?php echo $created_at ?></th>
+                      <td>
 
+                        <div class="d-flex flex-column">
+                        <?php if ($active == 1) {?>
+
+<a href="./DeleteOrRestorePlace.php?place_id=<?php echo $place_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger mb-2">Delete</a>
+
+<?php } else {?>
+
+  <a href="./DeleteOrRestorePlace.php?place_id=<?php echo $place_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary mb-2">Restore</a>
+
+<?php }?>
+
+<a href="./Subscriptions.php?place_id=<?php echo $place_id ?>" class="btn btn-primary mb-2">Subscriptions</a>
+<a href="./Offers.php?place_id=<?php echo $place_id ?>" class="btn btn-primary">Offers</a>
                         </div>
-                      </div>
-
-
-
-
-                  <div class="row mb-3">
-                    <label for="inputEmail3" class="col-sm-2 col-form-label"
-                      >Item Name</label
-                    >
-                    <div class="col-sm-10">
-                      <input type="text" name="title" value="<?php echo $title ?>" class="form-control" id="inputText" required/>
-                    </div>
-                  </div>
-
-
-                  <div class="row mb-3">
-                    <label for="inputEmail3" class="col-sm-2 col-form-label"
-                      >Item QTY</label
-                    >
-                    <div class="col-sm-10">
-                      <input type="number" name="quantity" value="<?php echo $quantity ?>" class="form-control" id="inputText" required/>
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <label for="inputEmail3" class="col-sm-2 col-form-label"
-                      >Item Desciption</label
-                    >
-                    <div class="col-sm-10">
-                      <textarea name="description" id="" class="form-control"><?php echo $description ?></textarea>
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <label for="inputEmail3" class="col-sm-2 col-form-label"
-                      >Item Image</label
-                    >
-                    <div class="col-sm-10">
-                      <input type="file" name="file" class="form-control" id="inputText"/>
-                    </div>
-                  </div>
-
-                  <div class="text-end">
-                    <button type="submit" name="Submit" class="btn btn-primary">
-                      Submit
-                    </button>
-                    <button type="reset" class="btn btn-secondary">
-                      Reset
-                    </button>
-                  </div>
-                </form>
-                <!-- End Horizontal Form -->
+                      </td>
+                    </tr>
+<?php
+}?>
+                  </tbody>
+                </table>
+                <!-- End Table with stripped rows -->
               </div>
             </div>
           </div>
@@ -312,7 +246,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(4) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(2) .nav-link').classList.remove('collapsed')
    });
 </script>
 

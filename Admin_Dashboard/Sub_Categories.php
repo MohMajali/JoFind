@@ -5,6 +5,8 @@ include "../Connect.php";
 
 $A_ID = $_SESSION['A_Log'];
 
+$category_id = $_GET['category_id'];
+
 if (!$A_ID) {
 
     echo '<script language="JavaScript">
@@ -19,6 +21,37 @@ if (!$A_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
+    $sql2 = mysqli_query($con, "select * from categories where id='$category_id'");
+    $row2 = mysqli_fetch_array($sql2);
+
+    $category_name = $row2['name'];
+
+    if (isset($_POST['Submit'])) {
+
+        $category_id = $_POST['category_id'];
+        $category_name = $_POST['name'];
+        $image = $_FILES["file"]["name"];
+        $image = 'Categories_Images/' . $image;
+
+        $stmt = $con->prepare("INSERT INTO sub_categories (image, name, category_id) VALUES (?, ?, ?) ");
+
+        $stmt->bind_param("ssi", $image, $category_name, $category_id);
+
+        if ($stmt->execute()) {
+
+            move_uploaded_file($_FILES["file"]["tmp_name"], "./Categories_Images/" . $_FILES["file"]["name"]);
+
+            echo "<script language='JavaScript'>
+              alert ('A New Sub Category Has Been Added Successfully !');
+         </script>";
+
+            echo "<script language='JavaScript'>
+        document.location='./Sub_Categories.php?category_id={$category_id}';
+           </script>";
+
+        }
+
+    }
 }
 
 ?>
@@ -29,7 +62,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Gym Managers - JoFind</title>
+    <title><?php echo $category_name ?> - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -121,17 +154,89 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Gym Managers</h1>
+        <h1><?php echo $category_name ?></h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Gym Managers</li>
+            <li class="breadcrumb-item"><?php echo $category_name ?></li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
 
+      <div class="mb-3">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#verticalycentered"
+          >
+            Add New Category
+          </button>
+        </div>
+
+
+
+        <div class="modal fade" id="verticalycentered" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Sub Category Information</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+
+                <form method="POST" action="./Sub_Categories.php?category_id=<?php echo $category_id ?>" enctype="multipart/form-data">
+
+                <input type="hidden" name="category_id" value="<?php echo $category_id ?>">
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Name</label
+                    >
+                    <div class="col-sm-8">
+                      <input type="text" name="name" class="form-control" />
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Image</label
+                    >
+                    <div class="col-sm-8">
+                      <input type="file" name="file" class="form-control" />
+                    </div>
+                  </div>
+
+
+
+                  <div class="row mb-3">
+                    <div class="text-end">
+                      <button type="submit" name="Submit" class="btn btn-primary">
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
 
         <div class="row">
@@ -143,53 +248,51 @@ if (!$A_ID) {
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
-                      <th scope="col">Manager Name</th>
-                      <th scope="col">Manager Email</th>
-                      <th scope="col">Manager Phone</th>
+                      <th scope="col">Image</th>
+                      <th scope="col">Name</th>
                       <th scope="col">Created At</th>
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from users WHERE type = 'Manager' ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * from sub_categories WHERE category_id = '$category_id' ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $manager_id = $row1['id'];
-    $manager_name = $row1['name'];
-    $manager_email = $row1['email'];
-    $manager_phone = $row1['phone'];
+    $sub_category_id = $row1['id'];
+    $sub_category_name = $row1['name'];
+    $sub_category_image = $row1['image'];
     $active = $row1['active'];
     $created_at = $row1['created_at'];
 
-
     ?>
                     <tr>
-                      <th scope="row"><?php echo $manager_id ?></th>
-                      <td><?php echo $manager_name ?></td>
-                      <td><?php echo $manager_email ?></td>
-                      <td><?php echo $manager_phone ?></td>
+                      <th scope="row"><?php echo $sub_category_id ?></th>
+                      <th scope="row"><img src="./<?php echo $sub_category_image ?>" alt="" width="150px" height="150px"></th>
+                      <td scope="row"><?php echo $sub_category_name ?></td>
                       <th scope="row"><?php echo $created_at ?></th>
-                      <th scope="row">
+                      <td>
 
+                        <div class="d-flex flex-column">
+                        <a href="./Edit_Sub_Category.php?sub_category_id=<?php echo $sub_category_id ?>" class="btn btn-success mb-2"
+                          >Edit</a
+                        >
+                        <?php if ($active == 1) {?>
 
-                      <?php if($active == 1){ ?>
+<a href="./DeleteOrRestoreSubCategory.php?sub_category_id=<?php echo $sub_category_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger mb-2">Delete</a>
 
-                        <a href="./DeleteOrRestoreManager.php?manager_id=<?php echo $manager_id ?>&&active=0" class="btn btn-danger">Remove</a>
+<?php } else {?>
 
-                      <?php } else {?>
+  <a href="./DeleteOrRestoreSubCategory.php?sub_category_id=<?php echo $sub_category_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary mb-2">Restore</a>
 
+<?php }?>
+<a href="./Places.php?sub_category_id=<?php echo $sub_category_id ?>" class="btn btn-success me-2"
+                          >Venues</a
+                        >
 
-                        <a href="./DeleteOrRestoreManager.php?manager_id=<?php echo $manager_id ?>&&active=1" class="btn btn-primary">Activate</a>
-
-                      <?php } ?>
-
-                      
-
-
-                      </th>
-
+                        </div>
+                      </td>
                     </tr>
 <?php
 }?>
@@ -221,7 +324,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(6) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(2) .nav-link').classList.remove('collapsed')
    });
 </script>
 

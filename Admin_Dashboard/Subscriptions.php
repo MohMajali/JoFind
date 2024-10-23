@@ -5,6 +5,8 @@ include "../Connect.php";
 
 $A_ID = $_SESSION['A_Log'];
 
+$place_id = $_GET['place_id'];
+
 if (!$A_ID) {
 
     echo '<script language="JavaScript">
@@ -19,35 +21,10 @@ if (!$A_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
-    if (isset($_POST['Submit'])) {
+    $sql2 = mysqli_query($con, "select * from places where id='$place_id'");
+    $row2 = mysqli_fetch_array($sql2);
 
-        $name = $_POST['name'];
-        $category_id = $_POST['category_id'];
-        $email = $_POST['email'];
-        $phone = $_POST['phone'];
-        $image = $_FILES["file"]["name"];
-        $image = 'Coffe_houses_Images/' . $image;
-
-        $stmt = $con->prepare("INSERT INTO coffee_houses (category_id, name, email, image, phone) VALUES (?, ?, ?, ?, ?)");
-
-        $stmt->bind_param("issss", $category_id, $name, $email, $image, $phone);
-
-        if ($stmt->execute()) {
-
-            
-            move_uploaded_file($_FILES["file"]["tmp_name"], "./Coffe_houses_Images/" . $_FILES["file"]["name"]);
-
-            echo "<script language='JavaScript'>
-              alert ('A New Coffe Houses Has Been Added Successfully !');
-         </script>";
-
-            echo "<script language='JavaScript'>
-        document.location='./Coffe-Houses.php';
-           </script>";
-
-        }
-
-    }
+    $venue_name = $row2['name'];
 }
 
 ?>
@@ -58,7 +35,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Coffe Houses - JoFind</title>
+    <title><?php echo $venue_name ?> Subscriptions - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -150,16 +127,18 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Coffe Houses</h1>
+        <h1><?php echo $venue_name ?> Subscriptions</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Coffe Houses</li>
+            <li class="breadcrumb-item"><?php echo $venue_name ?> Subscriptions</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
+
+
 
 
         <div class="row">
@@ -171,62 +150,45 @@ if (!$A_ID) {
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
-                      <th scope="col">Category Name</th>
-                      <th scope="col">Image</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Phome</th>
+                      <th scope="col">Venue Name</th>
+                      <th scope="col">Subscription Type</th>
+                      <th scope="col">Start Date</th>
+                      <th scope="col">End Date</th>
+                      <th scope="col">Price</th>
+                      <th scope="col">Status</th>
                       <th scope="col">Created At</th>
-                      <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from places WHERE category_id = 2 ORDER BY id DESC");
+$sql1 = $place_id ? mysqli_query($con, "SELECT * from place_subscriptions WHERE place_id = '$place_id' ORDER BY id DESC") : mysqli_query($con, "SELECT * from place_subscriptions ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $coffee_house_id = $row1['id'];
-    $category_id = $row1['category_id'];
-    $coffee_house_name = $row1['name'];
-    $coffee_house_email = $row1['email'];
-    $coffee_house_phone = $row1['phone'];
-    $coffee_house_image = $row1['image'];
+    $subscription_id = $row1['id'];
+    $place_id = $row1['place_id'];
+    $subscription_type = $row1['subscription_type'];
+    $start_date = $row1['start_date'];
+    $end_date = $row1['end_date'];
+    $price = $row1['price'];
     $active = $row1['active'];
     $created_at = $row1['created_at'];
 
-    $sql2 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id'");
+    $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
     $row2 = mysqli_fetch_array($sql2);
 
-    $category_name = $row2['name'];
+    $venue_name = $row2['name'];
 
     ?>
                     <tr>
-                      <th scope="row"><?php echo $coffee_house_id ?></th>
-                      <th scope="row"><?php echo $category_name ?></th>
-                      <th scope="row"><img src="../Place_Dashboard/<?php echo $coffee_house_image ?>" alt="" width="150px" height="150px"></th>
-                      <td scope="row"><?php echo $coffee_house_name ?></td>
-                      <td scope="row"><?php echo $coffee_house_email ?></td>
-                      <td scope="row"><?php echo $coffee_house_phone ?></td>
+                      <th scope="row"><?php echo $place_id ?></th>
+                      <th scope="row"><?php echo $venue_name ?></th>
+                      <th scope="row"><?php echo $subscription_type ?></th>
+                      <th scope="row"><?php echo $start_date ?></th>
+                      <th scope="row"><?php echo $end_date ?></th>
+                      <th scope="row"><?php echo $price ?> JOD</th>
+                      <th scope="row"><?php echo $active == 1 ? 'Active' : 'Expired' ?></th>
                       <th scope="row"><?php echo $created_at ?></th>
-                      <td>
-
-        <div class="d-flex flex-column">
-
-        <?php if ($active == 1) {?>
-
-<a href="./DeleteOrRestoreCoffeHouse.php?coffee_house_id=<?php echo $coffee_house_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger mb-2">Delete</a>
-
-<?php } else {?>
-
-  <a href="./DeleteOrRestoreCoffeHouse.php?coffee_house_id=<?php echo $coffee_house_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary mb-2">Restore</a>
-
-<?php }?>
-<a href="./Subscriptions.php?place_id=<?php echo $coffee_house_id ?>" class="btn btn-primary mb-2">Subscriptions</a>
-<a href="./Offers.php?place_id=<?php echo $coffee_house_id ?>" class="btn btn-primary">Offers</a>
-        </div>
-
-                      </td>
                     </tr>
 <?php
 }?>

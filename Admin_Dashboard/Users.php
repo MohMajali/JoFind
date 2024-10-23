@@ -18,7 +18,6 @@ if (!$A_ID) {
 
     $name = $row1['name'];
     $email = $row1['email'];
-
 }
 
 ?>
@@ -29,7 +28,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Accepted Gyms - JoFind</title>
+    <title>Users - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -121,18 +120,16 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Gyms</h1>
+        <h1>Users</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Gyms</li>
+            <li class="breadcrumb-item">Users</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
-
-
 
         <div class="row">
           <div class="col-lg-12">
@@ -143,66 +140,51 @@ if (!$A_ID) {
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
-                      <th scope="col">Image</th>
-                      <th scope="col">Manager Name</th>
-                      <th scope="col">Title</th>
+                      <th scope="col">Name</th>
                       <th scope="col">Email</th>
                       <th scope="col">Phone</th>
-                      <th scope="col">City</th>
-                      <th scope="col">Status</th>
                       <th scope="col">Created At</th>
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
+
+
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from gyms WHERE status = 'Accepted' ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * from users WHERE id != 1 ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $gym_id = $row1['id'];
-    $manager_id = $row1['manager_id'];
-    $gym_image = $row1['image'];
-    $gym_name = $row1['title'];
-    $gym_email = $row1['email'];
-    $gym_phone = $row1['phone'];
-    $gym_city = $row1['city'];
-    $status = $row1['status'];
+    $user_id = $row1['id'];
+    $user_name = $row1['name'];
+    $user_email = $row1['email'];
+    $user_phone = $row1['phone'];
+    $user_image = $row1['image'];
     $active = $row1['active'];
     $created_at = $row1['created_at'];
 
-    $sql2 = mysqli_query($con, "SELECT * from users WHERE id = '$manager_id'");
-    $row2 = mysqli_fetch_array($sql2);
-
-    $manager_name = $row2['name'];
-
     ?>
                     <tr>
-                      <th scope="row"><?php echo $gym_id ?></th>
-                      <th scope="row"><img src="../Gym_Dashboard/<?php echo $gym_image ?>" alt="" width="150px" height="150px"></th>
-                      <th scope="row"><?php echo $manager_name ?></th>
-                      <td><?php echo $gym_name ?></td>
-                      <td><?php echo $gym_email ?></td>
-                      <td><?php echo $gym_phone ?></td>
-                      <td><?php echo $gym_city ?></td>
-                      <td><?php echo $status ?></td>
+                      <th scope="row"><?php echo $user_id ?></th>
+                      <td scope="row"><?php echo $user_name ?></td>
+                      <td scope="row"><?php echo $user_email ?></td>
+                      <td scope="row"><?php echo $user_phone ?></td>
                       <th scope="row"><?php echo $created_at ?></th>
-                      <th>
+                      <td>
 
-                      <?php if ($active == 1) {?>
+                        <div class="d-flex flex-column">
+                        <?php if ($active == 1) {?>
 
-<a href="./DeleteOrRestoreGym.php?gym_id=<?php echo $gym_id ?>&&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
+<a href="./DeleteOrRestoreUser.php?user_id=<?php echo $user_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger mb-2">Delete</a>
 
 <?php } else {?>
 
-  <a href="./DeleteOrRestoreGym.php?gym_id=<?php echo $gym_id ?>&&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
+  <a href="./DeleteOrRestoreUser.php?user_id=<?php echo $user_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary mb-2">Restore</a>
 
 <?php }?>
 
-
-
-                      </th>
-
+                        </div>
+                      </td>
                     </tr>
 <?php
 }?>
@@ -234,7 +216,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(3) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(5) .nav-link').classList.remove('collapsed')
    });
 </script>
 

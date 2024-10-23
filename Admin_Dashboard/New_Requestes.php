@@ -18,7 +18,6 @@ if (!$A_ID) {
 
     $name = $row1['name'];
     $email = $row1['email'];
-
 }
 
 ?>
@@ -29,7 +28,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Contracts - JoFind</title>
+    <title>New Requestes - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -121,16 +120,20 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Contracts</h1>
+        <h1>New Requestes</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Contracts</li>
+            <li class="breadcrumb-item">New Requestes</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
+
+
+
+
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
@@ -140,58 +143,60 @@ if (!$A_ID) {
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
-                      <th scope="col">Gym Name</th>
-                      <th scope="col">Contract Type</th>
-                      <th scope="col">Start Date</th>
-                      <th scope="col">End Date</th>
-                      <th scope="col">Days Left</th>
+                      <th scope="col">Venue Name</th>
+                      <th scope="col">Category Name</th>
+                      <th scope="col">Sub Category Name</th>
                       <th scope="col">Created At</th>
+                      <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from gyms_contracts ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * from places WHERE status_id = 1 ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $contract_id = $row1['id'];
-    $gym_id = $row1['gym_id'];
-    $contract_type = $row1['contract_type'];
-    $start_date = $row1['start_date'];
-    $end_date = $row1['end_date'];
+    $place_id = $row1['id'];
+    $category_id = $row1['category_id'];
+    $sub_category_id = $row1['sub_category_id'];
+    $place_name = $row1['name'];
+    $active = $row1['active'];
     $created_at = $row1['created_at'];
 
-    $sql2 = mysqli_query($con, "SELECT * from gyms WHERE id = '$gym_id'");
+    $sql2 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id'");
     $row2 = mysqli_fetch_array($sql2);
 
-    $gym_name = $row2['title'];
+    $category_name = $row2['name'];
 
-    $current_date = new DateTime();
-    $end_date_time = new DateTime($end_date);
-    $interval = $current_date->diff($end_date_time);
-    $days_left = $interval->days;
+    $sql3 = mysqli_query($con, "SELECT * from sub_categories WHERE id = '$sub_category_id'");
+    $row3 = mysqli_fetch_array($sql3);
+
+    $sub_category_name = $row3['name'];
 
     ?>
                     <tr>
-                      <th scope="row"><?php echo $contract_id ?></th>
-                      <th scope="row"><?php echo $gym_name ?></th>
-                      <th scope="row"><?php echo $contract_type ?></th>
-                      <td><?php echo $start_date ?></td>
-                      <td><?php echo $end_date ?></td>
-                      <td><?php
+                      <th scope="row"><?php echo $place_id ?></th>
+                      <td><?php echo $place_name ?></td>
+                      <td><?php echo $category_name ?></td>
+                      <td><?php echo $sub_category_name ?></td>
+                      <th scope="row"><?php echo $created_at ?></th>
+                      <td>
 
-    if ($end_date_time < $current_date) {
+              <div class="d-flex flex-column">
+                        <a href="./AcceptOrRejectPlace.php?place_id=<?php echo $place_id ?>&status=2" class="btn btn-success mb-2"
+                          >Accept</a
+                        >
 
-        echo "Days Passed";
+                        <a href="./AcceptOrRejectPlace.php?place_id=<?php echo $place_id ?>&status=3" class="btn btn-danger"
+                          >Reject</a
+                        >
 
-    } else {
 
-        echo "$days_left Days";
-    }
+                        </div>
 
-    ?></td>
-                      <td><?php echo $created_at ?></td>
 
+
+                      </td>
                     </tr>
 <?php
 }?>

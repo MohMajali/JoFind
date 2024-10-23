@@ -9,12 +9,14 @@ if (isset($_POST['Submit'])) {
     $password = md5($_POST['password']);
     $email = $_POST['email'];
     $category_id = $_POST['category_id'];
+    $subcategory_id = $_POST['subcategory_id'];
     $phone = $_POST['phone'];
     $longitude = doubleval($_POST['longitude']);
     $latitude = doubleval($_POST['latitude']);
     $image = $_FILES["file"]["name"];
+    $image = 'Places_Images/' . $image;
     $price;
-    $path;
+    $status_id = 1;
 
     $start_date = $_POST['start_date'];
     $subscription_type = $_POST['subscription_type'];
@@ -39,22 +41,8 @@ if (isset($_POST['Submit'])) {
 
     }
 
-    if ($category_id == 1) {
 
-        $image = 'Cafe_Images/' . $image;
-        $path = "./Place_Dashboard/Cafe_Images/";
-
-    } else if ($category_id == 2) {
-
-        $image = 'Coffe_houses_Images/' . $image;
-        $path = "./Place_Dashboard/Coffe_houses_Images/";
-    } else if ($category_id == 3) {
-
-        $image = 'restaurants_Images/' . $image;
-        $path = "./Place_Dashboard/restaurants_Images/";
-    }
-
-    $query = mysqli_query($con, "SELECT * FROM places WHERE name ='$name'");
+    $query = mysqli_query($con, "SELECT * FROM places WHERE name ='$name' AND email = '$email'");
 
     if (mysqli_num_rows($query) > 0) {
 
@@ -64,9 +52,9 @@ if (isset($_POST['Submit'])) {
 
     } else {
 
-        $stmt = $con->prepare("INSERT INTO places (category_id, name, image, email, phone, password) VALUES (?, ?, ?, ?, ?, ?) ");
+        $stmt = $con->prepare("INSERT INTO places (category_id, sub_category_id, status_id, name, image, email, phone, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
 
-        $stmt->bind_param("isssss", $category_id, $name, $image, $email, $phone, $password);
+        $stmt->bind_param("iiisssss", $category_id, $subcategory_id, $status_id, $name, $image, $email, $phone, $password);
 
         if ($stmt->execute()) {
 
@@ -90,7 +78,7 @@ if (isset($_POST['Submit'])) {
 
                 if ($stmt->execute() && $stmt2->execute()) {
 
-                    move_uploaded_file($_FILES["file"]["tmp_name"], "{$path}" . $_FILES["file"]["name"]);
+                    move_uploaded_file($_FILES["file"]["tmp_name"], "./Place_Dashboard/Places_Images/" . $_FILES["file"]["name"]);
 
                     echo "<script language='JavaScript'>
                 alert ('Place Registered Successfully !');
@@ -208,7 +196,7 @@ if (isset($_POST['Submit'])) {
                             type="email"
                             name="email"
                             class="form-control"
-                            id="name"
+                            id="email"
                             required
                           />
 
@@ -224,7 +212,7 @@ if (isset($_POST['Submit'])) {
                             type="text"
                             name="phone"
                             class="form-control"
-                            id="name"
+                            id="phone"
                             pattern="[0-9]{10}" title="Phone Number Must Be 10 Numbers"
                             required
                           />
@@ -278,7 +266,7 @@ if (isset($_POST['Submit'])) {
                           id="latitude"
                           required
                         />
-                    
+
                       </div>
 
 
@@ -337,6 +325,14 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                       </div>
 
 
+                      <div class="col-12">
+  <label for="subCategoryId" class="form-label">Subcategory</label>
+  <select name="subcategory_id" class="form-select" id="subCategoryId" >
+    <option value="">Select a subcategory</option>
+  </select>
+</div>
+
+
 
 
                       <div class="col-12">
@@ -364,7 +360,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                       <div class="col-12">
                         <p class="small mb-0">
                           Already Have Account
-                          <a href="./Manager_Login.php">Login Now</a>
+                          <a href="./Place_Login.php">Login Now</a>
                         </p>
                       </div>
                     </form>
@@ -397,5 +393,36 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
+
+    <script>
+  $(document).ready(function() {
+    $('#categoryId').on('change', function() {
+      var categoryId = $(this).val();
+      if (categoryId) {
+        $.ajax({
+          url: 'get_subcategories.php', // URL of the PHP script that fetches subcategories
+          type: 'POST',
+          data: { category_id: categoryId },
+          dataType: 'json',
+          success: function(response) {
+            $('#subCategoryId').empty();
+            $('#subCategoryId').append('<option value="">Select a subcategory</option>');
+            $.each(response, function(index, subcategory) {
+              $('#subCategoryId').append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
+            });
+          },
+          error: function(response){
+            console.log(response);
+
+            alert('Error loading subcategories');
+          }
+        });
+      } else {
+        $('#subCategoryId').empty();
+        $('#subCategoryId').append('<option value="">Select a subcategory</option>');
+      }
+    });
+  });
+</script>
   </body>
 </html>

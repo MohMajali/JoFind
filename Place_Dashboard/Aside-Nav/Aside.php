@@ -9,8 +9,8 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="./Categories.php">
-        <i class="bi bi-layout-text-sidebar-reverse"></i><span>Categories</span>
+      <a class="nav-link collapsed" href="./Account.php">
+        <i class="bi bi-layout-text-sidebar-reverse"></i><span>Account</span>
       </a>
     </li>
         

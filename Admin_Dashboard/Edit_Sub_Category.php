@@ -4,6 +4,7 @@ session_start();
 include "../Connect.php";
 
 $A_ID = $_SESSION['A_Log'];
+$sub_category_id = $_GET['sub_category_id'];
 
 if (!$A_ID) {
 
@@ -19,28 +20,57 @@ if (!$A_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
+    $sql2 = mysqli_query($con, "select * from sub_categories where id='$sub_category_id'");
+    $row2 = mysqli_fetch_array($sql2);
+
+    $subCategoryName = $row2['name'];
+    $category_id = $row2['category_id'];
+
     if (isset($_POST['Submit'])) {
 
-        $category_name = $_POST['name'];
+        $sub_category_id = $_POST['sub_category_id'];
+        $category_id = $_POST['category_id'];
+        $sub_category_name = $_POST['name'];
         $image = $_FILES["file"]["name"];
-        $image = 'Categories_Images/' . $image;
 
-        $stmt = $con->prepare("INSERT INTO categories (image, name) VALUES (?, ?) ");
+        if ($image) {
 
-        $stmt->bind_param("ss", $image, $category_name);
+            $image = 'Categories_Images/' . $image;
 
-        if ($stmt->execute()) {
+            $stmt = $con->prepare("UPDATE sub_categories SET name = ?, image = ? WHERE id = ? ");
 
-            move_uploaded_file($_FILES["file"]["tmp_name"], "./Categories_Images/" . $_FILES["file"]["name"]);
+            $stmt->bind_param("ssi", $sub_category_name, $image, $sub_category_id);
 
-            echo "<script language='JavaScript'>
-              alert ('A New Category Has Been Added Successfully !');
-         </script>";
+            if ($stmt->execute()) {
 
-            echo "<script language='JavaScript'>
-        document.location='./Categories.php';
+                move_uploaded_file($_FILES["file"]["tmp_name"], "./Categories_Images/" . $_FILES["file"]["name"]);
+
+                echo "<script language='JavaScript'>
+                alert ('Category Has Been Updated Successfully !');
            </script>";
 
+                echo "<script language='JavaScript'>
+          document.location='./Sub_Categories.php?category_id={$category_id}';
+             </script>";
+
+            }
+        } else {
+
+            $stmt = $con->prepare("UPDATE sub_categories SET name = ? WHERE id = ? ");
+
+            $stmt->bind_param("si", $sub_category_name, $sub_category_id);
+
+            if ($stmt->execute()) {
+
+                echo "<script language='JavaScript'>
+              alert ('Category Has Been Updated Successfully !');
+         </script>";
+
+                echo "<script language='JavaScript'>
+        document.location='./Sub_Categories.php?category_id={$category_id}';
+           </script>";
+
+            }
         }
 
     }
@@ -54,7 +84,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Categories - JoFind</title>
+    <title>Category - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -146,157 +176,56 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Categories</h1>
+        <h1>Category</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Categories</li>
+            <li class="breadcrumb-item">Category</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
-        <div class="mb-3">
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#verticalycentered"
-          >
-            Add New Category
-          </button>
-        </div>
-
-        <div class="modal fade" id="verticalycentered" tabindex="-1">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Category Information</h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-
-                <form method="POST" action="./Categories.php" enctype="multipart/form-data">
-
-                  <div class="row mb-3">
-                    <label for="inputText" class="col-sm-4 col-form-label"
-                      >Name</label
-                    >
-                    <div class="col-sm-8">
-                      <input type="text" name="name" class="form-control" />
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <label for="inputText" class="col-sm-4 col-form-label"
-                      >Image</label
-                    >
-                    <div class="col-sm-8">
-                      <input type="file" name="file" class="form-control" />
-                    </div>
-                  </div>
-
-
-
-                  <div class="row mb-3">
-                    <div class="text-end">
-                      <button type="submit" name="Submit" class="btn btn-primary">
-                        Submit
-                      </button>
-                    </div>
-                  </div>
-                </form>
-
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
               <div class="card-body">
-                <!-- Table with stripped rows -->
-                <table class="table datatable">
-                  <thead>
-                    <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Image</th>
-                      <th scope="col">Category Name</th>
-                      <th scope="col">Created At</th>
-                      <th scope="col">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <?php
-$sql1 = mysqli_query($con, "SELECT * from categories ORDER BY id DESC");
+                <h5 class="card-title"></h5>
 
-while ($row1 = mysqli_fetch_array($sql1)) {
+                <!-- Horizontal Form -->
+                <form method="POST" action="./Edit_Sub_Category.php?sub_category_id=<?php echo $sub_category_id ?>" enctype="multipart/form-data">
 
-    $category_id = $row1['id'];
-    $category_name = $row1['name'];
-    $category_image = $row1['image'];
-    $active = $row1['active'];
-    $created_at = $row1['created_at'];
+                <input type="hidden" name="sub_category_id" value="<?php echo $sub_category_id ?>">
+                <input type="hidden" name="category_id" value="<?php echo $category_id ?>">
 
-    ?>
-                    <tr>
-                      <th scope="row"><?php echo $category_id ?></th>
-                      <th scope="row"><img src="<?php echo $category_image ?>" alt="" width="150px" height="150px"></th>
-                      <td><?php echo $category_name ?></td>
-                      <th scope="row"><?php echo $created_at ?></th>
-                      <td>
+                  <div class="row mb-3">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label"
+                      >Category Name</label
+                    >
+                    <div class="col-sm-10">
+                      <input type="text" name="name" value="<?php echo $subCategoryName ?>" class="form-control" id="inputText" required/>
+                    </div>
+                  </div>
 
-              <div class="d-flex flex-column">
-              <div class="d-flex mb-2">
-                        <a href="./Edit-Category.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Edit</a
-                        >
+                  <div class="row mb-3">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label"
+                      >Category Image</label
+                    >
+                    <div class="col-sm-10">
+                      <input type="file" name="file" class="form-control" id="inputText"/>
+                    </div>
+                  </div>
 
-                        <?php if ($active == 1) {?>
-
-<a href="./DeleteOrRestoreCategory.php?category_id=<?php echo $category_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
-
-<?php } else {?>
-
-  <a href="./DeleteOrRestoreCategory.php?category_id=<?php echo $category_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
-
-<?php }?>
-                        </div>
-
-                        <div class="d-flex">
-
-                        <a href="./Places.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Venues</a
-                        >
-
-                        <a href="./Sub_Categories.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Sub Categories</a
-                        >
-                        </div>
-              </div>
-
-                      </td>
-                    </tr>
-<?php
-}?>
-                  </tbody>
-                </table>
-                <!-- End Table with stripped rows -->
+                  <div class="text-end">
+                    <button type="submit" name="Submit" class="btn btn-primary">
+                      Submit
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                      Reset
+                    </button>
+                  </div>
+                </form>
+                <!-- End Horizontal Form -->
               </div>
             </div>
           </div>
