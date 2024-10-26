@@ -22,23 +22,26 @@ if (!$P_ID) {
     if (isset($_POST['Submit'])) {
 
         $place_id = $_POST['place_id'];
-        $offer = $_POST['offer'];
-        $discount = $_POST['discount'];
-        $start_date = date('Y-m-d', strtotime($_POST['start_date']));
-        $end_date = date('Y-m-d', strtotime($_POST['end_date']));
+        $title = $_POST['title'];
+        $description = $_POST['description'];
+        $date_time = date('Y-m-d H:i:s', strtotime($_POST['date_time']));
+        $quantity = $_POST['quantity'];
+        $has_food = $_POST['has_food'] == 'on' ? true : false;
+        $has_soft_drinks = $_POST['has_soft_drinks'] == 'on' ? true : false;
+        $price = $_POST['price'];
 
-        $stmt = $con->prepare("INSERT INTO offers (place_id, offer, discount, start_date, end_date) VALUES (?, ?, ?, ?, ?) ");
+        $stmt = $con->prepare("INSERT INTO booking_options (place_id, title, description, date_time, quantity, has_soft_drinks, has_food, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
 
-        $stmt->bind_param("isdss", $place_id, $offer, $discount, $start_date, $end_date);
+        $stmt->bind_param("isssiiid", $place_id, $title, $description, $date_time, $quantity, $has_soft_drinks, $has_food, $price);
 
         if ($stmt->execute()) {
 
             echo "<script language='JavaScript'>
-            alert ('A New Offer Has Been Added Successfully !');
+            alert ('A New Option Has Been Added Successfully !');
        </script>";
 
             echo "<script language='JavaScript'>
-      document.location='./Offers.php';
+      document.location='./Booking_Options.php';
          </script>";
 
         }
@@ -54,7 +57,7 @@ if (!$P_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Offers - JoFind</title>
+    <title>Booking Options - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -146,11 +149,11 @@ if (!$P_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Offers</h1>
+        <h1>Booking Options</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Offers</li>
+            <li class="breadcrumb-item">Booking Options</li>
           </ol>
         </nav>
       </div>
@@ -183,47 +186,71 @@ if (!$P_ID) {
               </div>
               <div class="modal-body">
 
-                <form method="POST" action="./Offers.php" enctype="multipart/form-data">
+                <form method="POST" action="./Booking_Options.php" enctype="multipart/form-data">
 
 <input type="hidden" name="place_id" value="<?php echo $P_ID ?>">
 
                   <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label"
-                      >Offer</label
+                      >Title</label
                     >
                     <div class="col-sm-8">
-                      <input type="text" name="offer" class="form-control" />
+                      <input type="text" name="title" class="form-control" required/>
                     </div>
                   </div>
 
                   <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label"
-                      >Discount</label
+                      >Date Time</label
                     >
                     <div class="col-sm-8">
-                    <input type="number" name="discount" class="form-control" step="0.01" />
+                    <input type="datetime-local" name="date_time" class="form-control" min="<?php echo date('Y-m-d\TH:i'); ?>" required/>
                     </div>
                   </div>
 
                   <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label"
-                      >Start Date</label
+                      >Quantity</label
                     >
                     <div class="col-sm-8">
-                      <input type="date" name="start_date" class="form-control" min="<?php echo date('Y-m-d') ?>"/>
+                      <input type="number" name="quantity" class="form-control" required/>
                     </div>
                   </div>
 
                   <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label"
-                      >End Date</label
+                      >Price</label
                     >
                     <div class="col-sm-8">
-                      <input type="date" name="end_date" class="form-control" min="<?php echo date('Y-m-d') ?>"/>
+                      <input type="number" name="price" class="form-control" step="0.01" required/>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Description</label
+                    >
+                    <div class="col-sm-8">
+                       <textarea name="description" class="form-control" id="" required></textarea>
                     </div>
                   </div>
 
 
+
+
+                  <div class="form-check">
+                    <input class="form-check-input" name="has_food" type="checkbox" id="has_food">
+                    <label class="form-check-label" for="has_food">
+                        Has Food
+                    </label>
+                    </div>
+
+                  <div class="form-check">
+                    <input class="form-check-input" name="has_soft_drinks" type="checkbox" id="has_soft">
+                    <label class="form-check-label" for="has_soft">
+                        Has Soft Drinks
+                    </label>
+                    </div>
 
                   <div class="row mb-3">
                     <div class="text-end">
@@ -259,51 +286,55 @@ if (!$P_ID) {
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
-                      <th scope="col">Offer</th>
-                      <th scope="col">Start Date</th>
-                      <th scope="col">End Date</th>
-                      <th scope="col">discount</th>
-                      <th scope="col">Status</th>
+                      <th scope="col">Title</th>
+                      <th scope="col">Date Time</th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col">Has Soft Drinks</th>
+                      <th scope="col">Has Food</th>
+                      <th scope="col">Price</th>
                       <th scope="col">Created At</th>
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from offers WHERE place_id = '$P_ID' ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * from booking_options WHERE place_id = '$P_ID' ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $offer_id = $row1['id'];
-    $offer = $row1['offer'];
-    $discount = $row1['discount'];
-    $start_date = $row1['start_date'];
-    $end_date = $row1['end_date'];
-    $active = $row1['active'];
+    $option_id = $row1['id'];
+    $title = $row1['title'];
+    $date_time = $row1['date_time'];
+    $quantity = $row1['quantity'];
+    $has_soft_drinks = $row1['has_soft_drinks'];
+    $has_food = $row1['has_food'];
+    $price = $row1['price'];
     $created_at = $row1['created_at'];
+    $active = $row1['active'];
 
     ?>
                     <tr>
-                      <th scope="row"><?php echo $offer_id ?></th>
-                      <th scope="row"><?php echo $offer ?></th>
-                      <th scope="row"><?php echo date('Y-m-d', strtotime($start_date)) ?></th>
-                      <th scope="row"><?php echo date('Y-m-d', strtotime($end_date)) ?></th>
-                      <th scope="row"><?php echo $discount ?></th>
-                      <th scope="row"><?php echo $active == 1 ? 'Active' : 'In-Active' ?></th>
+                      <th scope="row"><?php echo $option_id ?></th>
+                      <th scope="row"><?php echo $title ?></th>
+                      <th scope="row"><?php echo date('Y-m-d H:i:s', strtotime($date_time)) ?></th>
+                      <th scope="row"><?php echo $quantity ?></th>
+                      <th scope="row"><?php echo ($has_soft_drinks ? "Yes" : "No") ?></th>
+                      <th scope="row"><?php echo ($has_food ? "Yes" : "No") ?></th>
                       <th scope="row"><?php echo $created_at ?></th>
+                      <th scope="row"><?php echo $price ?> JODs</th>
 
                       <th>
-                      <a href="./Edit_Offer.php?offer_id=<?php echo $offer_id ?>" class="btn btn-success me-2"
+                      <a href="./Edit_Option.php?option_id=<?php echo $option_id ?>" class="btn btn-success me-2"
                           >Edit</a
                         >
 
                         <?php if ($active == 1) {?>
 
-<a href="./DeleteOrRestoreOffer.php?offer_id=<?php echo $offer_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
+<a href="./DeleteOrRestoreOption.php?option_id=<?php echo $option_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
 
 <?php } else {?>
 
-  <a href="./DeleteOrRestoreOffer.php?offer_id=<?php echo $offer_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
+  <a href="./DeleteOrRestoreOption.php?option_id=<?php echo $option_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
 
 <?php }?>
                       </th>
@@ -338,7 +369,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(4) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(5) .nav-link').classList.remove('collapsed')
    });
 </script>
 

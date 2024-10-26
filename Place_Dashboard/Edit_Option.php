@@ -4,7 +4,7 @@ session_start();
 include "../Connect.php";
 
 $P_ID = $_SESSION['P_Log'];
-$offer_id = $_GET['offer_id'];
+$option_id = $_GET['option_id'];
 
 if (!$P_ID) {
 
@@ -20,34 +20,40 @@ if (!$P_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
-    $sql2 = mysqli_query($con, "select * from offers where id='$offer_id'");
+    $sql2 = mysqli_query($con, "select * from booking_options where id='$option_id'");
     $row2 = mysqli_fetch_array($sql2);
 
-    $offer = $row2['offer'];
-    $discount = $row2['discount'];
-    $start_date = $row2['start_date'];
-    $end_date = $row2['end_date'];
+    $title = $row2['title'];
+    $description = $row2['description'];
+    $date_time = $row2['date_time'];
+    $quantity = $row2['quantity'];
+    $has_soft_drinks = $row2['has_soft_drinks'];
+    $has_food = $row2['has_food'];
+    $price = $row2['price'];
 
     if (isset($_POST['Submit'])) {
 
-        $offer_id = $_POST['offer_id'];
-        $offer = $_POST['offer'];
-        $discount = $_POST['discount'];
-        $start_date =date('Y-m-d', strtotime($_POST['start_date']));
-        $end_date = date('Y-m-d', strtotime($_POST['end_date']));
+        $option_id = $_POST['option_id'];
+        $title = $_POST['title'];
+        $date_time = date('Y-m-d', strtotime($_POST['date_time']));
+        $quantity = $_POST['quantity'];
+        $price = $_POST['price'];
+        $description = $_POST['description'];
+        $has_food = $_POST['has_food'] == 'on' ? true : false;
+        $has_soft_drinks = $_POST['has_soft_drinks'] == 'on' ? true : false;
 
-        $stmt = $con->prepare("UPDATE offers SET offer = ?, discount = ?, start_date = ?, end_date = ? WHERE id = ? ");
+        $stmt = $con->prepare("UPDATE booking_options SET title = ?, date_time = ?, quantity = ?, price = ?, description = ?, has_food = ?, has_soft_drinks = ? WHERE id = ? ");
 
-        $stmt->bind_param("sdssi", $offer, $discount, $start_date, $end_date, $offer_id);
+        $stmt->bind_param("ssidsiii", $title, $date_time, $quantity, $price, $description, $has_food, $has_soft_drinks, $option_id);
 
         if ($stmt->execute()) {
 
             echo "<script language='JavaScript'>
-              alert ('Offer Has Been Updated Successfully !');
+              alert ('Option Updated Has Been Updated Successfully !');
          </script>";
 
             echo "<script language='JavaScript'>
-        document.location='./Offers.php';
+        document.location='./Booking_Options.php';
            </script>";
 
         }
@@ -154,11 +160,11 @@ if (!$P_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1><?php echo $offer ?></h1>
+        <h1><?php echo $title ?></h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item"><?php echo $offer ?></li>
+            <li class="breadcrumb-item"><?php echo $title ?></li>
           </ol>
         </nav>
       </div>
@@ -171,46 +177,68 @@ if (!$P_ID) {
                 <h5 class="card-title"></h5>
 
                 <!-- Horizontal Form -->
-                <form method="POST" action="./Edit_Offer.php?offer_id=<?php echo $offer_id ?>" enctype="multipart/form-data">
+                <form method="POST" action="./Edit_Option.php?option_id=<?php echo $option_id ?>" enctype="multipart/form-data">
 
-                <input type="hidden" name="offer_id" value="<?php echo $offer_id ?>">
+                <input type="hidden" name="option_id" value="<?php echo $option_id ?>">
 
                   <div class="row mb-3">
                     <label for="offer" class="col-sm-2 col-form-label"
-                      >Offer</label
+                      >Title</label
                     >
                     <div class="col-sm-10">
-                      <input type="text" name="offer" value="<?php echo $offer ?>" class="form-control" id="offer" required/>
+                      <input type="text" name="title" value="<?php echo $title ?>" class="form-control" id="offer" required/>
                     </div>
                   </div>
 
                   <div class="row mb-3">
-                    <label for="discount" class="col-sm-2 col-form-label"
-                      >Discount</label
+                    <label for="date_time" class="col-sm-2 col-form-label"
+                      >Date Time</label
                     >
                     <div class="col-sm-10">
-                      <input type="text" name="discount" value="<?php echo $discount ?>" class="form-control" id="discount" required/>
+                      <input type="datetime-local" name="date_time" value="<?php echo $date_time ?>" class="form-control" id="date_time" required/>
                     </div>
                   </div>
 
                   <div class="row mb-3">
-                    <label for="start_date" class="col-sm-2 col-form-label"
-                      >Start Date</label
+                    <label for="quantity" class="col-sm-2 col-form-label"
+                      >Quantity</label
                     >
                     <div class="col-sm-10">
-                      <input type="date" name="start_date" value="<?php echo date('Y-m-d', strtotime($start_date)) ?>" class="form-control" id="start_date" required/>
+                      <input type="text" name="quantity" value="<?php echo $quantity ?>" class="form-control" id="quantity" required/>
                     </div>
                   </div>
 
                   <div class="row mb-3">
-                    <label for="end_date" class="col-sm-2 col-form-label"
-                      >End Date</label
+                    <label for="price" class="col-sm-2 col-form-label"
+                      >Price</label
                     >
                     <div class="col-sm-10">
-                      <input type="date" name="end_date" value="<?php echo date('Y-m-d', strtotime($end_date)) ?>" class="form-control" id="end_date" required/>
+                      <input type="text" name="price" value="<?php echo $price ?>" class="form-control" id="price" required/>
                     </div>
                   </div>
 
+                  <div class="row mb-3">
+                    <label for="price" class="col-sm-2 col-form-label"
+                      >Description</label
+                    >
+                    <div class="col-sm-10">
+                      <textarea name="description" class="form-control" id="" value="<?php echo $description ?>"><?php echo $description ?></textarea>
+                    </div>
+                  </div>
+
+                  <div class="form-check">
+                    <input class="form-check-input" name="has_food" type="checkbox" id="has_food" <?php echo ($has_food ? "checked" : "") ?>>
+                    <label class="form-check-label" for="has_food">
+                        Has Food
+                    </label>
+                    </div>
+
+                  <div class="form-check">
+                    <input class="form-check-input" name="has_soft_drinks" type="checkbox" id="has_soft" <?php echo ($has_soft_drinks ? "checked" : "") ?>>
+                    <label class="form-check-label" for="has_soft">
+                        Has Soft Drinks
+                    </label>
+                    </div>
 
 
                   <div class="text-end">
@@ -248,7 +276,7 @@ if (!$P_ID) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(4) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(5) .nav-link').classList.remove('collapsed')
    });
 </script>
 
