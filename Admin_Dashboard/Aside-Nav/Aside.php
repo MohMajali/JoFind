@@ -39,6 +39,12 @@
       </a>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="./Sliders.php">
+        <i class="bi bi-calendar3"></i><span>Sliders</span>
+      </a>
+    </li>
+
 
 
   </ul>

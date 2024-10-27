@@ -6,7 +6,7 @@ include "./Connect.php";
 if (isset($_POST['Submit'])) {
 
     $email = $_POST['email'];
-    $Password = $_POST['password'];
+    $Password = md5($_POST['password']);
 
     $query = mysqli_query($con, "SELECT * FROM users WHERE email ='$email' AND password = '$Password'");
 
@@ -27,7 +27,11 @@ if (isset($_POST['Submit'])) {
 
         } else if ($type_id == 2) {
 
-            $_SESSION['A_Log'] = $id;
+            $_SESSION['C_Log'] = $id;
+
+            echo '<script language="JavaScript">
+            document.location="Site/";
+            </script>';
 
         }
 
@@ -162,6 +166,12 @@ if (isset($_POST['Submit'])) {
                             >Remember me</label
                           >
                         </div>
+                      </div>
+                      <div class="col-12">
+                        <p class="small mb-0">
+                          Don't Have Account
+                          <a href="./Register.php">Signup Now</a>
+                        </p>
                       </div>
                       <div class="col-12">
                         <button class="btn btn-primary w-100" type="submit" name="Submit">

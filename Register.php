@@ -5,53 +5,36 @@ include "./Connect.php";
 
 if (isset($_POST['Submit'])) {
 
+    $name = $_POST['name'];
+    $password = md5($_POST['password']);
     $email = $_POST['email'];
-    $Password = md5($_POST['password']);
+    $phone = $_POST['phone'];
+    $userType = 2;
 
-    $query = mysqli_query($con, "SELECT * FROM places WHERE email ='$email' AND password = '$Password'");
+    $query = mysqli_query($con, "SELECT * FROM users WHERE email = '$email'");
 
     if (mysqli_num_rows($query) > 0) {
 
-        $row = mysqli_fetch_array($query);
-
-        $id = $row['id'];
-        $active = $row['active'];
-        $status_id = $row['status_id'];
-
-        if ($status_id == 2) {
-
-            if ($active == 1) {
-
-                $_SESSION['P_Log'] = $id;
-
-                echo '<script language="JavaScript">
-              document.location="Place_Dashboard/";
-              </script>';
-
-            } else {
-
-                echo '<script language="JavaScript">
-                alert ("Your Account Is Not Active !")
-                </script>';
-            }
-        } else if ($status_id == 3) {
-
-            echo '<script language="JavaScript">
-            alert ("Your Request Is Rejected, Please Contact Administrator !")
-            </script>';
-        } else {
-
-            echo '<script language="JavaScript">
-            alert ("Your Request Is Still Pending !")
-            </script>';
-
-        }
+        echo "<script language='JavaScript'>
+      alert ('Account Already Exist !');
+ </script>";
 
     } else {
 
-        echo '<script language="JavaScript">
-	  alert ("Error ... Please Check Email Or Password !")
-      </script>';
+        $stmt = $con->prepare("INSERT INTO users (type_id, name, email, password, phone) VALUES (?, ?, ?, ?, ?) ");
+
+        $stmt->bind_param("issss", $userType, $name, $email, $password, $phone);
+
+        if ($stmt->execute()) {
+
+            echo "<script language='JavaScript'>
+            alert ('Customer Registered Successfully !');
+       </script>";
+
+            echo "<script language='JavaScript'>
+      document.location='./Login.php';
+         </script>";
+        }
     }
 }
 ?>
@@ -62,7 +45,7 @@ if (isset($_POST['Submit'])) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Login Page</title>
+    <title>Register Page</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -105,7 +88,7 @@ if (isset($_POST['Submit'])) {
           <div class="container">
             <div class="row justify-content-center">
               <div
-                class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center"
+                class="col-lg-12 col-md-12 d-flex flex-column align-items-center justify-content-center"
               >
                 <div class="d-flex justify-content-center py-4">
                   <a
@@ -124,14 +107,30 @@ if (isset($_POST['Submit'])) {
                   <div class="card-body">
                     <div class="pt-4 pb-2">
                       <h5 class="card-title text-center pb-0 fs-4">
-                        Login to Your Account
+                        Create New Account
                       </h5>
                       <p class="text-center small">
-                        Enter your Name & Password to login
+                        Enter Information
                       </p>
                     </div>
 
-                    <form class="row g-3 needs-validation" method="POST" action="Place_Login.php" id="login-form" >
+                    <form class="row g-3 needs-validation" method="POST" action="./Register.php" enctype="multipart/form-data" id="login-form">
+
+                      <div class="col-12">
+                        <label for="name" class="form-label">Name</label>
+                        <div class="input-group has-validation">
+
+                          <input
+                            type="text"
+                            name="name"
+                            class="form-control"
+                            id="name"
+                            required
+                          />
+
+                        </div>
+                      </div>
+
                       <div class="col-12">
                         <label for="name" class="form-label">Email</label>
                         <div class="input-group has-validation">
@@ -140,14 +139,31 @@ if (isset($_POST['Submit'])) {
                             type="email"
                             name="email"
                             class="form-control"
-                            id="Name"
+                            id="email"
                             required
                           />
-                          <div class="invalid-feedback">
-                            Please enter a valid Name adddress!
-                          </div>
+
                         </div>
                       </div>
+
+
+                      <div class="col-12">
+                        <label for="name" class="form-label">Phone</label>
+                        <div class="input-group has-validation">
+
+                          <input
+                            type="text"
+                            name="phone"
+                            class="form-control"
+                            id="phone"
+                            pattern="[0-9]{10}" title="Phone Number Must Be 10 Numbers"
+                            required
+                          />
+
+                        </div>
+                      </div>
+
+
 
                       <div class="col-12">
                         <label for="yourPassword" class="form-label"
@@ -165,32 +181,18 @@ if (isset($_POST['Submit'])) {
                         </div>
                       </div>
 
+
                       <div class="col-12">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="remember"
-                            value="true"
-                            id="rememberMe"
-                          />
-                          <label class="form-check-label" for="rememberMe"
-                            >Remember me</label
-                          >
-                        </div>
+                        <button class="btn btn-primary w-100" type="submit" name="Submit">
+                          Signup
+                        </button>
                       </div>
                       <div class="col-12">
                         <p class="small mb-0">
-                          Don't Have Account
-                          <a href="./Place_Register.php">Signup Now</a>
+                          Already Have Account
+                          <a href="./Place_Login.php">Login Now</a>
                         </p>
                       </div>
-                      <div class="col-12">
-                        <button class="btn btn-primary w-100" type="submit" name="Submit">
-                          Login
-                        </button>
-                      </div>
-
                     </form>
                   </div>
                 </div>
