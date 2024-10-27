@@ -162,7 +162,8 @@ if ($C_ID) {
     <meta content="Free HTML Templates" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="../assets/img/Logo.png" rel="icon" />
+    <link href="../assets/img/Logo.png" rel="apple-touch-icon" />
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
