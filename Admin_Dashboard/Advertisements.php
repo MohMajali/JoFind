@@ -21,24 +21,27 @@ if (!$A_ID) {
 
     if (isset($_POST['Submit'])) {
 
-        $category_name = $_POST['name'];
+        $place_id = $_POST['place_id'];
+        $title = $_POST['title'];
+        $price = $_POST['price'];
+        $description = $_POST['description'];
         $image = $_FILES["file"]["name"];
-        $image = 'Categories_Images/' . $image;
+        $image = 'Advertisements_Images/' . $image;
 
-        $stmt = $con->prepare("INSERT INTO categories (image, name) VALUES (?, ?) ");
+        $stmt = $con->prepare("INSERT INTO advertisements (place_id, title, description, image, price) VALUES (?, ?, ?, ?, ?) ");
 
-        $stmt->bind_param("ss", $image, $category_name);
+        $stmt->bind_param("isssd", $place_id, $title, $description, $image, $price);
 
         if ($stmt->execute()) {
 
-            move_uploaded_file($_FILES["file"]["tmp_name"], "./Categories_Images/" . $_FILES["file"]["name"]);
+            move_uploaded_file($_FILES["file"]["tmp_name"], "./Advertisements_Images/" . $_FILES["file"]["name"]);
 
             echo "<script language='JavaScript'>
-              alert ('A New Category Has Been Added Successfully !');
+              alert ('A New Advertisement Has Been Added Successfully !');
          </script>";
 
             echo "<script language='JavaScript'>
-        document.location='./Categories.php';
+        document.location='./Advertisements.php';
            </script>";
 
         }
@@ -54,7 +57,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Categories - JoFind</title>
+    <title>Advertisements - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -146,24 +149,26 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Categories</h1>
+        <h1>Advertisements</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Categories</li>
+            <li class="breadcrumb-item">Advertisements</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
-        <div class="mb-3">
+
+
+      <div class="mb-3">
           <button
             type="button"
             class="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#verticalycentered"
           >
-            Add New Category
+            Add New Advertisement
           </button>
         </div>
 
@@ -171,7 +176,7 @@ if (!$A_ID) {
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Category Information</h5>
+                <h5 class="modal-title">Advertisement Information</h5>
                 <button
                   type="button"
                   class="btn-close"
@@ -181,14 +186,61 @@ if (!$A_ID) {
               </div>
               <div class="modal-body">
 
-                <form method="POST" action="./Categories.php" enctype="multipart/form-data">
+                <form method="POST" action="./Advertisements.php" enctype="multipart/form-data">
+
+
+
+                <div class="row mb-3">
+                    <label for="venue_id" class="col-sm-4 col-form-label"
+                      >Venue</label
+                    >
+                    <div class="col-sm-8">
+                    <select name="place_id" class="form-select" id="venue_id" required>
+
+                    <option value="" default selected>Select Venue</option>
+
+                    <?php
+$placesSql = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 ORDER BY id DESC");
+
+while ($placeRow = mysqli_fetch_array($placesSql)) {
+
+    $place_id = $placeRow['id'];
+    $place_name = $placeRow['name'];
+
+    ?>
+                    <option value="<?php echo $place_id ?>"><?php echo $place_id ?></option>
+<?php
+}?>
+                    </select>
+                    </div>
+                  </div>
+
+
 
                   <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label"
-                      >Name</label
+                      >Title</label
                     >
                     <div class="col-sm-8">
-                      <input type="text" name="name" class="form-control" />
+                      <input type="text" name="title" class="form-control" required/>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Price</label
+                    >
+                    <div class="col-sm-8">
+                      <input type="number" name="price" class="form-control" step="0.01" required/>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Description</label
+                    >
+                    <div class="col-sm-8">
+                       <textarea name="description" class="form-control" id="" required></textarea>
                     </div>
                   </div>
 
@@ -197,7 +249,7 @@ if (!$A_ID) {
                       >Image</label
                     >
                     <div class="col-sm-8">
-                      <input type="file" name="file" class="form-control" />
+                      <input type="file" name="file" class="form-control" required/>
                     </div>
                   </div>
 
@@ -226,6 +278,8 @@ if (!$A_ID) {
           </div>
         </div>
 
+
+
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
@@ -236,61 +290,58 @@ if (!$A_ID) {
                     <tr>
                       <th scope="col">ID</th>
                       <th scope="col">Image</th>
-                      <th scope="col">Category Name</th>
+                      <th scope="col">Venue Name</th>
+                      <th scope="col">Title</th>
+                      <th scope="col">Price</th>
                       <th scope="col">Created At</th>
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
+
+
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from categories ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * from advertisements ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $category_id = $row1['id'];
-    $category_name = $row1['name'];
-    $category_image = $row1['image'];
+    $advertisement_id = $row1['id'];
+    $image = $row1['image'];
     $active = $row1['active'];
+    $title = $row1['title'];
+    $price = $row1['price'];
+    $place_id = $row1['place_id'];
     $created_at = $row1['created_at'];
+
+
+    $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
+    $row2 = mysqli_fetch_array($sql2);
+
+    $place_name = $row2['name'];
 
     ?>
                     <tr>
-                      <th scope="row"><?php echo $category_id ?></th>
-                      <th scope="row"><img src="<?php echo $category_image ?>" alt="" width="150px" height="150px"></th>
-                      <td><?php echo $category_name ?></td>
+                      <th scope="row"><?php echo $advertisement_id ?></th>
+                      <th scope="row"><img src="<?php echo $image ?>" alt="" width="150px" height="150px"></th>
+                      <th scope="row"><?php echo $place_name ?></th>
+                      <th scope="row"><?php echo $title ?></th>
+                      <th scope="row"><?php echo $price ?> JODs</th>
                       <th scope="row"><?php echo $created_at ?></th>
-                      <td>
+                      <th scope="row">
 
-              <div class="d-flex flex-column">
-              <div class="d-flex mb-2">
-                        <a href="./Edit-Category.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Edit</a
-                        >
 
-                        <?php if ($active == 1) {?>
+                      <?php if ($active == 1) {?>
 
-<a href="./DeleteOrRestoreCategory.php?category_id=<?php echo $category_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
+<a href="./DeleteOrRestoreAdvertisement.php?advertisement_id=<?php echo $advertisement_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
 
 <?php } else {?>
 
-  <a href="./DeleteOrRestoreCategory.php?category_id=<?php echo $category_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
+  <a href="./DeleteOrRestoreAdvertisement.php?advertisement_id=<?php echo $advertisement_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
 
 <?php }?>
-                        </div>
 
-                        <div class="d-flex">
-
-                        <a href="./Places.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Venues</a
-                        >
-
-                        <a href="./Sub_Categories.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Sub Categories</a
-                        >
-                        </div>
-              </div>
-
-                      </td>
+<a href="./Edit_Advertisement.php?advertisement_id=<?php echo $advertisement_id ?>" class="btn btn-primary">Edit</a>
+                      </th>
                     </tr>
 <?php
 }?>
@@ -322,7 +373,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(5) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(3) .nav-link').classList.remove('collapsed')
    });
 </script>
 

@@ -153,8 +153,8 @@ while ($row1 = mysqli_fetch_array($sql1)) {
             </div>
             <div class="col-lg-9">
                 <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
-                    <a href="" class="text-decoration-none d-block d-lg-none">
-                        <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
+                    <a href="./index.php" class="text-decoration-none d-block d-lg-none">
+                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
                     </a>
                     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                         <span class="navbar-toggler-icon"></span>
@@ -171,6 +171,7 @@ if ($C_ID) {?>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Account</a>
                                 <div class="dropdown-menu rounded-0 m-0">
+                                <a href="Reservations.php" class="dropdown-item">Reservations</a>
                                     <a href="Profile.php" class="dropdown-item">Profile</a>
                                     <a href="Logout.php" class="dropdown-item">Logout</a>
                                 </div>
@@ -405,10 +406,14 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     $adv_id = $row1['id'];
     $adv_image = $row1['image'];
+    $adv_title = $row1['title'];
 
     ?>
                     <div id="<?php echo $adv_id ?>" class="vendor-item border p-4">
-                        <img src="../Place_Dashboard/<?php echo $adv_image ?>" alt="">
+                        <a href="./Adverisement.php?advertisement_id=<?php echo $adv_id ?>">
+
+                            <img src="../Admin_Dashboard/<?php echo $adv_image ?>" alt="<?php echo $adv_title ?>">
+                        </a>
                     </div>
                    <?php
 }?>

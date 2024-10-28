@@ -4,6 +4,7 @@ session_start();
 include "../Connect.php";
 
 $A_ID = $_SESSION['A_Log'];
+$advertisement_id = $_GET['advertisement_id'];
 
 if (!$A_ID) {
 
@@ -19,6 +20,66 @@ if (!$A_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
+    $sql2 = mysqli_query($con, "select * from advertisements where id='$advertisement_id'");
+    $row2 = mysqli_fetch_array($sql2);
+
+    $advertisement_id = $row2['id'];
+    $place_id = $row2['place_id'];
+    $title = $row2['title'];
+    $price = $row2['price'];
+    $image = $row2['image'];
+    $description = $row2['description'];
+
+    if (isset($_POST['Submit'])) {
+
+        $advertisement_id = $_POST['advertisement_id'];
+        $place_id = $_POST['place_id'];
+        $title = $_POST['title'];
+        $price = $_POST['price'];
+        $description = $_POST['description'];
+        $image = $_FILES["file"]["name"];
+
+        if ($image) {
+
+            $image = 'Advertisements_Images/' . $image;
+
+            $stmt = $con->prepare("UPDATE advertisements SET place_id = ?, title = ?, price = ?, description = ?, image = ? WHERE id = ? ");
+
+            $stmt->bind_param("isdssi", $place_id, $title, $price, $description, $image, $advertisement_id);
+
+            if ($stmt->execute()) {
+
+                move_uploaded_file($_FILES["file"]["tmp_name"], "./Advertisements_Images/" . $_FILES["file"]["name"]);
+
+                echo "<script language='JavaScript'>
+                alert ('Advertisement Has Been Updated Successfully !');
+           </script>";
+
+                echo "<script language='JavaScript'>
+          document.location='./Advertisements.php';
+             </script>";
+
+            }
+        } else {
+
+            $stmt = $con->prepare("UPDATE advertisements SET place_id = ?, title = ?, price = ?, description = ? WHERE id = ? ");
+
+            $stmt->bind_param("isdsi", $place_id, $title, $price, $description, $advertisement_id);
+
+            if ($stmt->execute()) {
+
+                echo "<script language='JavaScript'>
+              alert ('Advertisement Has Been Updated Successfully !');
+         </script>";
+
+                echo "<script language='JavaScript'>
+        document.location='./Advertisements.php';
+           </script>";
+
+            }
+        }
+
+    }
 }
 
 ?>
@@ -29,7 +90,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Gyms Requestes - JoFind</title>
+    <title><?php echo $title ?> - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -121,118 +182,97 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Gyms</h1>
+        <h1><?php echo $title ?></h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Gyms</li>
+            <li class="breadcrumb-item"><?php echo $title ?></li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
-
-
-
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
               <div class="card-body">
-                <!-- Table with stripped rows -->
-                <table class="table datatable">
-                  <thead>
-                    <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Image</th>
-                      <th scope="col">Manager Name</th>
-                      <th scope="col">Title</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Phone</th>
-                      <th scope="col">City</th>
-                      <th scope="col">Contract Type</th>
-                      <th scope="col">Duration</th>
-                      <th scope="col">Status</th>
-                      <!-- <th scope="col">Created At</th> -->
-                      <th scope="col">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <?php
-$sql1 = mysqli_query($con, "SELECT * from gyms WHERE status = 'PENDING' ORDER BY id DESC");
+                <h5 class="card-title"></h5>
 
-while ($row1 = mysqli_fetch_array($sql1)) {
+                <!-- Horizontal Form -->
+                <form method="POST" action="./Edit_Advertisement.php?advertisement_id=<?php echo $advertisement_id ?>" enctype="multipart/form-data">
 
-    $gym_id = $row1['id'];
-    $manager_id = $row1['manager_id'];
-    $gym_image = $row1['image'];
-    $gym_name = $row1['title'];
-    $gym_email = $row1['email'];
-    $gym_phone = $row1['phone'];
-    $gym_city = $row1['city'];
-    $status = $row1['status'];
-    $active = $row1['active'];
-    $created_at = $row1['created_at'];
+                <input type="hidden" name="advertisement_id" value="<?php echo $advertisement_id ?>">
 
-    $sql2 = mysqli_query($con, "SELECT * from users WHERE id = '$manager_id'");
-    $row2 = mysqli_fetch_array($sql2);
+                  <div class="row mb-3">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label"
+                      >Venues</label
+                    >
+                    <div class="col-sm-10">
+                    <select name="place_id" class="form-select" id="venue_id" required>
 
-    $manager_name = $row2['name'];
 
-    $sql3 = mysqli_query($con, "SELECT * from gyms_contracts WHERE gym_id = '$gym_id'");
-    $row3 = mysqli_fetch_array($sql3);
+<?php
+$placesSql = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 ORDER BY id DESC");
 
-    $contract_type = $row3['contract_type'];
-    $start_date = $row3['start_date'];
-    $end_date = $row3['end_date'];
+while ($placeRow = mysqli_fetch_array($placesSql)) {
+
+    $place_id_1 = $placeRow['id'];
+    $place_name = $placeRow['name'];
 
     ?>
-                    <tr>
-                      <th scope="row"><?php echo $gym_id ?></th>
-                      <th scope="row"><img src="../Gym_Dashboard/<?php echo $gym_image ?>" alt="" width="150px" height="150px"></th>
-                      <th scope="row"><?php echo $manager_name ?></th>
-                      <td><?php echo $gym_name ?></td>
-                      <td><?php echo $gym_email ?></td>
-                      <td><?php echo $gym_phone ?></td>
-                      <td><?php echo $gym_city ?></td>
-                      <td><?php echo $contract_type ?></td>
-                      <td><?php echo $start_date ?> - <?php echo $end_date ?></td>
-                      <td><?php echo $status ?></td>
-                      <!-- <th scope="row"><?php echo $created_at ?></th> -->
-                      <td>
-
-
-
-    <?php
-if ($status == 'PENDING') {?>
-
-    <a href="./AcceptOrRejectGym.php?gym_id=<?php echo $gym_id ?>&&status=Accepted" class="btn btn-primary">Accept</a>
-    <a href="./AcceptOrRejectGym.php?gym_id=<?php echo $gym_id ?>&&status=Rejected" class="btn btn-danger">Reject</a>
-
-     <?php } else {?>
-
-
-
-
-
-                        <?php if ($active == 1) {?>
-
-<a href="./DeleteOrRestoreGym.php?gym_id=<?php echo $gym_id ?>&&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
-
-<?php } else {?>
-
-  <a href="./DeleteOrRestoreGym.php?gym_id=<?php echo $gym_id ?>&&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
-
-<?php }?>
-     <?php }
-    ?>
-
-                      </td>
-                    </tr>
+<option value="<?php echo $place_id_1 ?>" <?php echo ($place_id == $place_id_1) ? 'selected' : ''; ?>><?php echo $place_name ?></option>
 <?php
 }?>
-                  </tbody>
-                </table>
-                <!-- End Table with stripped rows -->
+</select>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label"
+                      >Title</label
+                    >
+                    <div class="col-sm-10">
+                      <input type="text" name="title" value="<?php echo $title ?>" class="form-control" id="inputText" required/>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label"
+                      >Price</label
+                    >
+                    <div class="col-sm-10">
+                      <input type="number" name="price" value="<?php echo $price ?>" step="0.01" class="form-control" id="inputText" required/>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label"
+                      >Description</label
+                    >
+                    <div class="col-sm-10">
+                      <textarea name="description" class="form-control" id="" value="<?php echo $description ?>"><?php echo $description ?></textarea>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label"
+                      >Image</label
+                    >
+                    <div class="col-sm-10">
+                      <input type="file" name="file" class="form-control" id="inputText"/>
+                    </div>
+                  </div>
+
+                  <div class="text-end">
+                    <button type="submit" name="Submit" class="btn btn-primary">
+                      Submit
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                      Reset
+                    </button>
+                  </div>
+                </form>
+                <!-- End Horizontal Form -->
               </div>
             </div>
           </div>

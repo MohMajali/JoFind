@@ -19,26 +19,26 @@ if (!$A_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
+
+
     if (isset($_POST['Submit'])) {
 
-        $category_name = $_POST['name'];
-        $image = $_FILES["file"]["name"];
-        $image = 'Categories_Images/' . $image;
+        $place_id = $_POST['place_id'];
+        $price = $_POST['price'];
+        $image = 'Sliders_images/' . $image;
 
-        $stmt = $con->prepare("INSERT INTO categories (image, name) VALUES (?, ?) ");
+        $stmt = $con->prepare("INSERT INTO tops (place_id, price) VALUES (?, ?) ");
 
-        $stmt->bind_param("ss", $image, $category_name);
+        $stmt->bind_param("id", $place_id, $price);
 
         if ($stmt->execute()) {
 
-            move_uploaded_file($_FILES["file"]["tmp_name"], "./Categories_Images/" . $_FILES["file"]["name"]);
-
             echo "<script language='JavaScript'>
-              alert ('A New Category Has Been Added Successfully !');
+              alert ('A New Top Venue Has Been Added Successfully !');
          </script>";
 
             echo "<script language='JavaScript'>
-        document.location='./Categories.php';
+        document.location='./Tops_Venues.php';
            </script>";
 
         }
@@ -54,7 +54,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Categories - JoFind</title>
+    <title>Top Venues - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -146,24 +146,26 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Categories</h1>
+        <h1>Top Venues</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Categories</li>
+            <li class="breadcrumb-item">Top Venues</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
-        <div class="mb-3">
+
+
+      <div class="mb-3">
           <button
             type="button"
             class="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#verticalycentered"
           >
-            Add New Category
+            Add New Venue
           </button>
         </div>
 
@@ -171,7 +173,7 @@ if (!$A_ID) {
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Category Information</h5>
+                <h5 class="modal-title">Venue</h5>
                 <button
                   type="button"
                   class="btn-close"
@@ -181,23 +183,40 @@ if (!$A_ID) {
               </div>
               <div class="modal-body">
 
-                <form method="POST" action="./Categories.php" enctype="multipart/form-data">
+                <form method="POST" action="./Tops_Venues.php" enctype="multipart/form-data">
 
-                  <div class="row mb-3">
-                    <label for="inputText" class="col-sm-4 col-form-label"
-                      >Name</label
+                <div class="row mb-3">
+                    <label for="venue_id" class="col-sm-4 col-form-label"
+                      >Venue</label
                     >
                     <div class="col-sm-8">
-                      <input type="text" name="name" class="form-control" />
+                    <select name="place_id" class="form-select" id="venue_id" required>
+
+                    <option value="" default selected>Select Venue</option>
+
+                    <?php
+$placesSql = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 ORDER BY id DESC");
+
+while ($placeRow = mysqli_fetch_array($placesSql)) {
+
+    $place_id = $placeRow['id'];
+    $place_name = $placeRow['name'];
+
+    ?>
+                    <option value="<?php echo $place_id ?>"><?php echo $place_id ?></option>
+<?php
+}?>
+                    </select>
                     </div>
                   </div>
 
+
                   <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label"
-                      >Image</label
+                      >Price</label
                     >
                     <div class="col-sm-8">
-                      <input type="file" name="file" class="form-control" />
+                      <input type="number" step="0.01" name="price" class="form-control" />
                     </div>
                   </div>
 
@@ -226,6 +245,8 @@ if (!$A_ID) {
           </div>
         </div>
 
+
+
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
@@ -235,62 +256,50 @@ if (!$A_ID) {
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
-                      <th scope="col">Image</th>
-                      <th scope="col">Category Name</th>
+                      <th scope="col">Venue Name</th>
+                      <th scope="col">Price</th>
                       <th scope="col">Created At</th>
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
+
+
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from categories ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $category_id = $row1['id'];
-    $category_name = $row1['name'];
-    $category_image = $row1['image'];
+    $top_id = $row1['id'];
+    $place_id = $row1['place_id'];
+    $price = $row1['price'];
     $active = $row1['active'];
     $created_at = $row1['created_at'];
 
+    $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
+    $row2 = mysqli_fetch_array($sql2);
+
+    $place_name = $row2['name'];
+
     ?>
                     <tr>
-                      <th scope="row"><?php echo $category_id ?></th>
-                      <th scope="row"><img src="<?php echo $category_image ?>" alt="" width="150px" height="150px"></th>
-                      <td><?php echo $category_name ?></td>
+                      <th scope="row"><?php echo $top_id ?></th>
+                      <th scope="row"><?php echo $place_name ?></th>
+                      <th scope="row"><?php echo $price ?> JODs</th>
                       <th scope="row"><?php echo $created_at ?></th>
-                      <td>
+                      <th scope="row">
 
-              <div class="d-flex flex-column">
-              <div class="d-flex mb-2">
-                        <a href="./Edit-Category.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Edit</a
-                        >
 
-                        <?php if ($active == 1) {?>
+                      <?php if ($active == 1) {?>
 
-<a href="./DeleteOrRestoreCategory.php?category_id=<?php echo $category_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
+<a href="./DeleteOrRestoreTop.php?top_id=<?php echo $top_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
 
 <?php } else {?>
 
-  <a href="./DeleteOrRestoreCategory.php?category_id=<?php echo $category_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
+  <a href="./DeleteOrRestoreTop.php?top_id=<?php echo $top_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
 
 <?php }?>
-                        </div>
-
-                        <div class="d-flex">
-
-                        <a href="./Places.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Venues</a
-                        >
-
-                        <a href="./Sub_Categories.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Sub Categories</a
-                        >
-                        </div>
-              </div>
-
-                      </td>
+                      </th>
                     </tr>
 <?php
 }?>
@@ -322,7 +331,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(5) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(4) .nav-link').classList.remove('collapsed')
    });
 </script>
 

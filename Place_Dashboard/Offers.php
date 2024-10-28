@@ -192,7 +192,7 @@ if (!$P_ID) {
                       >Offer</label
                     >
                     <div class="col-sm-8">
-                      <input type="text" name="offer" class="form-control" />
+                      <input type="text" name="offer" class="form-control" required/>
                     </div>
                   </div>
 
@@ -201,7 +201,7 @@ if (!$P_ID) {
                       >Discount</label
                     >
                     <div class="col-sm-8">
-                    <input type="number" name="discount" class="form-control" step="0.01" />
+                    <input type="number" name="discount" class="form-control" step="0.01" required/>
                     </div>
                   </div>
 
@@ -210,7 +210,7 @@ if (!$P_ID) {
                       >Start Date</label
                     >
                     <div class="col-sm-8">
-                      <input type="date" name="start_date" class="form-control" min="<?php echo date('Y-m-d') ?>"/>
+                      <input type="date" name="start_date" class="form-control" min="<?php echo date('Y-m-d') ?>" required/>
                     </div>
                   </div>
 
@@ -219,7 +219,7 @@ if (!$P_ID) {
                       >End Date</label
                     >
                     <div class="col-sm-8">
-                      <input type="date" name="end_date" class="form-control" min="<?php echo date('Y-m-d') ?>"/>
+                      <input type="date" name="end_date" class="form-control" min="<?php echo date('Y-m-d') ?>" required/>
                     </div>
                   </div>
 

@@ -33,7 +33,7 @@ if (!$P_ID) {
         $offer_id = $_POST['offer_id'];
         $offer = $_POST['offer'];
         $discount = $_POST['discount'];
-        $start_date =date('Y-m-d', strtotime($_POST['start_date']));
+        $start_date = date('Y-m-d', strtotime($_POST['start_date']));
         $end_date = date('Y-m-d', strtotime($_POST['end_date']));
 
         $stmt = $con->prepare("UPDATE offers SET offer = ?, discount = ?, start_date = ?, end_date = ? WHERE id = ? ");

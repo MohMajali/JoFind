@@ -143,8 +143,7 @@ if (!$A_ID) {
                       <th scope="col">Customer Name</th>
                       <th scope="col">Customer Email</th>
                       <th scope="col">Venue Name</th>
-                      <th scope="col">Start Date</th>
-                      <th scope="col">End Date</th>
+                      <th scope="col">Date Time</th>
                       <th scope="col">Offer</th>
                       <th scope="col">Price</th>
                       <th scope="col">Total Price</th>
@@ -165,10 +164,9 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     $customer_id = $row1['customer_id'];
     $status_id = $row1['status_id'];
     $offer_id = $row1['offer_id'];
-    $start_date = $row1['start_date'];
-    $end_date = $row1['end_date'];
+    $date_time = $row1['date_time'];
     $price = $row1['price'];
-    $total_price = $row1['id'];
+    $total_price = $row1['total_price'];
     $created_at = $row1['created_at'];
 
     $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
@@ -200,8 +198,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                       <td scope="row"><?php echo $customer_name ?></td>
                       <td scope="row"><?php echo $customer_email ?></td>
                       <td scope="row"><?php echo $venue_name ?></td>
-                      <td scope="row"><?php echo $start_date ?></td>
-                      <th scope="row"><?php echo $end_date ?></th>
+                      <td scope="row"><?php echo $date_time ?></td>
                       <th scope="row"><?php echo $offer ?></th>
                       <th scope="row"><?php echo $price ?></th>
                       <th scope="row"><?php echo $total_price ?></th>
@@ -238,7 +235,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(6) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(9) .nav-link').classList.remove('collapsed')
    });
 </script>
 

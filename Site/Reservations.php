@@ -4,8 +4,6 @@ session_start();
 include "../Connect.php";
 
 $C_ID = $_SESSION['C_Log'];
-$venue_id = $_GET['venue_id'];
-$option_id = $_GET['option_id'];
 
 if ($C_ID) {
 
@@ -15,68 +13,9 @@ if ($C_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
-    if (isset($_POST['Submit'])) {
-
-        $place_id = $_POST['place_id'];
-        $customer_id = $_POST['customer_id'];
-        $option_id = $_POST['option_id'];
-
-        $optionSql = mysqli_query($con, "SELECT * FROM booking_options WHERE id = '$option_id'");
-        $optionRaw = mysqli_fetch_array($optionSql);
-
-        $date_time = date('Y-m-d H:i:s', strtotime($optionRaw['date_time']));
-        $price = $optionRaw['price'];
-
-        $offerWinnerSql = mysqli_query($con, "SELECT * FROM offer_winners WHERE customer_id = '$customer_id' AND is_used = 0");
-        $offerWinnerRaw = mysqli_fetch_array($offerWinnerSql);
-
-        $offer_winner_id = $offerWinnerRaw['id'];
-        $offer_id = $offerWinnerRaw['offer_id'];
-
-        if ($offer_id) {
-
-            $offerSql = mysqli_query($con, "SELECT * FROM offers WHERE id = '$offer_id'");
-            $offerRaw = mysqli_fetch_array($offerSql);
-
-            $discount = $offerRaw['discount'];
-
-            $total_price = $price * $discount;
-
-        } else {
-            $total_price = $price;
-        }
-
-        $stmt = $con->prepare("INSERT INTO reservations (place_id, customer_id, offer_id, date_time, price, total_price) VALUES (?, ?, ?, ?, ?, ?)");
-
-        $stmt->bind_param("iiisdd", $place_id, $customer_id, $offer_id, $date_time, $price, $total_price);
-
-        if ($stmt->execute()) {
-
-            $is_used = true;
-
-            $stmt = $con->prepare("UPDATE offer_winners SET is_used = ? WHERE id = ?");
-
-            $stmt->bind_param("ii", $is_used, $offer_winner_id);
-
-            if ($stmt->execute()) {
-
-                echo "<script language='JavaScript'>
-                  alert ('Reservation Has Been Added Booked !');
-             </script>";
-
-                echo "<script language='JavaScript'>
-            document.location='./Reservations.php';
-               </script>";
-
-            }
-        }
-    }
-
 }
 
 ?>
-
-
 
 
 <!DOCTYPE html>
@@ -105,6 +44,23 @@ if ($C_ID) {
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+
+    <style>
+
+.star {
+  color: #ccc; /* Default color for stars */
+}
+
+.star:hover ~ .star {
+  color: #fad00e; /* Change color of stars when hovered */
+}
+
+.star:hover {
+  color: #fad00e; /* Change color of hovered star */
+}
+
+
+    </style>
 </head>
 
 <body>
@@ -142,7 +98,7 @@ if ($C_ID) {
         </div>
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
-                <a href="" class="text-decoration-none">
+                <a href="./index.php" class="text-decoration-none">
                 <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
                 </a>
             </div>
@@ -193,15 +149,15 @@ if ($C_ID) {
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
                         <a href="index.php" class="nav-item nav-link ">Home</a>
-                            <a href="Venues.php" class="nav-item nav-link active">Venues</a>
+                            <a href="Venues.php" class="nav-item nav-link ">Venues</a>
                             <a href="contact.php" class="nav-item nav-link ">Contact</a>
                             <?php
 
 if ($C_ID) {?>
                             <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Account</a>
+                                <a href="#" class="nav-link dropdown-toggle active" data-toggle="dropdown">Account</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                <a href="Reservations.php" class="dropdown-item">Reservations</a>
+                                    <a href="Reservations.php" class="dropdown-item">Reservations</a>
                                     <a href="Profile.php" class="dropdown-item">Profile</a>
                                     <a href="Logout.php" class="dropdown-item">Logout</a>
                                 </div>
@@ -233,67 +189,108 @@ if (!$C_ID) {?>
     <!-- Page Header Start -->
     <div class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3">Checkout</h1>
+            <h1 class="font-weight-semi-bold text-uppercase mb-3">Reservations</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
+                <p class="m-0"><a href="./index.php">Home</a></p>
                 <p class="m-0 px-2">-</p>
-                <p class="m-0">Checkout</p>
+                <p class="m-0">Reservations</p>
             </div>
         </div>
     </div>
     <!-- Page Header End -->
 
 
-    <!-- Checkout Start -->
+    <!-- Cart Start -->
     <div class="container-fluid pt-5">
         <div class="row px-xl-5">
-            <div class="col-lg-12">
-                <div class="mb-4">
-                    <h4 class="font-weight-semi-bold mb-4">Checkout</h4>
-                    <form method="POST" accept="checkout.php?venue_id=<?php echo $venue_id ?>&option_id=<?php echo $option_id ?>" class="row">
+            <div class="col-lg-12 table-responsive mb-5">
+                <table class="table table-bordered text-center mb-0">
+                    <thead class="bg-secondary text-dark">
+                        <tr>
+                            <th>Venue Name</th>
+                            <th>Date Time</th>
+                            <th>Offer</th>
+                            <th>Price</th>
+                            <th>Total Price</th>
+                            <th>Status</th>
+                            <th>Rate</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle">
+                    <?php
+$sql1 = mysqli_query($con, "SELECT * from reservations WHERE customer_id = '$C_ID' ORDER BY id DESC");
 
-                        <input type="hidden" name="place_id" value="<?php echo $venue_id ?>">
-                        <input type="hidden" name="customer_id" value="<?php echo $C_ID ?>">
-                        <input type="hidden" name="option_id" value="<?php echo $option_id ?>">
+while ($row1 = mysqli_fetch_array($sql1)) {
+
+    $reservation_id = $row1['id'];
+    $place_id = $row1['place_id'];
+    $customer_id = $row1['customer_id'];
+    $status_id = $row1['status_id'];
+    $offer_id = $row1['offer_id'];
+    $date_time = $row1['date_time'];
+    $price = $row1['price'];
+    $total_price = $row1['total_price'];
+    $created_at = $row1['created_at'];
+
+    $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
+    $row2 = mysqli_fetch_array($sql2);
+
+    $venue_name = $row2['name'];
+
+    $sql4 = mysqli_query($con, "SELECT * from statuses WHERE id = '$status_id'");
+    $row4 = mysqli_fetch_array($sql4);
+
+    $status = $row4['name'];
+
+    $sql5 = mysqli_query($con, "SELECT * from offers WHERE id = '$offer_id'");
+    $row5 = mysqli_fetch_array($sql5);
+
+    $offer = $row5['offer'];
+
+    ?>
 
 
+                        <tr>
+                            <td class="align-middle"> <?php echo $venue_name ?></td>
+                            <td class="align-middle"><?php echo $date_time ?></td>
+                            <td class="align-middle"><?php echo ($offer ?? '-') ?></td>
+                            <td class="align-middle"><?php echo $price ?> JODs</td>
+                            <td class="align-middle"><?php echo $total_price ?> JODs</td>
+                            <td class="align-middle"><?php echo $status ?></td>
+                            <td class="align-middle" dir="rtl">
+
+<a href="Rate_Venue.php?Rate=5&place_id=<?php echo $place_id; ?>&C_ID=<?php echo $C_ID; ?>" role="button" class="star"><i title="5" class="fa fa-star"></i></a>
+
+<a href="Rate_Venue.php?Rate=4&place_id=<?php echo $place_id; ?>&C_ID=<?php echo $C_ID; ?>" role="button" class="star"><i title="4" class="fa fa-star"></i></a>
+
+<a href="Rate_Venue.php?Rate=3&place_id=<?php echo $place_id; ?>&C_ID=<?php echo $C_ID; ?>" role="button" class="star"><i title="3" class="fa fa-star"></i></a>
+
+<a href="Rate_Venue.php?Rate=2&place_id=<?php echo $place_id; ?>&C_ID=<?php echo $C_ID; ?>" role="button" class="star"><i title="2" class="fa fa-star"></i></a>
+
+<a href="Rate_Venue.php?Rate=1&place_id=<?php echo $place_id; ?>&C_ID=<?php echo $C_ID; ?>" role="button" class="star"><i title="1" class="fa fa-star"></i></a>
+
+                            </td>
+                            <td class="align-middle"><a href="./Feedback.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm btn-primary">
+
+                            Add Feedback
+                            </a></td>
+                        </tr>
 
 
-                        <div class="col-md-12 form-group">
-                            <label>Name On Card</label>
-                            <input class="form-control" type="text" placeholder="Jhon-doe" required>
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <label>Card Number</label>
-                            <input class="form-control" type="text" placeholder="XXXX-XXXX-XXXX-XXXX" required>
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <label>CVV</label>
-                            <input class="form-control" type="text" placeholder="XXX" required>
-                        </div>
-                        <div class="col-md-12 form-group">
-                            <label>Expiry Date</label>
-                            <input class="form-control" type="month" placeholder="MM/YYYY" required>
-                        </div>
-
-
-                        <div class="card-footer border-secondary bg-transparent">
-                        <button type="submit" name="Submit" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Book Now</button>
-                    </div>
-                    </form>
-                </div>
-
+                        <?php
+}?>
+                    </tbody>
+                </table>
             </div>
-
-
 
         </div>
     </div>
-    <!-- Checkout End -->
+    <!-- Cart End -->
 
 
     <!-- Footer Start -->
-        <?php require './Footer.php'?>
+    <?php require './Footer.php'?>
     <!-- Footer End -->
 
 

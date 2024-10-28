@@ -9,6 +9,24 @@
     </li>
 
     <li class="nav-item">
+      <a class="nav-link collapsed" href="./Sliders.php">
+        <i class="bi bi-sliders"></i><span>Sliders</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="./Advertisements.php">
+        <i class="bi bi-badge-ad"></i><span>Advertisements</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="./Tops_Venues.php">
+        <i class="bi bi-check-circle"></i><span>Tops Venues</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
       <a class="nav-link collapsed" href="./Categories.php">
         <i class="bi bi-layout-text-sidebar-reverse"></i><span>Categories</span>
       </a>
@@ -39,11 +57,7 @@
       </a>
     </li>
 
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="./Sliders.php">
-        <i class="bi bi-calendar3"></i><span>Sliders</span>
-      </a>
-    </li>
+
 
 
 

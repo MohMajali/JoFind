@@ -60,6 +60,12 @@ if ($C_ID) {
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        .selected-item {
+            border-color: red !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -98,7 +104,7 @@ if ($C_ID) {
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
                 <a href="" class="text-decoration-none">
-                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
+                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
@@ -194,6 +200,7 @@ if ($C_ID) {?>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Account</a>
                                 <div class="dropdown-menu rounded-0 m-0">
+                                <a href="Reservations.php" class="dropdown-item">Reservations</a>
                                     <a href="Profile.php" class="dropdown-item">Profile</a>
                                     <a href="Logout.php" class="dropdown-item">Logout</a>
                                 </div>
@@ -273,10 +280,78 @@ if (!$C_ID) {?>
                 </div>
                 <p class="mb-4"><?php echo $venue_description ?></p>
 
+                <div class="container-fluid py-5">
+        <div class="text-center mb-4">
+            <h2 class="section-title px-5"><span class="px-2">Play A Game To Get Offer</span></h2>
+        </div>
 
+        <div class="text-center mb-4">
+        <a href="./Prize_wheel.php?venue_id=<?php echo $venue_id ?>" class="btn btn-primary">Play Game</a>
+        </div>
+
+    </div>
 
             </div>
         </div>
+
+
+
+
+
+
+
+        <div class="container-fluid py-5">
+        <div class="text-center mb-4">
+            <h2 class="section-title px-5"><span class="px-2">Booking Options</span></h2>
+        </div>
+        <div class="row px-xl-5">
+            <div class="col">
+                <div class="">
+
+                <?php
+$sql1 = mysqli_query($con, "SELECT * from booking_options WHERE active = 1 AND place_id = '$venue_id' ORDER BY id DESC");
+
+$counter = 0;
+
+while ($row1 = mysqli_fetch_array($sql1)) {
+
+    $option_id = $row1['id'];
+    $title = $row1['title'];
+    $date_time = $row1['date_time'];
+    $quantity = $row1['quantity'];
+    $has_soft_drinks = $row1['has_soft_drinks'];
+    $has_food = $row1['has_food'];
+    $price = $row1['price'];
+
+    $counter += 1;
+    ?>
+                    <div onclick="onDivClick(event)" id="option-<?php echo $option_id ?>-<?php echo $venue_id ?>" class="col-lg-3 col-md-6 col-sm-12 pb-1 border p-4">
+                        <h4 class="text-center">Option <?php echo $counter ?> : <?php echo $title ?></h4>
+                        <h5 class="text-center">Date&Time : <?php echo $date_time ?></h5>
+                        <h5 class="text-center">People : <?php echo $quantity ?></h5>
+                        <h6 class="text-center">Soft Drink : <?php echo $has_soft_drinks == 1 ? 'Served' : 'Not Served' ?></h6>
+                        <h6 class="text-center">Food : <?php echo $has_food == 1 ? 'Served' : 'Not Served' ?></h6>
+                        <h6 class="text-center"><?php echo $price ?>JODs</h6>
+                    </div>
+                   <?php
+}?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <?php if ($C_ID) {?>
+    <div class="container-fluid py-5 d-none" id="book_now">
+        <div class="text-center mb-4">
+            <!-- <h2 class="section-title px-5"><span class="px-2">Booking Options</span></h2> -->
+
+            <button onclick="navigate(event)" class="btn btn-primary px-5">Book Now!</a>
+        </div>
+    </div>
+    <?php }?>
+
         <div class="row px-xl-5">
             <div class="col">
                 <div class="nav nav-tabs justify-content-center border-secondary mb-4">
@@ -349,7 +424,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
                             <div class="col-md-6">
                                 <div class="media mb-4">
-                                    <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMg_4QMb_SkaPs0XXddwSldTXcgQCi2tdk0w&s" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
                                     <div class="media-body">
                                         <h6><?php echo $customer_name ?><small> - <i><?php echo $created_at ?></i></small></h6>
                                         <!-- <div class="text-primary mb-2">
@@ -383,81 +458,49 @@ while ($row1 = mysqli_fetch_array($sql1)) {
         <div class="row px-xl-5">
             <div class="col">
                 <div class="owl-carousel related-carousel">
+
+
+                <?php
+$sql1 = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
+
+while ($row1 = mysqli_fetch_array($sql1)) {
+
+    $top_id = $row1['id'];
+    $place_id = $row1['place_id'];
+
+    $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id' AND active = 1 AND status_id = 2");
+    $row2 = mysqli_fetch_array($sql2);
+
+    $place_name = $row2['name'];
+    $place_image = $row2['image'];
+    $category_id = $row2['category_id'];
+
+    $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+    $row3 = mysqli_fetch_array($sql3);
+
+    $category_name = $row3['name'];
+
+    ?>
+
                     <div class="card product-item border-0">
                         <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="img/product-1.jpg" alt="">
+                            <img class="img-fluid w-100" src="../Place_Dashboard/<?php echo $place_image ?>" alt="">
                         </div>
                         <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
+                            <h6 class="text-truncate mb-3"><?php echo $place_name ?></h6>
                             <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                                <h6><?php echo $category_name ?></h6><h6 class="text-muted ml-2"></h6>
                             </div>
                         </div>
                         <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                            <a href="./Venue.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
                         </div>
                     </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="img/product-2.jpg" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="img/product-3.jpg" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="img/product-4.jpg" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="img/product-5.jpg" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
+
+
+                    <?php
+}?>
+
                 </div>
             </div>
         </div>
@@ -489,6 +532,28 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
 
     <script>
+
+        let optionId;
+        let placeId;
+
+        const onDivClick = (e) => {
+
+        document.querySelectorAll('[id^="option-"]').forEach(div => div.classList.remove('selected-item'));
+
+        optionId = e.currentTarget.id.split('-')[1]
+        placeId = e.currentTarget.id.split('-')[2]
+        e.currentTarget.classList.add('selected-item')
+
+        document.getElementById('book_now').classList.remove('d-none')
+        }
+
+        const navigate = (e) => {
+            document.location = `./checkout.php?venue_id=${placeId}&option_id=${optionId}`
+        }
+
+
+
+
 $(document).ready(function() {
     $('.category-link').on('click', function(e) {
         e.preventDefault();
@@ -520,6 +585,8 @@ $(document).ready(function() {
             }
         });
     });
+
+
 });
 </script>
 </body>
