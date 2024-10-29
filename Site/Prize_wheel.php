@@ -15,17 +15,20 @@ if ($C_ID) {
 
 ?>
 
+
+
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
+<meta charset="utf-8">
     <title>JOFind</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
     <link href="../assets/img/Logo.png" rel="icon" />
     <link href="../assets/img/Logo.png" rel="apple-touch-icon" />
-
     <style>
         body{
             background-color: #333;
@@ -84,7 +87,7 @@ if ($C_ID) {
 <body >
     <div class="header">
         <h1>WINNER</h1>
-        <p id="winner">NONE</p>
+        <!-- <p id="winner">NONE</p> -->
     </div>
     <div class="wheel">
         <canvas class="" id="canvas" width="500" height="500"></canvas>
@@ -130,7 +133,13 @@ const centerX = width / 2;
 const centerY = height / 2;
 const radius = width / 2;
 
+let pause = false;
+
+
 const venue_id = <?php echo json_encode($venue_id); ?>;
+const customer_id = <?php echo json_encode($C_ID); ?>;
+
+
 let items = [];
 
 // Fetch items and initialize wheel after items are loaded
@@ -151,6 +160,7 @@ let currentDeg = 0;
 let colors = [];
 let itemDegs = {};
 let step = 360 / items.length; // Angle step for each segment
+let index2 = 0;
 
 function setupWheel() {
     step = 360 / items.length;
@@ -210,15 +220,39 @@ function draw() {
 
         // Check winner
         if (startDeg % 360 < 360 && startDeg % 360 > 270 && endDeg % 360 > 0 && endDeg % 360 < 90) {
-            
-            document.getElementById("winner").innerHTML = items[i].offer;
+
+
+            // document.getElementById("winner").innerHTML = items[i].offer;
+            if(pause) {
+
+                $.ajax({
+                    url: './AddWinner.php',
+                    type: 'POST',
+                    data: { customer_id, offer_id : items[i].id },
+                    success: function(response) {
+
+                        res = JSON.parse(response);
+
+                        if(!res['error']) {
+
+                            alert(`You Won ${items[i].offer}`)
+
+                            document.location= `./Venue.php?venue_id=${venue_id}`;
+                        }
+                    },
+                    error: function() {
+                        alert('Error Adding Offer.');
+                    }
+});
+
+            }
         }
+
     }
 }
 
 let speed = 0;
 let maxRotation = randomRange(360 * 3, 360 * 6);
-let pause = false;
 
 function animate() {
     if (pause) return;
@@ -228,7 +262,8 @@ function animate() {
         speed = 0;
         pause = true;
 
-        // determineWinner()
+        console.log('fffff');
+
     }
     currentDeg += speed;
     draw();
@@ -242,26 +277,6 @@ function spin() {
     maxRotation = randomRange(360 * 3, 360 * 6);
     pause = false;
     window.requestAnimationFrame(animate);
-}
-
-function determineWinner() {
-    // Calculate the final angle within 0 to 360 degrees
-    const finalAngle = currentDeg % 360;
-
-    // Find the segment that contains the finalAngle
-    for (let i = 0; i < items.length; i++) {
-        const startDeg = itemDegs[items[i]].startDeg % 360;
-        const endDeg = itemDegs[items[i]].endDeg % 360;
-
-        // Handle wraparound cases where segments cross the 0-degree line
-        if ((startDeg < endDeg && finalAngle >= startDeg && finalAngle < endDeg) ||
-            (startDeg > endDeg && (finalAngle >= startDeg || finalAngle < endDeg))) {
-            // Display the winner
-            document.getElementById("winner").innerHTML = `Winner: ${items[i].offer}`;
-            console.log("Winner:", items[i].offer);
-            break;
-        }
-    }
 }
 
 
