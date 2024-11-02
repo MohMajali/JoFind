@@ -8,7 +8,7 @@ $P_ID = $_SESSION['P_Log'];
 if (!$P_ID) {
 
     echo '<script language="JavaScript">
-     document.location="../Login.php";
+     document.location="../Place_Login.php";
     </script>';
 
 } else {
@@ -148,6 +148,7 @@ if (!$P_ID) {
                       <th scope="col">Total Price</th>
                       <th scope="col">Status</th>
                       <th scope="col">Created At</th>
+                      <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -167,23 +168,24 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     $total_price = $row1['id'];
     $created_at = $row1['created_at'];
 
-    
     $sql3 = mysqli_query($con, "SELECT * from users WHERE id = '$customer_id'");
     $row3 = mysqli_fetch_array($sql3);
 
     $customer_name = $row3['name'];
     $customer_email = $row3['email'];
 
-    
     $sql4 = mysqli_query($con, "SELECT * from statuses WHERE id = '$status_id'");
     $row4 = mysqli_fetch_array($sql4);
 
     $status = $row4['name'];
-    
-    $sql5 = mysqli_query($con, "SELECT * from offers WHERE id = '$offer_id'");
-    $row5 = mysqli_fetch_array($sql5);
 
-    $offer = $row5['offer'];
+    if ($offer_id) {
+
+        $sql5 = mysqli_query($con, "SELECT * from offers WHERE id = '$offer_id'");
+        $row5 = mysqli_fetch_array($sql5);
+
+        $offer = $row5['offer'];
+    }
 
     ?>
                     <tr>
@@ -196,6 +198,15 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                       <th scope="row"><?php echo $total_price ?></th>
                       <th scope="row"><?php echo $status ?></th>
                       <th scope="row"><?php echo $created_at ?></th>
+                      <th scope="row">
+
+                      <?php if ($status_id == 1) {?>
+
+                        <a href="./AcceptOrRejectReservation.php?reservation_id=<?php echo $reservation_id ?>&status_id=2" class="btn btn-success">Accept</a>
+                        <a href="./AcceptOrRejectReservation.php?reservation_id=<?php echo $reservation_id ?>&status_id=3" class="btn btn-danger">Reject</a>
+
+                      <?php }?>
+                      </th>
                     </tr>
 <?php
 }?>

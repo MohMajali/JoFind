@@ -18,7 +18,6 @@ if ($C_ID) {
 ?>
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -104,7 +103,7 @@ if ($C_ID) {
 if ($C_ID) {?>
 
 <div class="col-lg-3 col-6 text-right">
-        
+
                 <a href="" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
                     <span class="badge">0</span>
@@ -129,8 +128,6 @@ if ($C_ID) {?>
                 </a>
                 <nav class="collapse show navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0" id="navbar-vertical">
                     <div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
-                        <div class="nav-item dropdown">
-
                         <?php
 $sql1 = mysqli_query($con, "SELECT * from categories WHERE active = 1 ORDER BY id DESC");
 
@@ -141,13 +138,15 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     $category_image = $row1['image'];
 
     ?>
+                        <div class="nav-item dropdown" id="<?php echo $category_id ?>">
+
 
                             <a href="Venues.php?category_id=<?php echo $category_id ?>" class="nav-link category-link"  data-toggle="dropdown" data-category-id="<?php echo $category_id ?>"><?php echo $category_name ?> <i class="fa fa-angle-down float-right mt-1"></i></a>
-                            <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0"></div>
-                            <?php
-}?>
+                            <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0" id="category-<?php echo $category_id ?>"></div>
 
                         </div>
+                            <?php
+}?>
                     </div>
                 </nav>
             </div>
@@ -283,11 +282,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function showPosition(position) {
+
         let userLatitude = position.coords.latitude;
         let userLongitude = position.coords.longitude;
-
-
-        console.log(userLatitude, userLongitude);
 
         $.ajax({
             url: 'Get_NearBy_Venues.php',
@@ -378,9 +375,12 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                             <h6><?php echo $category_name ?></h6>
                         </div>
                     </div>
-                    <div class="card-footer d-flex justify-content-between bg-light border">
-                        <a href="Venue.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                    </div>
+
+                    <?php if ($C_ID) {?>
+                        <div class="card-footer d-flex justify-content-between bg-light border">
+                            <a href="Venue.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                        </div>
+                        <?php }?>
                 </div>
             </div>
 
@@ -446,41 +446,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
-    <script>
-$(document).ready(function() {
-    $('.category-link').on('click', function(e) {
-        e.preventDefault();
-        let categoryId = $(this).data('category-id');
-        let dropdownMenu = $(this).next('.dropdown-menu');
-
-        $.ajax({
-            url: 'Get_Sub_Categories.php',
-            type: 'POST',
-            data: { category_id: categoryId },
-            success: function(response) {
-                let subcategories = JSON.parse(response);
-                dropdownMenu.empty(); // Clear any existing subcategories
-
-                // Populate the dropdown with fetched subcategories
-                subcategories.forEach(function(subcategory) {
-
-                    dropdownMenu.append(`<a href="venues.php?sub_category_id=${subcategory.id}" class="dropdown-item">${subcategory.name}</a>`);
-                });
-
-                if(subcategories.length > 0) {
-
-                    dropdownMenu.show(); // Show the dropdown menu
-                } else {
-                    dropdownMenu.empty();
-                }
-            },
-            error: function() {
-                alert('Error loading subcategories.');
-            }
-        });
-    });
-});
-</script>
+    <script src="./js/drop-down.js"></script>
 </body>
 
 </html>

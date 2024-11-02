@@ -9,6 +9,8 @@ $Rate = $_GET['Rate'];
 
 $sql5 = mysqli_query($con, "select * from customer_place_ratings where place_id ='$place_id' AND customer_id ='$C_ID'");
 
+mysqli_query($con, "insert into customer_logs (customer_id, place_id) values ('$C_ID','$place_id')");
+
 if (mysqli_num_rows($sql5) > 0) {
 
     echo "<script language='JavaScript'>

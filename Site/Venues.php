@@ -13,6 +13,9 @@ $venues = [];
 
 if (isset($category_id)) {
 
+    $cookies = $con->prepare("INSERT INTO customer_logs (customer_id, category_id) VALUES (?, ?) ");
+    $cookies->bind_param("ii", $C_ID, $category_id);
+
     $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND category_id = '$category_id'");
 
     while ($row1 = mysqli_fetch_array($query)) {
@@ -36,6 +39,9 @@ if (isset($category_id)) {
     }
 
 } else if (isset($sub_category_id)) {
+
+    $cookies = $con->prepare("INSERT INTO customer_logs (customer_id, sub_category_id) VALUES (?, ?) ");
+    $cookies->bind_param("ii", $C_ID, $sub_category_id);
 
     $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND sub_category_id = '$sub_category_id'");
 
@@ -521,9 +527,12 @@ foreach ($venues as $venue) {
                                     <h6><?php echo $venue['category_name'] ?></h6>
                                 </div>
                             </div>
-                            <div class="card-footer d-flex justify-content-between bg-light border">
-                                <a href="Venue.php?venue_id=<?php echo $venue['place_id'] ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            </div>
+
+                            <?php if ($C_ID) {?>
+                                <div class="card-footer d-flex justify-content-between bg-light border">
+                                    <a href="Venue.php?venue_id=<?php echo $venue['place_id'] ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                                </div>
+                                <?php }?>
                         </div>
                     </div>
 
@@ -560,41 +569,7 @@ foreach ($venues as $venue) {
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
-
-    <script>
-$(document).ready(function() {
-    $('.category-link').on('click', function(e) {
-        e.preventDefault();
-        let categoryId = $(this).data('category-id');
-        let dropdownMenu = $(this).next('.dropdown-menu');
-
-        $.ajax({
-            url: 'Get_Sub_Categories.php',
-            type: 'POST',
-            data: { category_id: categoryId },
-            success: function(response) {
-                let subcategories = JSON.parse(response);
-                dropdownMenu.empty();
-
-                subcategories.forEach(function(subcategory) {
-
-                    dropdownMenu.append(`<a href="venues.php?sub_category_id=${subcategory.id}" class="dropdown-item">${subcategory.name}</a>`);
-                });
-
-                if(subcategories.length > 0) {
-
-                    dropdownMenu.show();
-                } else {
-                    dropdownMenu.empty();
-                }
-            },
-            error: function() {
-                alert('Error loading subcategories.');
-            }
-        });
-    });
-});
-</script>
+    <script src="./js/drop-down.js"></script>
 
 </body>
 

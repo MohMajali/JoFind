@@ -23,13 +23,27 @@ if (isset($_POST['send'])) {
     $place_email = $row1['email'];
 
     $sql2 = mysqli_query($con, "select customer_id from reservations where place_id='$P_ID'");
+    // $row2 = mysqli_fetch_array($sql2);
+    
+    // $customer_id = $row2['customer_id'];
+
+    // $sql3 = mysqli_query($con, "select email from users where id='$customer_id'");
 
     $emails = [];
 
     while ($row1 = mysqli_fetch_array($sql2)) {
 
-        $emails[] = $row1['email'];
+        $customer_id = $row1['customer_id'];
+
+        $sql3 = mysqli_query($con, "select email from users where id='$customer_id'");
+  
+        while ($row2 = mysqli_fetch_array($sql3)) {
+
+            $emails[] = $row2['email'];
+        }
+
     }
+    
 
     try {
 

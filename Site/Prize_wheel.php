@@ -11,6 +11,9 @@ if ($C_ID) {
     $sql1 = mysqli_query($con, "select * from users where id='$C_ID'");
     $row1 = mysqli_fetch_array($sql1);
 
+    $cookies = $con->prepare("INSERT INTO customer_logs (customer_id, place_id) VALUES (?, ?) ");
+    $cookies->bind_param("ii", $C_ID, $venue_id);
+
 }
 
 ?>

@@ -4,6 +4,7 @@ session_start();
 include "../Connect.php";
 
 $P_ID = $_SESSION['P_Log'];
+$user_id = $_GET['user_id'];
 
 if (!$P_ID) {
 
@@ -18,6 +19,11 @@ if (!$P_ID) {
 
     $name = $row1['name'];
     $email = $row1['email'];
+
+    $sql2 = mysqli_query($con, "select * from users where id='$user_id'");
+    $row2 = mysqli_fetch_array($sql2);
+
+    $customer_name = $row2['name'];
 }
 
 ?>
@@ -28,7 +34,7 @@ if (!$P_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Customers - JoFind</title>
+    <title><?php echo $customer_name ?> Logs - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -120,11 +126,11 @@ if (!$P_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Customers</h1>
+        <h1><?php echo $customer_name ?> Logs</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Customers</li>
+            <li class="breadcrumb-item"><?php echo $customer_name ?> Logs</li>
           </ol>
         </nav>
       </div>
@@ -132,78 +138,6 @@ if (!$P_ID) {
       <section class="section">
 
       <div class="mb-3">
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#verticalycentered"
-          >
-            Send Email To All
-          </button>
-        </div>
-
-
-        <div class="modal fade" id="verticalycentered" tabindex="-1">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Category Information</h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-
-                <form method="POST" action="./Send_Mail.php" enctype="multipart/form-data">
-
-                <input type="hidden" name="place_id" value="<?php echo $P_ID ?>">
-
-                  <div class="row mb-3">
-                    <label for="inputText" class="col-sm-4 col-form-label"
-                      >Subject</label
-                    >
-                    <div class="col-sm-8">
-                      <input type="text" name="subject" class="form-control" required/>
-                    </div>
-                  </div>
-
-
-                  <div class="row mb-3">
-                    <label for="inputText" class="col-sm-4 col-form-label"
-                      >Body</label
-                    >
-                    <div class="col-sm-8">
-                       <textarea name="body" class="form-control" id="" required></textarea>
-                    </div>
-                  </div>
-
-
-                  <div class="row mb-3">
-                    <div class="text-end">
-                      <button type="submit" name="send" class="btn btn-primary">
-                        Send
-                      </button>
-                    </div>
-                  </div>
-                </form>
-
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
 
         <div class="row">
           <div class="col-lg-12">
@@ -213,35 +147,44 @@ if (!$P_ID) {
                 <table class="table datatable">
                   <thead>
                     <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Customer Name</th>
-                      <th scope="col">Customer Email</th>
-                      <th scope="col">Customer Phone</th>
+                      <th scope="col">Venue Name</th>
+                      <th scope="col">Category Name</th>
+                      <th scope="col">Sub Category Name</th>
                     </tr>
                   </thead>
                   <tbody>
 
 
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from reservations WHERE place_id = '$P_ID' ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT *, COUNT(id) as counting from customer_logs WHERE customer_id = '$customer_id' GROUP BY customer_id");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $customer_id = $row1['customer_id'];
-    
-    $sql3 = mysqli_query($con, "SELECT * from users WHERE id = '$customer_id'");
+    $place_id = $row1['place_id'];
+    $category_id = $row1['category_id'];
+    $sub_category_id = $row1['sub_category_id'];
+    $counting = $row1['counting'];
+
+    $sql3 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
     $row3 = mysqli_fetch_array($sql3);
 
-    $customer_name = $row3['name'];
-    $customer_email = $row3['email'];
-    $customer_phone = $row3['phone'];
+    $place_name = $row3['name'];
+
+    $sql4 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id'");
+    $row4 = mysqli_fetch_array($sql4);
+
+    $category_name = $row4['name'];
+
+    $sql5 = mysqli_query($con, "SELECT * from sub_categories WHERE id = '$category_id'");
+    $row5 = mysqli_fetch_array($sql5);
+
+    $sub_category_name = $row5['name'];
 
     ?>
                     <tr>
-                      <th scope="row"><?php echo $customer_id ?></th>
-                      <td scope="row"><?php echo $customer_name ?></td>
-                      <td scope="row"><?php echo $customer_email ?></td>
-                      <td scope="row"><?php echo $customer_phone ?></td>
+                      <th scope="row"><?php echo $place_name ?></th>
+                      <td scope="row"><?php echo $category_name ?></td>
+                      <td scope="row"><?php echo $sub_category_name ?></td>
                     </tr>
 <?php
 }?>
@@ -273,7 +216,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(7) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(8) .nav-link').classList.remove('collapsed')
    });
 </script>
 

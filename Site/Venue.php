@@ -8,6 +8,9 @@ $venue_id = $_GET['venue_id'];
 
 if ($C_ID) {
 
+    $cookies = $con->prepare("INSERT INTO customer_logs (customer_id, place_id) VALUES (?, ?) ");
+    $cookies->bind_param("ii", $C_ID, $venue_id);
+
     $sql1 = mysqli_query($con, "select * from users where id='$C_ID'");
     $row1 = mysqli_fetch_array($sql1);
 
@@ -492,6 +495,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                                 <h6><?php echo $category_name ?></h6><h6 class="text-muted ml-2"></h6>
                             </div>
                         </div>
+                        
                         <div class="card-footer d-flex justify-content-between bg-light border">
                             <a href="./Venue.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
                         </div>
@@ -530,65 +534,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
-
-    <script>
-
-        let optionId;
-        let placeId;
-
-        const onDivClick = (e) => {
-
-        document.querySelectorAll('[id^="option-"]').forEach(div => div.classList.remove('selected-item'));
-
-        optionId = e.currentTarget.id.split('-')[1]
-        placeId = e.currentTarget.id.split('-')[2]
-        e.currentTarget.classList.add('selected-item')
-
-        document.getElementById('book_now').classList.remove('d-none')
-        }
-
-        const navigate = (e) => {
-            document.location = `./checkout.php?venue_id=${placeId}&option_id=${optionId}`
-        }
-
-
-
-
-$(document).ready(function() {
-    $('.category-link').on('click', function(e) {
-        e.preventDefault();
-        let categoryId = $(this).data('category-id');
-        let dropdownMenu = $(this).next('.dropdown-menu');
-
-        $.ajax({
-            url: 'Get_Sub_Categories.php',
-            type: 'POST',
-            data: { category_id: categoryId },
-            success: function(response) {
-                let subcategories = JSON.parse(response);
-                dropdownMenu.empty();
-
-                subcategories.forEach(function(subcategory) {
-
-                    dropdownMenu.append(`<a href="venues.php?sub_category_id=${subcategory.id}" class="dropdown-item">${subcategory.name}</a>`);
-                });
-
-                if(subcategories.length > 0) {
-
-                    dropdownMenu.show();
-                } else {
-                    dropdownMenu.empty();
-                }
-            },
-            error: function() {
-                alert('Error loading subcategories.');
-            }
-        });
-    });
-
-
-});
-</script>
+    <script src="./js/drop-down.js"></script>
 </body>
 
 </html>

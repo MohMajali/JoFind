@@ -14,6 +14,9 @@ if ($C_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
+    $cookies = $con->prepare("INSERT INTO customer_logs (customer_id, advertisement_id) VALUES (?, ?) ");
+    $cookies->bind_param("ii", $C_ID, $advertisement_id);
+
 }
 
 $sql2 = mysqli_query($con, "select * from advertisements where id='$advertisement_id'");
@@ -276,40 +279,8 @@ if (!$C_ID) {?>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
-    <script>
-$(document).ready(function() {
-    $('.category-link').on('click', function(e) {
-        e.preventDefault();
-        let categoryId = $(this).data('category-id');
-        let dropdownMenu = $(this).next('.dropdown-menu');
 
-        $.ajax({
-            url: 'Get_Sub_Categories.php',
-            type: 'POST',
-            data: { category_id: categoryId },
-            success: function(response) {
-                let subcategories = JSON.parse(response);
-                dropdownMenu.empty();
-
-                subcategories.forEach(function(subcategory) {
-
-                    dropdownMenu.append(`<a href="venues.php?sub_category_id=${subcategory.id}" class="dropdown-item">${subcategory.name}</a>`);
-                });
-
-                if(subcategories.length > 0) {
-
-                    dropdownMenu.show();
-                } else {
-                    dropdownMenu.empty();
-                }
-            },
-            error: function() {
-                alert('Error loading subcategories.');
-            }
-        });
-    });
-});
-</script>
+    <script src="./js/drop-down.js"></script>
 </body>
 
 </html>

@@ -171,6 +171,8 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                       <td scope="row"><?php echo $user_phone ?></td>
                       <th scope="row"><?php echo $created_at ?></th>
                       <td>
+                        
+                        <a href="./Cookies.php?user_id=<?php echo $user_id ?>" class="btn btn-success mb-2">See Logs</a>
 
                         <div class="d-flex flex-column">
                         <?php if ($active == 1) {?>
