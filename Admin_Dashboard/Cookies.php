@@ -150,6 +150,7 @@ if (!$P_ID) {
                       <th scope="col">Venue Name</th>
                       <th scope="col">Category Name</th>
                       <th scope="col">Sub Category Name</th>
+                      <th scope="col">advertisement Name</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -163,6 +164,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     $place_id = $row1['place_id'];
     $category_id = $row1['category_id'];
     $sub_category_id = $row1['sub_category_id'];
+    $advertisement_id = $row1['advertisement_id'];
     $counting = $row1['counting'];
 
     $sql3 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
@@ -180,11 +182,17 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     $sub_category_name = $row5['name'];
 
+    $sql5 = mysqli_query($con, "SELECT * from advertisements WHERE id = '$advertisement_id'");
+    $row5 = mysqli_fetch_array($sql5);
+
+    $adv_name = $row5['name'];
+
     ?>
                     <tr>
                       <th scope="row"><?php echo $place_name ?></th>
                       <td scope="row"><?php echo $category_name ?></td>
                       <td scope="row"><?php echo $sub_category_name ?></td>
+                      <td scope="row"><?php echo $adv_name ?></td>
                     </tr>
 <?php
 }?>

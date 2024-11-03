@@ -203,14 +203,15 @@ if (!$C_ID) {?>
 
                     <?php
 $sql1 = mysqli_query($con, "SELECT * from sliders WHERE active = 1 ORDER BY id DESC");
-
+$counter = 0;
 while ($row1 = mysqli_fetch_array($sql1)) {
 
     $slider_id = $row1['id'];
     $slider_image = $row1['image'];
 
+    $counter++;
     ?>
-                        <div class="carousel-item active" style="height: 410px;" id="<?php echo $slider_id ?>">
+                        <div class="carousel-item <?php echo ($counter == 1 ? 'active' : '')?>" style="height: 410px;" id="<?php echo $slider_id ?>">
                             <img class="img-fluid" src="../Admin_Dashboard/<?php echo $slider_image ?>" alt="Image">
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
 

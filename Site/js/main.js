@@ -38,7 +38,7 @@
         loop: false,
         margin: 29,
         nav: false,
-        autoplay: false,
+        autoplay: true,
         smartSpeed: 1000,
         responsive: {
             0:{

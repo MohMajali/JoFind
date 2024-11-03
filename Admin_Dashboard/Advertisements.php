@@ -208,7 +208,7 @@ while ($placeRow = mysqli_fetch_array($placesSql)) {
     $place_name = $placeRow['name'];
 
     ?>
-                    <option value="<?php echo $place_id ?>"><?php echo $place_id ?></option>
+                    <option value="<?php echo $place_id ?>"><?php echo $place_name ?></option>
 <?php
 }?>
                     </select>
