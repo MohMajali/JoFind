@@ -40,9 +40,18 @@ if (!$P_ID) {
 
             $image = 'Places_Images/' . $image;
 
-            $stmt = $con->prepare("UPDATE places SET name = ?, password = ?, phone = ?, email = ?, image = ? WHERE id = ? ");
+            if ($password) {
 
-            $stmt->bind_param("sssssi", $name, $password, $phone, $email, $image, $place_id);
+                $password = md5($_POST['password']);
+
+                $stmt = $con->prepare("UPDATE places SET name = ?, password = ?, phone = ?, email = ?, image = ? WHERE id = ? ");
+                $stmt->bind_param("sssssi", $name, $password, $phone, $email, $image, $place_id);
+
+            } else {
+
+                $stmt = $con->prepare("UPDATE places SET name = ?, phone = ?, email = ?, image = ? WHERE id = ? ");
+                $stmt->bind_param("ssssi", $name, $phone, $email, $image, $place_id);
+            }
 
             if ($stmt->execute()) {
 
@@ -60,9 +69,18 @@ if (!$P_ID) {
 
         } else {
 
-            $stmt = $con->prepare("UPDATE places SET name = ?, password = ?, phone = ?, email = ? WHERE id = ? ");
+            if ($password) {
 
-            $stmt->bind_param("ssssi", $name, $password, $phone, $email, $place_id);
+                $password = md5($_POST['password']);
+
+                $stmt = $con->prepare("UPDATE places SET name = ?, password = ?, phone = ?, email = ? WHERE id = ? ");
+                $stmt->bind_param("ssssi", $name, $password, $phone, $email, $place_id);
+
+            } else {
+
+                $stmt = $con->prepare("UPDATE places SET name = ?, phone = ?, email = ? WHERE id = ? ");
+                $stmt->bind_param("sssi", $name, $phone, $email, $place_id);
+            }
 
             if ($stmt->execute()) {
 

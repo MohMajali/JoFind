@@ -11,7 +11,33 @@ $sub_category_id = $_GET['sub_category_id'];
 
 $venues = [];
 
-if (isset($category_id)) {
+if (isset($_POST['Submit'])) {
+
+    $venue = '%' . $_POST['venue'] . '%';
+
+    $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND name LIKE '$venue'");
+
+    while ($row1 = mysqli_fetch_array($query)) {
+
+        $place_id = $row1['id'];
+        $place_name = $row1['name'];
+        $place_image = $row1['image'];
+
+        $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+        $row3 = mysqli_fetch_array($sql3);
+
+        $category_name = $row3['name'];
+
+        $venues[] = [
+            "place_id" => $place_id,
+            "place_name" => $place_name,
+            "place_image" => $place_image,
+            "category_name" => $category_name,
+        ];
+
+    }
+
+}if (isset($category_id)) {
 
     $cookies = $con->prepare("INSERT INTO customer_logs (customer_id, category_id) VALUES (?, ?) ");
     $cookies->bind_param("ii", $C_ID, $category_id);
@@ -225,13 +251,13 @@ if ($C_ID) {
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
-                <form action="">
+                <form action="./Venues.php" method="POST">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products">
+                        <input type="text" name="venue" class="form-control" placeholder="Search for Venues">
                         <div class="input-group-append">
-                            <span class="input-group-text bg-transparent text-primary">
+                            <button type="Submit" class="input-group-text bg-transparent text-primary">
                                 <i class="fa fa-search"></i>
-                            </span>
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -335,8 +361,8 @@ if ($C_ID) {?>
 if (!$C_ID) {?>
 
 <div class="navbar-nav ml-auto py-0">
-                            <a href="" class="nav-item nav-link">Login</a>
-                            <a href="" class="nav-item nav-link">Register</a>
+                            <a href="../Login.php" class="nav-item nav-link">Login</a>
+                            <a href="../Register.php" class="nav-item nav-link">Register</a>
                         </div>
                        <?php }
 

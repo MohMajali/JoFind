@@ -85,7 +85,7 @@ if (isset($_POST['Submit'])) {
            </script>";
 
                     echo "<script language='JavaScript'>
-          document.location='./Login.php';
+          document.location='./Place_Login.php';
              </script>";
 
                 }

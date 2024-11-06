@@ -86,13 +86,13 @@ if ($C_ID) {
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
-                <form action="">
+                <form action="./Venues.php" method="POST">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products">
+                        <input type="text" name="venue" class="form-control" placeholder="Search for Venues">
                         <div class="input-group-append">
-                            <span class="input-group-text bg-transparent text-primary">
+                            <button type="Submit" class="input-group-text bg-transparent text-primary">
                                 <i class="fa fa-search"></i>
-                            </span>
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -211,7 +211,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     $counter++;
     ?>
-                        <div class="carousel-item <?php echo ($counter == 1 ? 'active' : '')?>" style="height: 410px;" id="<?php echo $slider_id ?>">
+                        <div class="carousel-item <?php echo ($counter == 1 ? 'active' : '') ?>" style="height: 410px;" id="<?php echo $slider_id ?>">
                             <img class="img-fluid" src="../Admin_Dashboard/<?php echo $slider_image ?>" alt="Image">
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
 

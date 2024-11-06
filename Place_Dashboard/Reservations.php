@@ -165,7 +165,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     $offer_id = $row1['offer_id'];
     $date_time = $row1['date_time'];
     $price = $row1['price'];
-    $total_price = $row1['id'];
+    $total_price = $row1['total_price'];
     $created_at = $row1['created_at'];
 
     $sql3 = mysqli_query($con, "SELECT * from users WHERE id = '$customer_id'");
