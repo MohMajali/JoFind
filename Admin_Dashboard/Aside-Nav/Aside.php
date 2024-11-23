@@ -53,7 +53,7 @@
 
     <li class="nav-item">
       <a class="nav-link collapsed" href="./Reservations.php">
-        <i class="bi bi-calendar3"></i><span>Reservations</span>
+        <i class="bi bi-calendar3"></i><span>Reservations Report</span>
       </a>
     </li>
 

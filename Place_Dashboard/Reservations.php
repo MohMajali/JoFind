@@ -148,7 +148,6 @@ if (!$P_ID) {
                       <th scope="col">Total Price</th>
                       <th scope="col">Status</th>
                       <th scope="col">Created At</th>
-                      <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -156,6 +155,9 @@ if (!$P_ID) {
 
                   <?php
 $sql1 = mysqli_query($con, "SELECT * from reservations WHERE place_id = '$P_ID' ORDER BY id DESC");
+
+$totalPricesData = 0;
+$totalPrices = 0;
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
@@ -187,6 +189,9 @@ while ($row1 = mysqli_fetch_array($sql1)) {
         $offer = $row5['offer'];
     }
 
+    $totalPricesData += $total_price;
+    $totalPrices += $price;
+
     ?>
                     <tr>
                       <th scope="row"><?php echo $reservation_id ?></th>
@@ -198,15 +203,19 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                       <th scope="row"><?php echo $total_price ?></th>
                       <th scope="row"><?php echo $status ?></th>
                       <th scope="row"><?php echo $created_at ?></th>
-                      <th scope="row">
 
-                      <?php if ($status_id == 1) {?>
+                    </tr>
 
-                        <a href="./AcceptOrRejectReservation.php?reservation_id=<?php echo $reservation_id ?>&status_id=2" class="btn btn-success">Accept</a>
-                        <a href="./AcceptOrRejectReservation.php?reservation_id=<?php echo $reservation_id ?>&status_id=3" class="btn btn-danger">Reject</a>
-
-                      <?php }?>
-                      </th>
+                    <tr>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th><?php echo $totalPrices ?> JODs</th>
+                      <th><?php echo $totalPricesData ?> JODs</th>
+                      <th></th>
+                      <th></th>
                     </tr>
 <?php
 }?>

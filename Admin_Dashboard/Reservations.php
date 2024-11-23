@@ -131,7 +131,13 @@ if (!$A_ID) {
       <!-- End Page Title -->
       <section class="section">
 
-        <div class="row">
+
+      <div class="mb-3">
+
+<input type="button" value="PRINT REPORT" class="btn btn-primary" onclick="printDiv()">
+</div>
+
+        <div class="row" id="div_print">
           <div class="col-lg-12">
             <div class="card">
               <div class="card-body">
@@ -248,6 +254,20 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     <script src="../assets/vendor/simple-datatables/simple-datatables.js"></script>
     <script src="../assets/vendor/tinymce/tinymce.min.js"></script>
     <script src="../assets/vendor/php-email-form/validate.js"></script>
+
+
+    <script>
+        function printDiv() {
+            var divContents = document.getElementById("div_print").innerHTML;
+            var a = window.open('', '', 'height=1000, width=5000');
+            a.document.write('<html>');
+            a.document.write('<body >');
+            a.document.write(divContents);
+            a.document.write('</body></html>');
+            a.document.close();
+            a.print();
+        }
+    </script>
 
     <!-- Template Main JS File -->
     <script src="../assets/js/main.js"></script>
