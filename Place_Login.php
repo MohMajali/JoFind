@@ -6,7 +6,7 @@ include "./Connect.php";
 if (isset($_POST['Submit'])) {
 
     $email = $_POST['email'];
-    $Password = md5($_POST['password']);
+    $Password = ($_POST['password']);
 
     $query = mysqli_query($con, "SELECT * FROM places WHERE email ='$email' AND password = '$Password'");
 

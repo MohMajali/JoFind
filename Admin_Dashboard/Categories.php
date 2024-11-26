@@ -284,9 +284,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                           >Venues</a
                         >
 
-                        <a href="./Sub_Categories.php?category_id=<?php echo $category_id ?>" class="btn btn-success me-2"
-                          >Sub Categories</a
-                        >
+    
                         </div>
               </div>
 

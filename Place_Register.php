@@ -3,10 +3,17 @@ session_start();
 
 include "./Connect.php";
 
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+
+require './phpmailer/src/Exception.php';
+require './phpmailer/src/PHPMailer.php';
+require './phpmailer/src/SMTP.php';
+
 if (isset($_POST['Submit'])) {
 
     $name = $_POST['name'];
-    $password = md5($_POST['password']);
+    $password = ($_POST['password']);
     $email = $_POST['email'];
     $category_id = $_POST['category_id'];
     $subcategory_id = $_POST['subcategory_id'];
@@ -23,24 +30,23 @@ if (isset($_POST['Submit'])) {
 
     if ($subscription_type == 1) {
 
-        $end_date = date('d-m-Y', strtotime($start_date . ' +90 days'));
+        $end_date = date('Y-m-d', strtotime($start_date . ' +90 days'));
         $subscription_type = "3 Months Open Contract (First Time Only) (For Free)";
         $price = 0;
 
     } else if ($subscription_type == 2) {
 
-        $end_date = date('d-m-Y', strtotime($start_date . ' +180 days'));
+        $end_date = date('Y-m-d', strtotime($start_date . ' +180 days'));
         $subscription_type = "6 Months Contract (300 JOD)";
         $price = 300;
 
     } else if ($subscription_type == 3) {
 
-        $end_date = date('d-m-Y', strtotime($start_date . ' +360 days'));
+        $end_date = date('Y-m-d', strtotime($start_date . ' +360 days'));
         $subscription_type = "12 Months COntract (600 JOD)";
         $price = 600;
 
     }
-
 
     $query = mysqli_query($con, "SELECT * FROM places WHERE name ='$name' AND email = '$email'");
 
@@ -52,9 +58,9 @@ if (isset($_POST['Submit'])) {
 
     } else {
 
-        $stmt = $con->prepare("INSERT INTO places (category_id, sub_category_id, status_id, name, image, email, phone, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
+        $stmt = $con->prepare("INSERT INTO places (category_id, status_id, name, image, email, phone, password) VALUES (?, ?, ?, ?, ?, ?, ?) ");
 
-        $stmt->bind_param("iiisssss", $category_id, $subcategory_id, $status_id, $name, $image, $email, $phone, $password);
+        $stmt->bind_param("iisssss", $category_id, $status_id, $name, $image, $email, $phone, $password);
 
         if ($stmt->execute()) {
 
@@ -80,13 +86,51 @@ if (isset($_POST['Submit'])) {
 
                     move_uploaded_file($_FILES["file"]["tmp_name"], "./Place_Dashboard/Places_Images/" . $_FILES["file"]["name"]);
 
-                    echo "<script language='JavaScript'>
-                alert ('Place Registered Successfully !');
-           </script>";
+                    try {
 
-                    echo "<script language='JavaScript'>
-          document.location='./Place_Login.php';
-             </script>";
+                        $mail = new PHPMailer(true);
+
+                        $mail->isSMTP();
+                        $mail->Host = 'smtp.gmail.com';
+                        $mail->SMTPAuth = true;
+                        $mail->Username = 'findjo802@gmail.com';
+                        $mail->Password = 'bfarkmcgnzcxwiwm';
+                        $mail->SMTPSecure = 'ssl';
+                        $mail->Port = 465;
+
+                        $mail->setFrom($email);
+
+                        $mail->addAddress("findjo802@gmail.com");
+
+                        $mail->isHTML(true);
+
+                        $mail->Subject = "New Request From {$name}";
+                        $mail->Body = "New Request From {$name}, Email : {$email} Want to Join JoFind";
+
+                        $mail->send();
+
+                        echo "<script language='JavaScript'>
+                        alert ('Place Registered Successfully !');
+                   </script>";
+
+                        echo "<script language='JavaScript'>
+                  document.location='./Place_Login.php';
+                     </script>";
+
+                    } catch (Exception $e) {
+
+                        // echo $e;
+                        print_r($e);
+                        die;
+
+                        echo "<script language='JavaScript'>
+                        alert ('Something went wrong !');
+                   </script>";
+
+                        echo "<script language='JavaScript'>
+                  document.location='./Place_Login.php';
+                     </script>";
+                    }
 
                 }
             }
@@ -325,14 +369,6 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                       </div>
 
 
-                      <div class="col-12">
-  <label for="subCategoryId" class="form-label">Subcategory</label>
-  <select name="subcategory_id" class="form-select" id="subCategoryId" >
-    <option value="">Select a subcategory</option>
-  </select>
-</div>
-
-
 
 
                       <div class="col-12">
@@ -394,35 +430,5 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
 
-    <script>
-  $(document).ready(function() {
-    $('#categoryId').on('change', function() {
-      var categoryId = $(this).val();
-      if (categoryId) {
-        $.ajax({
-          url: 'get_subcategories.php', // URL of the PHP script that fetches subcategories
-          type: 'POST',
-          data: { category_id: categoryId },
-          dataType: 'json',
-          success: function(response) {
-            $('#subCategoryId').empty();
-            $('#subCategoryId').append('<option value="">Select a subcategory</option>');
-            $.each(response, function(index, subcategory) {
-              $('#subCategoryId').append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
-            });
-          },
-          error: function(response){
-            console.log(response);
-
-            alert('Error loading subcategories');
-          }
-        });
-      } else {
-        $('#subCategoryId').empty();
-        $('#subCategoryId').append('<option value="">Select a subcategory</option>');
-      }
-    });
-  });
-</script>
   </body>
 </html>

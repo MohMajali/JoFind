@@ -3,10 +3,10 @@ session_start();
 
 include "../Connect.php";
 
-$P_ID = $_SESSION['P_Log'];
+$A_ID = $_SESSION['A_Log'];
 $user_id = $_GET['user_id'];
 
-if (!$P_ID) {
+if (!$A_ID) {
 
     echo '<script language="JavaScript">
      document.location="../Place_Login.php";
@@ -14,7 +14,7 @@ if (!$P_ID) {
 
 } else {
 
-    $sql1 = mysqli_query($con, "select * from places where id='$P_ID'");
+    $sql1 = mysqli_query($con, "select * from places where id='$A_ID'");
     $row1 = mysqli_fetch_array($sql1);
 
     $name = $row1['name'];
@@ -149,7 +149,6 @@ if (!$P_ID) {
                     <tr>
                       <th scope="col">Venue Name</th>
                       <th scope="col">Category Name</th>
-                      <th scope="col">Sub Category Name</th>
                       <th scope="col">advertisement Name</th>
                     </tr>
                   </thead>
@@ -163,7 +162,6 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     $place_id = $row1['place_id'];
     $category_id = $row1['category_id'];
-    $sub_category_id = $row1['sub_category_id'];
     $advertisement_id = $row1['advertisement_id'];
     $counting = $row1['counting'];
 
@@ -177,11 +175,6 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     $category_name = $row4['name'];
 
-    $sql5 = mysqli_query($con, "SELECT * from sub_categories WHERE id = '$category_id'");
-    $row5 = mysqli_fetch_array($sql5);
-
-    $sub_category_name = $row5['name'];
-
     $sql5 = mysqli_query($con, "SELECT * from advertisements WHERE id = '$advertisement_id'");
     $row5 = mysqli_fetch_array($sql5);
 
@@ -191,7 +184,6 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                     <tr>
                       <th scope="row"><?php echo $place_name ?></th>
                       <td scope="row"><?php echo $category_name ?></td>
-                      <td scope="row"><?php echo $sub_category_name ?></td>
                       <td scope="row"><?php echo $adv_name ?></td>
                     </tr>
 <?php

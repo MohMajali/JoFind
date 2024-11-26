@@ -6,7 +6,7 @@ include "./Connect.php";
 if (isset($_POST['Submit'])) {
 
     $name = $_POST['name'];
-    $password = md5($_POST['password']);
+    $password = ($_POST['password']);
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $userType = 2;

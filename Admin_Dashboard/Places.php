@@ -149,7 +149,6 @@ if (!$A_ID) {
                     <tr>
                       <th scope="col">Image</th>
                       <th scope="col">ID</th>
-                      <th scope="col">Category Name</th>
                       <th scope="col">Name</th>
                       <th scope="col">Email</th>
                       <th scope="col">Phone</th>
@@ -160,9 +159,7 @@ if (!$A_ID) {
                   </thead>
                   <tbody>
                   <?php
-$sql1 = $category_id ? mysqli_query($con, "SELECT * from places WHERE category_id = '$category_id' ORDER BY id DESC") :
-
-mysqli_query($con, "SELECT * from places WHERE sub_category_id = '$sub_category_id' ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * from places WHERE category_id = '$category_id' ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
@@ -175,14 +172,6 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     $active = $row1['active'];
     $created_at = $row1['created_at'];
 
-    if ($category_id) {
-
-        $sql2 = mysqli_query($con, "SELECT * from sub_categories WHERE category_id = '$category_id'");
-        $row2 = mysqli_fetch_array($sql2);
-
-        $category_name = $row2['name'];
-    }
-
     $sql3 = mysqli_query($con, "SELECT * from statuses WHERE id = '$status_id'");
     $row3 = mysqli_fetch_array($sql3);
 
@@ -192,7 +181,6 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                     <tr>
                       <th scope="row"><img src="../Place_Dashboard/<?php echo $place_image ?>" alt="" width="150px" height="150px"></th>
                       <th scope="row"><?php echo $place_id ?></th>
-                      <th scope="row"><?php echo $category_name ?></th>
                       <td scope="row"><?php echo $place_name ?></td>
                       <td scope="row"><?php echo $place_email ?></td>
                       <td scope="row"><?php echo $place_phone ?></td>
