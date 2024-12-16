@@ -5,6 +5,12 @@ include "../Connect.php";
 
 $A_ID = $_SESSION['A_Log'];
 
+$placeId_query = $_GET['placeId'];
+$created_at_query = $_GET['created_at'];
+$category_id_query = $_GET['category_id'];
+
+$sqlQuery = "SELECT * from reservations ORDER BY id DESC";
+
 if (!$A_ID) {
 
     echo '<script language="JavaScript">
@@ -18,6 +24,20 @@ if (!$A_ID) {
 
     $name = $row1['name'];
     $email = $row1['email'];
+
+    if ($placeId_query && $created_at_query) {
+
+        $sqlQuery = "SELECT * from reservations WHERE place_id = '$placeId_query' AND created_at LIKE '%$created_at_query%' ORDER BY id DESC";
+
+    } else if ($placeId_query) {
+
+        $sqlQuery = "SELECT * from reservations WHERE place_id = '$placeId_query' ORDER BY id DESC";
+
+    } else if ($created_at_query) {
+
+        $sqlQuery = "SELECT * from reservations WHERE created_at LIKE '%$created_at_query%' ORDER BY id DESC";
+
+    }
 }
 
 ?>
@@ -137,18 +157,68 @@ if (!$A_ID) {
 <input type="button" value="PRINT REPORT" class="btn btn-primary" onclick="printDiv()">
 </div>
 
-        <div class="row" id="div_print">
+        <div class="row" >
           <div class="col-lg-12">
             <div class="card">
-              <div class="card-body">
+              <div class="card-body" id="div_print">
                 <!-- Table with stripped rows -->
+
+                <form action="./Reservations.php">
+
+
+
+                <select name="category_id" id="">
+
+                <option value="" selected disabled>Select Category</option>
+                  <?php
+$sql323232 = mysqli_query($con, "SELECT * from categories WHERE active = 1 ORDER BY id DESC");
+
+while ($row323232 = mysqli_fetch_array($sql323232)) {
+
+    $category_id = $row323232['id'];
+    $category_name = $row323232['name'];
+
+    ?>
+
+<option value="<?php echo $category_id ?>"><?php echo $category_name ?></option>
+    <?php
+}?>
+                </select>
+
+
+
+
+                <select name="placeId" id="">
+
+                <option value="" selected disabled>Select Venue</option>
+                  <?php
+$sql4444 = mysqli_query($con, "SELECT * from places WHERE active = 1 ORDER BY id DESC");
+
+while ($row44444 = mysqli_fetch_array($sql4444)) {
+
+    $place_id = $row44444['id'];
+    $place_name = $row44444['name'];
+
+    ?>
+
+<option value="<?php echo $place_id ?>"><?php echo $place_name ?></option>
+    <?php
+}?>
+                </select>
+
+
+
+                <input type="date" name="created_at" placeholder="Created At">
+
+                <button type="submit" >Filter</button>
+                </form>
                 <table class="table datatable">
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
-                      <th scope="col">Customer Name</th>
-                      <th scope="col">Customer Email</th>
-                      <th scope="col">Venue Name</th>
+                      <th scope="col">Customer</th>
+                      <th scope="col">Venue</th>
+                      <th scope="col">Category</th>
                       <th scope="col">Date Time</th>
                       <th scope="col">Offer</th>
                       <th scope="col">Price</th>
@@ -161,7 +231,7 @@ if (!$A_ID) {
 
 
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from reservations ORDER BY id DESC");
+$sql1 = mysqli_query($con, $sqlQuery);
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
@@ -179,31 +249,37 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     $row2 = mysqli_fetch_array($sql2);
 
     $venue_name = $row2['name'];
+    $category_id = $row2['category_id'];
 
-    
+    $sql2322 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id'");
+    $row2322 = mysqli_fetch_array($sql2322);
+
+    $category_name = $row2322['name'];
+
     $sql3 = mysqli_query($con, "SELECT * from users WHERE id = '$customer_id'");
     $row3 = mysqli_fetch_array($sql3);
 
     $customer_name = $row3['name'];
     $customer_email = $row3['email'];
 
-    
     $sql4 = mysqli_query($con, "SELECT * from statuses WHERE id = '$status_id'");
     $row4 = mysqli_fetch_array($sql4);
 
     $status = $row4['name'];
-    
+
     $sql5 = mysqli_query($con, "SELECT * from offers WHERE id = '$offer_id'");
     $row5 = mysqli_fetch_array($sql5);
 
     $offer = $row5['offer'];
 
-    ?>
+    if ($category_id_query == $category_id) {
+
+        ?>
                     <tr>
                       <th scope="row"><?php echo $reservation_id ?></th>
                       <td scope="row"><?php echo $customer_name ?></td>
-                      <td scope="row"><?php echo $customer_email ?></td>
                       <td scope="row"><?php echo $venue_name ?></td>
+                      <td scope="row"><?php echo $category_name ?></td>
                       <td scope="row"><?php echo $date_time ?></td>
                       <th scope="row"><?php echo $offer ?></th>
                       <th scope="row"><?php echo $price ?></th>
@@ -212,6 +288,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                       <th scope="row"><?php echo $created_at ?></th>
                     </tr>
 <?php
+}
 }?>
                   </tbody>
                 </table>

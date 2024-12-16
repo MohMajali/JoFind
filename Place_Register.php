@@ -18,10 +18,13 @@ if (isset($_POST['Submit'])) {
     $category_id = $_POST['category_id'];
     $subcategory_id = $_POST['subcategory_id'];
     $phone = $_POST['phone'];
+    $city_id = $_POST['city_id'];
     $longitude = doubleval($_POST['longitude']);
     $latitude = doubleval($_POST['latitude']);
     $image = $_FILES["file"]["name"];
+    $commercial_register_file = $_FILES["commercial_register_file"]["name"];
     $image = 'Places_Images/' . $image;
+    $commercial_register_file = 'Places_Registers/' . $commercial_register_file;
     $price;
     $status_id = 1;
 
@@ -58,9 +61,10 @@ if (isset($_POST['Submit'])) {
 
     } else {
 
-        $stmt = $con->prepare("INSERT INTO places (category_id, status_id, name, image, email, phone, password) VALUES (?, ?, ?, ?, ?, ?, ?) ");
+        $stmt = $con->prepare("INSERT INTO places (category_id, status_id, name, image, email, phone, password, city_id, commercial_register)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ");
 
-        $stmt->bind_param("iisssss", $category_id, $status_id, $name, $image, $email, $phone, $password);
+        $stmt->bind_param("iisssssis", $category_id, $status_id, $name, $image, $email, $phone, $password, $city_id, $commercial_register);
 
         if ($stmt->execute()) {
 
@@ -85,6 +89,7 @@ if (isset($_POST['Submit'])) {
                 if ($stmt->execute() && $stmt2->execute()) {
 
                     move_uploaded_file($_FILES["file"]["tmp_name"], "./Place_Dashboard/Places_Images/" . $_FILES["file"]["name"]);
+                    move_uploaded_file($_FILES["commercial_register_file"]["tmp_name"], "./Place_Dashboard/Places_Registers/" . $_FILES["commercial_register_file"]["name"]);
 
                     try {
 
@@ -226,6 +231,9 @@ if (isset($_POST['Submit'])) {
                             name="name"
                             class="form-control"
                             id="name"
+                            pattern="[A-Za-z]+"
+  title="Only alphabetic characters are allowed."
+  oninput="this.value = this.value.replace(/[^a-zA-Z]+/g, '');"
                             required
                           />
 
@@ -332,6 +340,19 @@ if (isset($_POST['Submit'])) {
 
 
 
+                      <div class="col-12" id="endDateDiv" style="display: none;">
+                        <label for="endDate" class="form-label"
+                          >Contract End Date</label
+                        >
+                        <input
+                          type="text"
+                          name="end_date"
+                          class="form-control"
+                          id="endDate"
+                          required
+                        />
+
+                      </div>
 
 
                       <div class="col-12">
@@ -370,6 +391,29 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
 
 
+                      <div class="col-12">
+                      <label for="cityId" class="form-label"
+                          >City</label
+                        >
+                        <select name="city_id" class="form-select" id="cityId" required>
+
+                        <?php $sql1 = mysqli_query($con, "SELECT * from cities ORDER BY id DESC");
+
+while ($row1 = mysqli_fetch_array($sql1)) {
+
+    $city_id = $row1['id'];
+    $city_name = $row1['city'];
+
+    ?>
+                                <option value="<?php echo $city_id ?>"><?php echo $city_name ?></option>
+    <?php
+}?>
+
+                        </select>
+                      </div>
+
+
+
 
                       <div class="col-12">
                         <label for="yourImage" class="form-label"
@@ -380,6 +424,21 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                           name="file"
                           class="form-control"
                           id="yourImage"
+                          required
+                        />
+
+                      </div>
+
+
+                      <div class="col-12">
+                        <label for="commercial_register" class="form-label"
+                          >Commercial Register</label
+                        >
+                        <input
+                          type="file"
+                          name="commercial_register_file"
+                          class="form-control"
+                          id="commercial_register"
                           required
                         />
 
@@ -429,6 +488,48 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
+
+
+    <script>
+
+
+
+document.getElementById('startDate').addEventListener('change', updateEndDate);
+document.getElementById('subscription_type').addEventListener('change', updateEndDate);
+
+function updateEndDate() {
+  const startDate = document.getElementById('startDate').value;
+  const monthsToAdd = parseInt(document.getElementById('subscription_type').value);
+
+  if (startDate && document.getElementById('subscription_type').value) {
+    const endDate = new Date(startDate);
+    const endDateDiv = document.getElementById('endDateDiv');
+
+    let months
+
+      if(monthsToAdd == 1) {
+
+          months = 3
+      } else if(monthsToAdd == 2) {
+        months = 6
+      } else if(monthsToAdd == 3) {
+        months = 12
+      }
+
+    endDate.setMonth(endDate.getMonth() + months);
+
+    // Formatting the date to YYYY-MM-DD
+    const formattedEndDate = endDate.toISOString().split('T')[0];
+    document.getElementById('endDate').value = formattedEndDate;
+
+    endDateDiv.style.display = 'block';
+  }
+}
+
+
+
+
+    </script>
 
   </body>
 </html>

@@ -19,31 +19,6 @@ if (!$A_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
-
-
-    if (isset($_POST['Submit'])) {
-
-        $place_id = $_POST['place_id'];
-        $price = $_POST['price'];
-        $image = 'Sliders_images/' . $image;
-
-        $stmt = $con->prepare("INSERT INTO tops (place_id, price) VALUES (?, ?) ");
-
-        $stmt->bind_param("id", $place_id, $price);
-
-        if ($stmt->execute()) {
-
-            echo "<script language='JavaScript'>
-              alert ('A New Top Venue Has Been Added Successfully !');
-         </script>";
-
-            echo "<script language='JavaScript'>
-        document.location='./Tops_Venues.php';
-           </script>";
-
-        }
-
-    }
 }
 
 ?>
@@ -54,7 +29,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Top Venues - JoFind</title>
+    <title>Contacts - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -146,34 +121,21 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Top Venues</h1>
+        <h1>Contacts</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Top Venues</li>
+            <li class="breadcrumb-item">Contacts</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
-
-
-      <div class="mb-3">
-          <button
-            type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#verticalycentered"
-          >
-            Add New Venue
-          </button>
-        </div>
-
-        <div class="modal fade" id="verticalycentered" tabindex="-1">
+      <div class="modal fade" id="verticalycentered" tabindex="-1">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Venue</h5>
+                <h5 class="modal-title">Message</h5>
                 <button
                   type="button"
                   class="btn-close"
@@ -183,44 +145,18 @@ if (!$A_ID) {
               </div>
               <div class="modal-body">
 
-                <form method="POST" action="./Tops_Venues.php" enctype="multipart/form-data">
-
-                <div class="row mb-3">
-                    <label for="venue_id" class="col-sm-4 col-form-label"
-                      >Venue</label
-                    >
-                    <div class="col-sm-8">
-                    <select name="place_id" class="form-select" id="venue_id" required>
-
-                    <option value="" default selected>Select Venue</option>
-
-                    <?php
-$placesSql = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 ORDER BY id DESC");
-
-while ($placeRow = mysqli_fetch_array($placesSql)) {
-
-    $place_id = $placeRow['id'];
-    $place_name = $placeRow['name'];
-
-    ?>
-                    <option value="<?php echo $place_id ?>"><?php echo $place_name ?></option>
-<?php
-}?>
-                    </select>
-                    </div>
-                  </div>
+                <form  id="form-note">
 
 
                   <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label"
-                      >Price</label
+                      >Message</label
                     >
                     <div class="col-sm-8">
-                      <input type="number" min="1" step="0.01" name="price" class="form-control" />
+
+                      <textarea id="message" class="form-control" disabled></textarea>
                     </div>
                   </div>
-
-
 
                   <div class="row mb-3">
                     <div class="text-end">
@@ -245,60 +181,55 @@ while ($placeRow = mysqli_fetch_array($placesSql)) {
           </div>
         </div>
 
-
-
-        <div class="row">
+        <div class="row" >
           <div class="col-lg-12">
             <div class="card">
-              <div class="card-body">
+              <div class="card-body" id="div_print">
                 <!-- Table with stripped rows -->
+
                 <table class="table datatable">
                   <thead>
                     <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Venue Name</th>
-                      <th scope="col">Price</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Subject</th>
                       <th scope="col">Created At</th>
-                      <th scope="col">Actions</th>
+                      <th scope="col">View Message</th>
                     </tr>
                   </thead>
                   <tbody>
 
 
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * FROM contacts");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $top_id = $row1['id'];
-    $place_id = $row1['place_id'];
-    $price = $row1['price'];
-    $active = $row1['active'];
+    $contact_name = $row1['name'];
+    $contact_email = $row1['email'];
+    $subject = $row1['subject'];
+    $message = $row1['message'];
     $created_at = $row1['created_at'];
 
-    $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
-    $row2 = mysqli_fetch_array($sql2);
 
-    $place_name = $row2['name'];
-
-    ?>
+        ?>
                     <tr>
-                      <th scope="row"><?php echo $top_id ?></th>
-                      <th scope="row"><?php echo $place_name ?></th>
-                      <th scope="row"><?php echo $price ?> JODs</th>
+                      <td scope="row"><?php echo $contact_name ?></td>
+                      <td scope="row"><?php echo $contact_email ?></td>
+                      <td scope="row"><?php echo $subject ?></td>
                       <th scope="row"><?php echo $created_at ?></th>
                       <th scope="row">
 
-
-                      <?php if ($active == 1) {?>
-
-<a href="./DeleteOrRestoreTop.php?top_id=<?php echo $top_id ?>&isActive=<?php echo 0 ?>" class="btn btn-danger">Delete</a>
-
-<?php } else {?>
-
-  <a href="./DeleteOrRestoreTop.php?top_id=<?php echo $top_id ?>&isActive=<?php echo 1 ?>" class="btn btn-primary">Restore</a>
-
-<?php }?>
+                      <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#verticalycentered"
+            id="btn-<?php echo $message ?>"
+            onclick="getId(event)"
+          >
+            View
+          </button>
                       </th>
                     </tr>
 <?php
@@ -331,7 +262,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(4) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(10) .nav-link').classList.remove('collapsed')
    });
 </script>
 
@@ -345,7 +276,22 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     <script src="../assets/vendor/tinymce/tinymce.min.js"></script>
     <script src="../assets/vendor/php-email-form/validate.js"></script>
 
+
+
+
     <!-- Template Main JS File -->
     <script src="../assets/js/main.js"></script>
+
+
+
+    <script>
+        const getId = (e) => {
+          
+          document.getElementById('message').value = e.target.id.split('-')[1]
+          
+        }
+    </script>
+
+
   </body>
 </html>

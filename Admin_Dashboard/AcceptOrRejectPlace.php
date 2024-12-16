@@ -4,6 +4,7 @@ include "../Connect.php";
 
 $status = $_GET['status'];
 $place_id = $_GET['place_id'];
+$rejection_note = $_GET['rejection_note'];
 
 $stmt = $con->prepare("UPDATE places SET status_id = ? WHERE id = ? ");
 
@@ -22,6 +23,13 @@ if ($stmt->execute()) {
         </script>";
 
     } else {
+
+        $stmt = $con->prepare("UPDATE places SET rejection_note = ? WHERE id = ? ");
+
+        $stmt->bind_param("si", $rejection_note, $place_id);
+
+        $stmt->execute();
+
         echo "<script language='JavaScript'>
 alert ('Place Has Been Rejected !');
 </script>";

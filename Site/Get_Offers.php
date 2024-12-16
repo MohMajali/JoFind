@@ -25,6 +25,7 @@ if (isset($_POST['place_id'])) {
         $offers[] = [
             'id' => $row['id'],
             'offer' => $row['offer'],
+            'discount' => doubleval($row['discount']),
         ];
 
     }

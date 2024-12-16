@@ -58,7 +58,11 @@
     </li>
 
 
-
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="./Contacts.php">
+        <i class="bi bi-calendar3"></i><span>Contacts</span>
+      </a>
+    </li>
 
 
   </ul>

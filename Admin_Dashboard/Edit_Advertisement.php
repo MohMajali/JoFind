@@ -241,7 +241,7 @@ while ($placeRow = mysqli_fetch_array($placesSql)) {
                       >Price</label
                     >
                     <div class="col-sm-10">
-                      <input type="number" name="price" value="<?php echo $price ?>" step="0.01" class="form-control" id="inputText" required/>
+                      <input type="number" name="price" value="<?php echo $price ?>" min="1" step="0.01" class="form-control" id="inputText" required/>
                     </div>
                   </div>
 

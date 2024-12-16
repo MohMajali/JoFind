@@ -133,6 +133,62 @@ if (!$A_ID) {
 
 
 
+      <div class="modal fade" id="verticalycentered" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Rejection Note</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+
+                <form action="./AcceptOrRejectPlace.php" enctype="multipart/form-data" id="form-note">
+
+
+
+                  <input type="hidden" value="3" name="status">
+                  <input type="hidden" name="place_id" id="place_id_input">
+
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Notes</label
+                    >
+                    <div class="col-sm-8">
+
+                      <textarea name="rejection_note" id="" class="form-control" required></textarea>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="text-end">
+                      <button type="submit" name="Submit" class="btn btn-primary">
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
 
         <div class="row">
           <div class="col-lg-12">
@@ -187,9 +243,22 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                           >Accept</a
                         >
 
-                        <a href="./AcceptOrRejectPlace.php?place_id=<?php echo $place_id ?>&status=3" class="btn btn-danger"
+                        <!-- <a href="./AcceptOrRejectPlace.php?place_id=<?php echo $place_id ?>&status=3" class="btn btn-danger"
                           >Reject</a
-                        >
+                        > -->
+
+
+
+                        <button
+            type="button"
+            class="btn btn-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#verticalycentered"
+            id="btn-<?php echo $place_id ?>"
+            onclick="getId(event)"
+          >
+            Reject
+          </button>
 
 
                         </div>
@@ -244,5 +313,24 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <!-- Template Main JS File -->
     <script src="../assets/js/main.js"></script>
+
+
+    <script>
+
+//place_id_input
+
+
+
+        const getId = (e) => {
+          
+          document.getElementById('form-note').action = `${document.getElementById('form-note').action}?place_id=${e.target.id.split('-')[1]}`
+          document.getElementById('place_id_input').value = e.target.id.split('-')[1]
+          // console.log(document.getElementById('form-note').action);
+          
+        }
+
+
+    
+    </script>
   </body>
 </html>

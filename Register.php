@@ -7,35 +7,55 @@ if (isset($_POST['Submit'])) {
 
     $name = $_POST['name'];
     $password = ($_POST['password']);
+    $confirm_password = ($_POST['confirm_password']);
     $email = $_POST['email'];
     $phone = $_POST['phone'];
+    $image = $_FILES["file"]["name"];
+    $image = 'Users_Images/' . $image;
     $userType = 2;
 
-    $query = mysqli_query($con, "SELECT * FROM users WHERE email = '$email'");
 
-    if (mysqli_num_rows($query) > 0) {
 
-        echo "<script language='JavaScript'>
-      alert ('Account Already Exist !');
+    if($password !== $confirm_password) {
+
+      echo "<script language='JavaScript'>
+      alert ('Passwords Does Not Match!');
  </script>";
 
     } else {
 
-        $stmt = $con->prepare("INSERT INTO users (type_id, name, email, password, phone) VALUES (?, ?, ?, ?, ?) ");
+      $query = mysqli_query($con, "SELECT * FROM users WHERE email = '$email'");
 
-        $stmt->bind_param("issss", $userType, $name, $email, $password, $phone);
-
-        if ($stmt->execute()) {
-
-            echo "<script language='JavaScript'>
-            alert ('Customer Registered Successfully !');
-       </script>";
-
-            echo "<script language='JavaScript'>
-      document.location='./Login.php';
+      if (mysqli_num_rows($query) > 0) {
+  
+          echo "<script language='JavaScript'>
+        alert ('Account Already Exist !');
+   </script>";
+  
+      } else {
+  
+          $stmt = $con->prepare("INSERT INTO users (type_id, name, email, password, phone, image) VALUES (?, ?, ?, ?, ?, ?) ");
+  
+          $stmt->bind_param("isssss", $userType, $name, $email, $password, $phone, $image);
+  
+          if ($stmt->execute()) {
+  
+            
+            move_uploaded_file($_FILES["file"]["tmp_name"], "./Site/Users_Images/" . $_FILES["file"]["name"]);
+  
+              echo "<script language='JavaScript'>
+              alert ('Customer Registered Successfully !');
          </script>";
-        }
+  
+              echo "<script language='JavaScript'>
+        document.location='./Login.php';
+           </script>";
+          }
+      }
+
     }
+
+
 }
 ?>
 
@@ -125,6 +145,9 @@ if (isset($_POST['Submit'])) {
                             name="name"
                             class="form-control"
                             id="name"
+                            pattern="[A-Za-z]+"
+  title="Only alphabetic characters are allowed."
+  oninput="this.value = this.value.replace(/[^a-zA-Z]+/g, '');"
                             required
                           />
 
@@ -179,6 +202,34 @@ if (isset($_POST['Submit'])) {
                         <div class="invalid-feedback" id="password-Message">
                           Please enter your password!
                         </div>
+                      </div>
+
+                      <div class="col-12">
+                        <label for="confirmpassowrd" class="form-label"
+                          >Confirm Password</label
+                        >
+                        <input
+                          type="password"
+                          name="confirm_password"
+                          class="form-control"
+                          id="confirmpassowrd"
+                          required
+                        />
+                 
+                      </div>
+
+                      <div class="col-12">
+                        <label for="yourpicture" class="form-label"
+                          >Image</label
+                        >
+                        <input
+                          type="file"
+                          name="file"
+                          class="form-control"
+                          id="yourpicture"
+                          required
+                        />
+               
                       </div>
 
 

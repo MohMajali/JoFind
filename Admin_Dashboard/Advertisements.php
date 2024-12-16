@@ -45,7 +45,6 @@ if (!$A_ID) {
            </script>";
 
         }
-
     }
 }
 
@@ -231,7 +230,7 @@ while ($placeRow = mysqli_fetch_array($placesSql)) {
                       >Price</label
                     >
                     <div class="col-sm-8">
-                      <input type="number" name="price" class="form-control" step="0.01" required/>
+                      <input type="number" name="price" class="form-control" min="1" step="0.01" required/>
                     </div>
                   </div>
 

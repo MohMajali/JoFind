@@ -236,9 +236,25 @@ function draw() {
 
                         res = JSON.parse(response);
 
+
+
                         if(!res['error']) {
 
-                            alert(`You Won ${items[i].offer}`)
+
+                            let name;
+                            if($items[i].discount >= 10 && $items[i].discount < 30) {
+
+                                name = 'Bronze'
+                            } else if($items[i].discount >= 30 && $items[i].discount < 60) {
+
+                                name = 'Silder'
+                            }
+                             else if($items[i].discount >= 60 && $items[i].discount <= 100) {
+
+                                name = 'Gold'
+                            }
+
+                            alert(`You Won ${name}`)
 
                             document.location= `./Venue.php?venue_id=${venue_id}`;
                         }

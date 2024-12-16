@@ -170,6 +170,13 @@ if (!$C_ID) {?>
 
                     </div>
                 </nav>
+
+
+
+
+
+
+
                 <div id="header-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
 
@@ -186,7 +193,11 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                         <div class="carousel-item <?php echo ($counter == 1 ? 'active' : '') ?>" style="height: 410px;" id="<?php echo $slider_id ?>">
                             <img class="img-fluid" src="../Admin_Dashboard/<?php echo $slider_image ?>" alt="Image">
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-
+                            <div class="p-3" style="max-width: 700px;">
+                                    <h4 class="text-light text-uppercase font-weight-medium mb-3">XXXXX XXXX XXXXX</h4>
+                                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">XXX XXXX XXXX XX</h3>
+                                    <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
+                                </div>
                             </div>
                         </div>
                  <?php
@@ -225,9 +236,11 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     ?>
 
             <div class="col-lg-4 col-md-6 pb-1">
-                <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
-                    <a href="Venues.php?category_id=<?php echo $category_id ?>" class="cat-img position-relative overflow-hidden mb-3">
-                        <img class="img-fluid" src="../Admin_Dashboard/<?php echo $category_image ?>" style="width: 100%;" alt="">
+                <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;height: 100%;">
+                    <a href="Venues.php?category_id=<?php echo $category_id ?>" class="cat-img position-relative overflow-hidden mb-3" style="
+    height: 260px;
+">
+                        <img class="img-fluid" src="../Admin_Dashboard/<?php echo $category_image ?>" style="width: 100%;" height="100px" alt="">
                     </a>
                     <h5 class="font-weight-semi-bold m-0"><?php echo $category_name ?></h5>
                 </div>
@@ -305,6 +318,97 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
+
+
+
+
+
+    <!-- Advertisements -->
+
+
+
+
+
+
+    <div class="container-fluid mb-5">
+        <div class="row border-top px-xl-5">
+
+            <div class="col-lg-12">
+
+
+
+
+
+
+
+
+                <div id="header-carousel" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+
+                    <?php
+$sql1 = mysqli_query($con, "SELECT * from advertisements WHERE active = 1 ORDER BY id DESC");
+$advCounter = 0;
+while ($row1 = mysqli_fetch_array($sql1)) {
+
+    $adv_id = $row1['id'];
+    $adv_image = $row1['image'];
+
+    $advCounter++;
+    ?>
+                        <div class="carousel-item <?php echo ($advCounter == 1 ? 'active' : '') ?>" style="height: 410px;" id="<?php echo $adv_id ?>">
+                            <img class="img-fluid" src="../Admin_Dashboard/<?php echo $adv_image ?>" alt="Image">
+                            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                        
+                            </div>
+                        </div>
+                 <?php
+}?>
+                    </div>
+                    <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
+                        <div class="btn btn-dark" style="width: 45px; height: 45px;">
+                            <span class="carousel-control-prev-icon mb-n2"></span>
+                        </div>
+                    </a>
+                    <a class="carousel-control-next" href="#header-carousel" data-slide="next">
+                        <div class="btn btn-dark" style="width: 45px; height: 45px;">
+                            <span class="carousel-control-next-icon mb-n2"></span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Advertisements -->
+
+
+
     <!-- Products Start -->
     <div class="container-fluid pt-5">
         <div class="text-center mb-4">
@@ -366,37 +470,6 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     <!-- Products End -->
 
 
-    <!-- Vendor Start -->
-    <div class="container-fluid py-5">
-        <div class="row px-xl-5">
-            <div class="col">
-                <div class="owl-carousel vendor-carousel">
-
-                <?php
-$sql1 = mysqli_query($con, "SELECT * from advertisements WHERE active = 1 ORDER BY id DESC");
-
-while ($row1 = mysqli_fetch_array($sql1)) {
-
-    $adv_id = $row1['id'];
-    $adv_image = $row1['image'];
-    $adv_title = $row1['title'];
-
-    ?>
-                    <div id="<?php echo $adv_id ?>" class="vendor-item border p-4">
-                        <a href="./Adverisement.php?advertisement_id=<?php echo $adv_id ?>">
-
-                            <img src="../Admin_Dashboard/<?php echo $adv_image ?>" alt="<?php echo $adv_title ?>">
-                        </a>
-                    </div>
-                   <?php
-}?>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Vendor End -->
-
-
     <!-- Footer Start -->
         <?php require './Footer.php'?>
     <!-- Footer End -->
@@ -413,7 +486,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
+    <script src="mail/jqBootstrapValidation.min.js"></script> 
     <script src="mail/contact.js"></script>
 
     <!-- Template Javascript -->
