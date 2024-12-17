@@ -16,81 +16,40 @@ if (!$P_ID) {
     $sql1 = mysqli_query($con, "select * from places where id = '$P_ID'");
     $row1 = mysqli_fetch_array($sql1);
 
-    $place_id = $row1['id'];
     $name = $row1['name'];
     $email = $row1['email'];
-    $phone = $row1['phone'];
-    $address = $row1['address'];
-    $category_id = $row1['category_id'];
-
-    $sql2 = mysqli_query($con, "select * from categories where id='$category_id'");
-    $row2 = mysqli_fetch_array($sql2);
-
-    $category_name = $row2['name'];
 
     if (isset($_POST['Submit'])) {
 
         $place_id = $_POST['place_id'];
-        $name = $_POST['name'];
-        $email = $_POST['email'];
-        $phone = $_POST['phone'];
-        $password = $_POST['password'];
-        $address = $_POST['address'];
         $image = $_FILES["file"]["name"];
+        $image = 'Places_Images/' . $image;
 
-        if ($image) {
+        $query = mysqli_query($con, "SELECT * FROM place_menus WHERE place_id ='$place_id'");
 
-            $image = 'Places_Images/' . $image;
+        if (mysqli_num_rows($query) > 0) {
 
-            if ($password) {
+            echo "<script language='JavaScript'>
+          alert ('Place Already Has Menu Exist !');
+     </script>";
 
+        } else {
 
-                $stmt = $con->prepare("UPDATE places SET name = ?, password = ?, phone = ?, email = ?, image = ?, address = ? WHERE id = ? ");
-                $stmt->bind_param("ssssssi", $name, $password, $phone, $email, $image, $address, $place_id);
+            $stmt = $con->prepare("INSERT INTO place_menus (place_id, menu_image) VALUES (?, ?)");
 
-            } else {
-
-                $stmt = $con->prepare("UPDATE places SET name = ?, phone = ?, email = ?, image = ?, address = ? WHERE id = ? ");
-                $stmt->bind_param("sssssi", $name, $phone, $email, $image, $address, $place_id);
-            }
+            $stmt->bind_param("is", $place_id, $image);
 
             if ($stmt->execute()) {
 
                 move_uploaded_file($_FILES["file"]["tmp_name"], "./Places_Images/" . $_FILES["file"]["name"]);
 
                 echo "<script language='JavaScript'>
-                alert ('Account Updated Successfully !');
+                alert ('A New Menu Has Been Added Successfully !');
            </script>";
 
                 echo "<script language='JavaScript'>
-          document.location='./Account.php';
+          document.location='./Menu.php';
              </script>";
-
-            }
-
-        } else {
-
-            if ($password) {
-
-
-                $stmt = $con->prepare("UPDATE places SET name = ?, password = ?, phone = ?, email = ?, address = ? WHERE id = ? ");
-                $stmt->bind_param("sssssi", $name, $password, $phone, $email, $address, $place_id);
-
-            } else {
-
-                $stmt = $con->prepare("UPDATE places SET name = ?, phone = ?, email = ?, address = ? WHERE id = ? ");
-                $stmt->bind_param("ssssi", $name, $phone, $email, $address, $place_id);
-            }
-
-            if ($stmt->execute()) {
-
-                echo "<script language='JavaScript'>
-              alert ('Account Updated Successfully !');
-         </script>";
-
-                echo "<script language='JavaScript'>
-        document.location='./Account.php';
-           </script>";
 
             }
 
@@ -107,7 +66,7 @@ if (!$P_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Account - JoFind</title>
+    <title>Menu - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -166,12 +125,12 @@ if (!$P_ID) {
                 alt="Profile"
                 class="rounded-circle"
               />
-              <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $title ?></span> </a
+              <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $name ?></span> </a
             >
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6><?php echo $title ?></h6>
+              <h6><?php echo $name ?></h6>
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -199,96 +158,126 @@ if (!$P_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Account</h1>
+        <h1>Menus</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">Account</li>
+            <li class="breadcrumb-item">Menus</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
+
+
+      <div class="mb-3">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#verticalycentered"
+          >
+            Add New Menu
+          </button>
+        </div>
+
+        <div class="modal fade" id="verticalycentered" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Menu Information</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+
+                <form method="POST" action="./Menu.php" enctype="multipart/form-data">
+
+                <input type="hidden" name="place_id" value="<?php echo $P_ID ?>">
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Menu</label
+                    >
+                    <div class="col-sm-8">
+                      <input type="file" name="file" class="form-control" />
+                    </div>
+                  </div>
+
+
+
+                  <div class="row mb-3">
+                    <div class="text-end">
+                      <button type="submit" name="Submit" class="btn btn-primary">
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title"></h5>
-
-                <!-- Horizontal Form -->
-                <form method="POST" action="./Account.php" enctype="multipart/form-data">
-
-                <input type="hidden" name="place_id" value="<?php echo $place_id ?>">
-
-                  <div class="row mb-3">
-                    <label for="name" class="col-sm-2 col-form-label"
-                      >Name</label
-                    >
-                    <div class="col-sm-10">
-                      <input type="text" name="name" value="<?php echo $name ?>" class="form-control" id="name" />
-                    </div>
-                  </div>
-
-                  <div class="row mb-3">
-                    <label for="email" class="col-sm-2 col-form-label"
-                      >Email</label
-                    >
-                    <div class="col-sm-10">
-                      <input type="text" name="email" value="<?php echo $email ?>" class="form-control" id="email" />
-                    </div>
-                  </div>
+                <!-- Table with stripped rows -->
+                <table class="table datatable">
+                  <thead>
+                    <tr>
+                      <th scope="col">ID</th>
+                      <th scope="col">Menu Link</th>
+                      <th scope="col">Created At</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
 
 
-                  <div class="row mb-3">
-                    <label for="address" class="col-sm-2 col-form-label"
-                      >Address</label
-                    >
-                    <div class="col-sm-10">
-                      <input type="text" name="address" value="<?php echo $address ?>" class="form-control" id="address" />
-                    </div>
-                  </div>
+                  <?php
+$sql1 = mysqli_query($con, "SELECT * from place_menus WHERE place_id = '$P_ID' ORDER BY id DESC");
 
-                  <div class="row mb-3">
-                    <label for="phone" class="col-sm-2 col-form-label"
-                      >Phone</label
-                    >
-                    <div class="col-sm-10">
-                      <input type="text" name="phone" value="<?php echo $phone ?>"
-                      pattern="[0-9]{10}" title="Phone Number Must Be 10 Numbers"
-                      class="form-control" id="phone" />
-                    </div>
-                  </div>
+while ($row1 = mysqli_fetch_array($sql1)) {
 
-                  <div class="row mb-3">
-                    <label for="password" class="col-sm-2 col-form-label"
-                      >Password</label
-                    >
-                    <div class="col-sm-10">
-                      <input type="password" name="password" value="<?php echo $password ?>" class="form-control" id="password" />
-                    </div>
-                  </div>
+    $image_id = $row1['id'];
+    $image = $row1['menu_image'];
+    $active = $row1['active'];
+    $created_at = $row1['created_at'];
 
-                  <div class="row mb-3">
-                    <label for="file" class="col-sm-2 col-form-label"
-                      >Image</label
-                    >
-                    <div class="col-sm-10">
-                      <input type="file" name="file" class="form-control" id="file" />
-                    </div>
-                  </div>
+    ?>
+                    <tr>
+                      <th scope="row"><?php echo $image_id ?></th>
+                      <th scope="row"><a href="<?php echo $image ?>" target="_blank">View</a></th>
+                      <th scope="row"><?php echo $created_at ?></th>
+                      <th scope="row">
 
+                    <a href="./DeleteImage.php?image_id=<?php echo $image_id ?>" class="btn btn-danger">Delete</a>
 
-
-                  <div class="text-end">
-                    <button type="submit" name="Submit" class="btn btn-primary">
-                      Submit
-                    </button>
-                    <button type="reset" class="btn btn-secondary">
-                      Reset
-                    </button>
-                  </div>
-                </form>
-                <!-- End Horizontal Form -->
+                      </th>
+                    </tr>
+<?php
+}?>
+                  </tbody>
+                </table>
+                <!-- End Table with stripped rows -->
               </div>
             </div>
           </div>
@@ -314,7 +303,7 @@ if (!$P_ID) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(2) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(9) .nav-link').classList.remove('collapsed')
    });
 </script>
 

@@ -26,11 +26,19 @@ if ($C_ID) {
     $venue_description = $row2['description'];
     $venue_total_rate = $row2['total_rate'];
     $venue_phone = $row2['phone'];
+    $venue_address = $row2['address'];
 
     $sql3 = mysqli_query($con, "select COUNT(id) AS reviews from feedbacks where place_id='$venue_id'");
     $row3 = mysqli_fetch_array($sql3);
 
     $venue_feedbacks_counts = $row3['reviews'];
+
+
+
+    $sql4 = mysqli_query($con, "select * from place_menus where place_id='$venue_id'");
+    $row4 = mysqli_fetch_array($sql4);
+
+    $menu_image = $row4['menu_image'];
 
 }
 
@@ -115,24 +123,14 @@ if ($C_ID) {
                     <div class="input-group">
                         <input type="text" name="venue" class="form-control" placeholder="Search for Venues">
                         <div class="input-group-append">
-                            <button type="Submit" class="input-group-text bg-transparent text-primary">
+                            <button type="Submit" name="Submit" class="input-group-text bg-transparent text-primary">
                                 <i class="fa fa-search"></i>
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
-            <?php
 
-if ($C_ID) {?>
-
-<div class="col-lg-3 col-6 text-right">
-<a href="" class="btn border">
-                    <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
-                </a>
-            </div>
-             <?php }?>
         </div>
     </div>
         </div>
@@ -143,7 +141,7 @@ if ($C_ID) {?>
     <!-- Navbar Start -->
     <div class="container-fluid">
         <div class="row border-top px-xl-5">
- 
+
             <div class="col-lg-12">
                 <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
                     <a href="./index.php" class="text-decoration-none d-block d-lg-none">
@@ -213,9 +211,30 @@ if (!$C_ID) {?>
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner border">
 
-                        <div class="carousel-item active">
-                            <img class="w-100 h-100" src="../Place_Dashboard/<?php echo $venue_image ?>" alt="Image">
+
+
+
+                    <?php
+$sql1 = mysqli_query($con, "SELECT * from place_images ORDER BY id DESC");
+$counter = 0;
+while ($row1 = mysqli_fetch_array($sql1)) {
+
+    $image_id = $row1['id'];
+    $image = $row1['image'];
+
+    $counter++;
+    ?>
+
+                        <div class="carousel-item <?php echo ($counter === 1 ? 'active' : '') ?>">
+                            <img class="w-100 h-100" src="../Place_Dashboard/<?php echo $image ?>" alt="Image">
                         </div>
+
+                        <?php
+}?>
+
+
+
+
 
                     </div>
                     <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
@@ -242,6 +261,9 @@ if (!$C_ID) {?>
                     <small class="pt-1">(<?php echo $venue_feedbacks_counts ?> Reviews)</small>
                 </div>
                 <p class="mb-4"><?php echo $venue_description ?></p>
+
+                <h3>Address : <?php echo $venue_address ?></h3>
+                <h3>Menu : <a href="../Place_Dashboard/<?php echo $menu_image ?>" target="_blank">View Menu</a></h3>
 
                 <div class="container-fluid py-5">
         <div class="text-center mb-4">
@@ -289,12 +311,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     $counter += 1;
     ?>
                     <div onclick="onDivClick(event)" id="option-<?php echo $option_id ?>-<?php echo $venue_id ?>" class="col-lg-3 col-md-6 col-sm-12 pb-1 border p-4">
-                        <h4 class="text-center">Option <?php echo $counter ?> : <?php echo $title ?></h4>
                         <h5 class="text-center">Date&Time : <?php echo $date_time ?></h5>
-                        <h5 class="text-center">People : <?php echo $quantity ?></h5>
-                        <h6 class="text-center">Soft Drink : <?php echo $has_soft_drinks == 1 ? 'Served' : 'Not Served' ?></h6>
-                        <h6 class="text-center">Food : <?php echo $has_food == 1 ? 'Served' : 'Not Served' ?></h6>
-                        <h6 class="text-center"><?php echo $price ?>JODs</h6>
                     </div>
                    <?php
 }?>
@@ -455,7 +472,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                                 <h6><?php echo $category_name ?></h6><h6 class="text-muted ml-2"></h6>
                             </div>
                         </div>
-                        
+
                         <div class="card-footer d-flex justify-content-between bg-light border">
                             <a href="./Venue.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
                         </div>

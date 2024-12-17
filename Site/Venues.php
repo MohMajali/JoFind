@@ -5,9 +5,9 @@ include "../Connect.php";
 
 $C_ID = $_SESSION['C_Log'];
 
-$filter = $_GET['filter'];
 $category_id = $_GET['category_id'];
-$sub_category_id = $_GET['sub_category_id'];
+$city_id = $_GET['city_id'];
+$filter = $_GET['pop_id'];
 
 $venues = [];
 
@@ -15,7 +15,7 @@ if (isset($_POST['Submit'])) {
 
     $venue = '%' . $_POST['venue'] . '%';
 
-    $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND name LIKE '$venue'");
+    $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND name LIKE '$venue'");
 
     while ($row1 = mysqli_fetch_array($query)) {
 
@@ -37,10 +37,11 @@ if (isset($_POST['Submit'])) {
 
     }
 
-}if (isset($category_id)) {
+} else if (isset($category_id)) {
 
     $cookies = $con->prepare("INSERT INTO customer_logs (customer_id, category_id) VALUES (?, ?) ");
     $cookies->bind_param("ii", $C_ID, $category_id);
+    $cookies->execute();
 
     $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND category_id = '$category_id'");
 
@@ -64,20 +65,18 @@ if (isset($_POST['Submit'])) {
 
     }
 
-} else if (isset($sub_category_id)) {
+} else if (isset($city_id)) {
 
-    $cookies = $con->prepare("INSERT INTO customer_logs (customer_id, sub_category_id) VALUES (?, ?) ");
-    $cookies->bind_param("ii", $C_ID, $sub_category_id);
-
-    $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND sub_category_id = '$sub_category_id'");
+    $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND city_id = '$city_id'");
 
     while ($row1 = mysqli_fetch_array($query)) {
 
         $place_id = $row1['id'];
         $place_name = $row1['name'];
         $place_image = $row1['image'];
+        $category_id = $row1['category_id'];
 
-        $sql3 = mysqli_query($con, "SELECT * from sub_categories WHERE id = '$sub_category_id' AND active = 1");
+        $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
         $row3 = mysqli_fetch_array($sql3);
 
         $category_name = $row3['name'];
@@ -255,7 +254,7 @@ if ($C_ID) {
                     <div class="input-group">
                         <input type="text" name="venue" class="form-control" placeholder="Search for Venues">
                         <div class="input-group-append">
-                            <button type="Submit" class="input-group-text bg-transparent text-primary">
+                            <button type="Submit" name="Submit" class="input-group-text bg-transparent text-primary">
                                 <i class="fa fa-search"></i>
                             </button>
                         </div>
@@ -263,18 +262,6 @@ if ($C_ID) {
                 </form>
             </div>
 
-
-                  <?php
-
-if ($C_ID) {?>
-
-<div class="col-lg-3 col-6 text-right">
-<a href="" class="btn border">
-                    <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
-                </a>
-            </div>
-             <?php }?>
         </div>
     </div>
     <!-- Topbar End -->
@@ -463,32 +450,85 @@ if (!$C_ID) {?>
 
 
             <!-- Shop Product Start -->
-            <div class="col-lg-9 col-md-12">
+            <div class="col-lg-12 col-md-12">
                 <div class="row pb-3">
                     <div class="col-12 pb-1">
                         <div class="d-flex align-items-center justify-content-between mb-4">
-                            <form action="">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search by name">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text bg-transparent text-primary">
-                                            <i class="fa fa-search"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </form>
-                            <div class="dropdown ml-4">
-                                <button class="btn border dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                            Sort by
-                                        </button>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="triggerId">
+                            <form action="" class="col-12 row">
 
-                                    <a class="dropdown-item" href="Venues.php?filter=popularity">Popularity</a>
-                                    <a class="dropdown-item" href="Venues.php?filter=best_rating">Best Rating</a>
-                                    <a class="dropdown-item" href="Venues.php">All</a>
+
+                                <div class="input-group col-4">
+                                    <select class="custom-select" name="category_id" id="">
+
+<option value="" disabled selected>Select Category</option>
+                                    <?php
+$sql122211 = mysqli_query($con, "SELECT * from categories WHERE active = 1 ORDER BY id DESC");
+while ($row12222111 = mysqli_fetch_array($sql122211)) {
+
+    $category_id_sql = $row12222111['id'];
+    $category_name_sql = $row12222111['name'];
+
+    ?>
+
+            <option value="<?php echo $category_id_sql ?>"><?php echo $category_name_sql ?></option>
+<?php
+}?>
+
+                                    </select>
                                 </div>
-                            </div>
+
+
+
+
+                                <div class="input-group col-4">
+                                    <select class="custom-select" name="city_id" id="">
+
+
+                                    <option value="" disabled selected>Select City</option>
+                                    <?php
+$sql212121 = mysqli_query($con, "SELECT * from cities ORDER BY id DESC");
+while ($row212121 = mysqli_fetch_array($sql212121)) {
+
+    $city_id_sql = $row212121['id'];
+    $city_name_sql = $row212121['city'];
+
+    ?>
+
+            <option value="<?php echo $city_id_sql ?>"><?php echo $city_name_sql ?></option>
+<?php
+}?>
+
+                                    </select>
+                                </div>
+
+
+
+
+
+                                <div class="input-group col-4">
+                                    <select class="custom-select" name="pop_id" id="">
+
+
+
+                                    <option value="" disabled selected>Select </option>
+
+            <option value="popularity">Popularity</option>
+            <option value="best_rating">Best Rating</option>
+            <option value="All">All</option>
+
+
+                                    </select>
+                                </div>
+
+
+                                <div class="d-flex align-items-center justify-content-center mt-3 col-12">
+    <button type="submit" class="btn btn-primary">Filter</button>
+</div>
+
+
+
+
+                            </form>
                         </div>
                     </div>
 

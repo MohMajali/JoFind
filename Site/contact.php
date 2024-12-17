@@ -119,24 +119,14 @@ if (isset($_POST['Submit'])) {
                     <div class="input-group">
                         <input type="text" name="venue" class="form-control" placeholder="Search for Venues">
                         <div class="input-group-append">
-                            <button type="Submit" class="input-group-text bg-transparent text-primary">
+                            <button type="Submit" name="Submit" class="input-group-text bg-transparent text-primary">
                                 <i class="fa fa-search"></i>
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
-            <?php
 
-if ($C_ID) {?>
-
-<div class="col-lg-3 col-6 text-right">
-<a href="" class="btn border">
-                    <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
-                </a>
-            </div>
-             <?php }?>
         </div>
     </div>
     <!-- Topbar End -->

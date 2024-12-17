@@ -13,6 +13,8 @@ if ($C_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
     $phone = $row1['phone'];
+    $phone = $row1['phone'];
+    $image = $row1['image'];
 
     if (isset($_POST['Submit'])) {
 
@@ -20,45 +22,94 @@ if ($C_ID) {
         $name = $_POST['name'];
         $email = $_POST['email'];
         $phone = $_POST['phone'];
-        $password = $_POST['password'];
+        $image = $_FILES["file"]["name"];
 
-        if ($password) {
+        if ($image) {
 
-            $password = md5($password);
-            
-            $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ? WHERE id = ? ");
+        $image = 'Users_Images/' . $image;
 
-            $stmt->bind_param("ssssi", $name, $password, $phone, $email, $C_ID);
 
-            if ($stmt->execute()) {
+            if ($password) {
 
-                echo "<script language='JavaScript'>
-                  alert ('Account Updated Successfully !');
-             </script>";
+                $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ?, image = ? WHERE id = ? ");
 
-                echo "<script language='JavaScript'>
-            document.location='./Profile.php';
-               </script>";
+                $stmt->bind_param("sssssi", $name, $password, $phone, $email, $image, $C_ID);
 
+                if ($stmt->execute()) {
+
+                    
+                move_uploaded_file($_FILES["file"]["tmp_name"], "./Users_Images/" . $_FILES["file"]["name"]);
+
+                    echo "<script language='JavaScript'>
+                      alert ('Account Updated Successfully !');
+                 </script>";
+
+                    echo "<script language='JavaScript'>
+                document.location='./Profile.php';
+                   </script>";
+
+                }
+
+            } else {
+
+                $stmt = $con->prepare("UPDATE users SET name = ?, phone = ?, email = ?, image = ? WHERE id = ? ");
+
+                $stmt->bind_param("ssssi", $name, $phone, $email, $image, $C_ID);
+
+                if ($stmt->execute()) {
+
+                    move_uploaded_file($_FILES["file"]["tmp_name"], "./Users_Images/" . $_FILES["file"]["name"]);
+
+                    echo "<script language='JavaScript'>
+                      alert ('Account Updated Successfully !');
+                 </script>";
+
+                    echo "<script language='JavaScript'>
+                document.location='./Profile.php';
+                   </script>";
+
+                }
             }
 
         } else {
 
-            $stmt = $con->prepare("UPDATE users SET name = ?, phone = ?, email = ? WHERE id = ? ");
+            if ($password) {
 
-            $stmt->bind_param("sssi", $name, $phone, $email, $C_ID);
+                $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ? WHERE id = ? ");
 
-            if ($stmt->execute()) {
+                $stmt->bind_param("ssssi", $name, $password, $phone, $email, $C_ID);
 
-                echo "<script language='JavaScript'>
-                  alert ('Account Updated Successfully !');
-             </script>";
+                if ($stmt->execute()) {
 
-                echo "<script language='JavaScript'>
-            document.location='./Profile.php';
-               </script>";
+                    echo "<script language='JavaScript'>
+                      alert ('Account Updated Successfully !');
+                 </script>";
 
+                    echo "<script language='JavaScript'>
+                document.location='./Profile.php';
+                   </script>";
+
+                }
+
+            } else {
+
+                $stmt = $con->prepare("UPDATE users SET name = ?, phone = ?, email = ? WHERE id = ? ");
+
+                $stmt->bind_param("sssi", $name, $phone, $email, $C_ID);
+
+                if ($stmt->execute()) {
+
+                    echo "<script language='JavaScript'>
+                      alert ('Account Updated Successfully !');
+                 </script>";
+
+                    echo "<script language='JavaScript'>
+                document.location='./Profile.php';
+                   </script>";
+
+                }
             }
+
         }
 
     }
@@ -92,6 +143,12 @@ if ($C_ID) {
 
     <!-- Libraries Stylesheet -->
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <link
+      href="../assets/vendor/bootstrap-icons/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
@@ -141,24 +198,14 @@ if ($C_ID) {
                     <div class="input-group">
                         <input type="text" name="venue" class="form-control" placeholder="Search for Venues">
                         <div class="input-group-append">
-                            <button type="Submit" class="input-group-text bg-transparent text-primary">
+                            <button type="Submit" name="Submit" class="input-group-text bg-transparent text-primary">
                                 <i class="fa fa-search"></i>
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
-            <?php
 
-if ($C_ID) {?>
-
-<div class="col-lg-3 col-6 text-right">
-<a href="" class="btn border">
-                    <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
-                </a>
-            </div>
-             <?php }?>
         </div>
     </div>
     <!-- Topbar End -->
@@ -239,9 +286,22 @@ if (!$C_ID) {?>
             <div class="col-lg-12 mb-5">
                 <div class="contact-form">
                     <!-- <div id="success"></div> -->
-                    <form method="POST" action="Profile.php" novalidate="novalidate">
+                    <form method="POST" action="Profile.php" novalidate="novalidate" enctype="multipart/form-data">
 
-                    <input type="hidden" name="C_ID" value="<?php echo $C_ID ?>">
+                    <input type="hidden" name="C_ID" value="<?php echo $C_ID ?>" >
+
+
+
+
+                    <div class="row mb-3 text-center">
+  <div class="col-md-12 col-lg-12">
+    <img src="<?php echo $image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5jifLXKb2qo_5aXh54USNlvxI34oPpG3zTw&s" ?>" alt="Profile" id="profileImage" width="150px" height="150px">
+    <div class="pt-2">
+        <input type="file" name="file" id="newImage" onchange="previewImage();" hidden>
+        <label for="newImage" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></label>
+    </div>
+  </div>
+</div>
 
                         <div class="control-group">
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo $name ?>" placeholder="Your Name"
@@ -301,6 +361,19 @@ if (!$C_ID) {?>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
+    <script>
+
+function previewImage() {
+  var file = document.getElementById("newImage").files[0];
+  var reader = new FileReader();
+  reader.onloadend = function() {
+    document.getElementById("profileImage").src = reader.result;
+  }
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+}
+    </script>
 
     <script src="./js/drop-down.js"></script>
 </body>

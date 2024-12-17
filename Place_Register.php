@@ -19,6 +19,7 @@ if (isset($_POST['Submit'])) {
     $subcategory_id = $_POST['subcategory_id'];
     $phone = $_POST['phone'];
     $city_id = $_POST['city_id'];
+    $address = $_POST['address'];
     $longitude = doubleval($_POST['longitude']);
     $latitude = doubleval($_POST['latitude']);
     $image = $_FILES["file"]["name"];
@@ -61,10 +62,10 @@ if (isset($_POST['Submit'])) {
 
     } else {
 
-        $stmt = $con->prepare("INSERT INTO places (category_id, status_id, name, image, email, phone, password, city_id, commercial_register)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ");
+        $stmt = $con->prepare("INSERT INTO places (category_id, status_id, name, image, email, phone, password, city_id, commercial_register, address)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-        $stmt->bind_param("iisssssis", $category_id, $status_id, $name, $image, $email, $phone, $password, $city_id, $commercial_register);
+        $stmt->bind_param("iisssssiss", $category_id, $status_id, $name, $image, $email, $phone, $password, $city_id, $commercial_register_file, $address);
 
         if ($stmt->execute()) {
 
@@ -231,9 +232,9 @@ if (isset($_POST['Submit'])) {
                             name="name"
                             class="form-control"
                             id="name"
-                            pattern="[A-Za-z]+"
+                            pattern="[A-Za-z ]+"
   title="Only alphabetic characters are allowed."
-  oninput="this.value = this.value.replace(/[^a-zA-Z]+/g, '');"
+  oninput="this.value = this.value.replace(/[^a-zA-Z ]+/g, '');"
                             required
                           />
 
@@ -324,6 +325,20 @@ if (isset($_POST['Submit'])) {
 
 
                       <div class="col-12">
+                        <label for="address" class="form-label"
+                          >Address</label
+                        >
+                        <input
+                          type="text"
+                          name="address"
+                          class="form-control"
+                          id="address"
+                          required
+                        />
+                      </div>
+
+
+                      <div class="col-12">
                         <label for="startDate" class="form-label"
                           >Contract Start Date</label
                         >
@@ -335,7 +350,6 @@ if (isset($_POST['Submit'])) {
                           id="startDate"
                           required
                         />
-
                       </div>
 
 

@@ -3,21 +3,47 @@ session_start();
 
 include "../Connect.php";
 
-$A_ID = $_SESSION['A_Log'];
+$P_ID = $_SESSION['P_Log'];
 
-if (!$A_ID) {
+if (!$P_ID) {
 
     echo '<script language="JavaScript">
-     document.location="../Login.php";
+     document.location="../Place_Login.php";
     </script>';
 
 } else {
 
-    $sql1 = mysqli_query($con, "select * from users where id='$A_ID'");
+    $sql1 = mysqli_query($con, "select * from places where id = '$P_ID'");
     $row1 = mysqli_fetch_array($sql1);
 
     $name = $row1['name'];
     $email = $row1['email'];
+
+    if (isset($_POST['Submit'])) {
+
+        $place_id = $_POST['place_id'];
+        $image = $_FILES["file"]["name"];
+        $image = 'Places_Images/' . $image;
+
+        $stmt = $con->prepare("INSERT INTO place_images (place_id, image) VALUES (?, ?)");
+
+        $stmt->bind_param("is", $place_id, $image);
+
+        if ($stmt->execute()) {
+
+            move_uploaded_file($_FILES["file"]["tmp_name"], "./Places_Images/" . $_FILES["file"]["name"]);
+
+            echo "<script language='JavaScript'>
+              alert ('A New Image Has Been Added Successfully !');
+         </script>";
+
+            echo "<script language='JavaScript'>
+        document.location='./Images.php';
+           </script>";
+
+        }
+
+    }
 }
 
 ?>
@@ -28,7 +54,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>New Requestes - JoFind</title>
+    <title>Images - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -120,11 +146,11 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>New Requestes</h1>
+        <h1>Images</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item">New Requestes</li>
+            <li class="breadcrumb-item">Images</li>
           </ol>
         </nav>
       </div>
@@ -132,12 +158,22 @@ if (!$A_ID) {
       <section class="section">
 
 
+      <div class="mb-3">
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#verticalycentered"
+          >
+            Add New Image
+          </button>
+        </div>
 
-      <div class="modal fade" id="verticalycentered" tabindex="-1">
+        <div class="modal fade" id="verticalycentered" tabindex="-1">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Rejection Note</h5>
+                <h5 class="modal-title">Image Information</h5>
                 <button
                   type="button"
                   class="btn-close"
@@ -147,23 +183,20 @@ if (!$A_ID) {
               </div>
               <div class="modal-body">
 
-                <form action="./AcceptOrRejectPlace.php" enctype="multipart/form-data" id="form-note">
+                <form method="POST" action="./Images.php" enctype="multipart/form-data">
 
-
-
-                  <input type="hidden" value="3" name="status">
-                  <input type="hidden" name="place_id" id="place_id_input">
-
+                <input type="hidden" name="place_id" value="<?php echo $P_ID ?>">
 
                   <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label"
-                      >Notes</label
+                      >Image</label
                     >
                     <div class="col-sm-8">
-
-                      <textarea name="rejection_note" id="" class="form-control" required></textarea>
+                      <input type="file" name="file" class="form-control" />
                     </div>
                   </div>
+
+
 
                   <div class="row mb-3">
                     <div class="text-end">
@@ -199,77 +232,34 @@ if (!$A_ID) {
                   <thead>
                     <tr>
                       <th scope="col">ID</th>
-                      <th scope="col">Venue Name</th>
-                      <th scope="col">Category Name</th>
-                      <th scope="col">City Name</th>
-                      <th scope="col">Commercial Register</th>
+                      <th scope="col">Image</th>
                       <th scope="col">Created At</th>
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
+
+
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from places WHERE status_id = 1 ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * from place_images WHERE place_id = '$P_ID' ORDER BY id DESC");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $place_id = $row1['id'];
-    $category_id = $row1['category_id'];
-    $sub_category_id = $row1['sub_category_id'];
-    $place_name = $row1['name'];
-    $commercial_register = $row1['commercial_register'];
+    $menu_id = $row1['id'];
+    $image = $row1['image'];
     $active = $row1['active'];
     $created_at = $row1['created_at'];
-    $city_id = $row1['city_id'];
-
-    $sql2 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id'");
-    $row2 = mysqli_fetch_array($sql2);
-
-    $category_name = $row2['name'];
-
-    $sql3 = mysqli_query($con, "SELECT * from cities WHERE id = '$city_id'");
-    $row3 = mysqli_fetch_array($sql3);
-
-    $city_name = $row3['city'];
 
     ?>
                     <tr>
-                      <th scope="row"><?php echo $place_id ?></th>
-                      <td><?php echo $place_name ?></td>
-                      <td><?php echo $category_name ?></td>
-                      <td><?php echo $city_name ?></td>
-                      <td><a href="../Place_Dashboard/<?php echo $commercial_register ?>" target="_blank">View</a></td>
+                      <th scope="row"><?php echo $menu_id ?></th>
+                      <th scope="row"><img src="<?php echo $image ?>" alt="" width="150px" height="150px"></th>
                       <th scope="row"><?php echo $created_at ?></th>
-                      <td>
+                      <th scope="row">
 
-              <div class="d-flex flex-column">
-                        <a href="./AcceptOrRejectPlace.php?place_id=<?php echo $place_id ?>&status=2" class="btn btn-success mb-2"
-                          >Accept</a
-                        >
+                    <a href="./DeleteMenu.php?menu_id=<?php echo $menu_id ?>" class="btn btn-danger">Delete</a>
 
-                        <!-- <a href="./AcceptOrRejectPlace.php?place_id=<?php echo $place_id ?>&status=3" class="btn btn-danger"
-                          >Reject</a
-                        > -->
-
-
-
-                        <button
-            type="button"
-            class="btn btn-danger"
-            data-bs-toggle="modal"
-            data-bs-target="#verticalycentered"
-            id="btn-<?php echo $place_id ?>"
-            onclick="getId(event)"
-          >
-            Reject
-          </button>
-
-
-                        </div>
-
-
-
-                      </td>
+                      </th>
                     </tr>
 <?php
 }?>
@@ -301,7 +291,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(6) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(8) .nav-link').classList.remove('collapsed')
    });
 </script>
 
@@ -317,24 +307,5 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <!-- Template Main JS File -->
     <script src="../assets/js/main.js"></script>
-
-
-    <script>
-
-//place_id_input
-
-
-
-        const getId = (e) => {
-          
-          document.getElementById('form-note').action = `${document.getElementById('form-note').action}?place_id=${e.target.id.split('-')[1]}`
-          document.getElementById('place_id_input').value = e.target.id.split('-')[1]
-          // console.log(document.getElementById('form-note').action);
-          
-        }
-
-
-    
-    </script>
   </body>
 </html>

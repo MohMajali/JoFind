@@ -43,6 +43,18 @@
         <i class="bi bi-people"></i><span>Customers</span>
       </a>
     </li>
+        
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="./Images.php">
+        <i class="bi bi-images"></i><span>Images</span>
+      </a>
+    </li>
+        
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="./Menu.php">
+        <i class="bi bi-menu-down"></i><span>Menus</span>
+      </a>
+    </li>
 
 
 
