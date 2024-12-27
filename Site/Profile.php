@@ -154,7 +154,7 @@ if ($C_ID) {
     <link href="css/style.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="background-color: #051F20 !important;">
     <!-- Topbar Start -->
     <div class="container-fluid">
         <div class="row bg-secondary py-2 px-xl-5">
@@ -172,25 +172,19 @@ if ($C_ID) {
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
+
+
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a class="text-dark pl-2" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a>
+      
                 </div>
             </div>
         </div>
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
-                <a href="./index.php" class="text-decoration-none">
-                <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
+            <a href="./index.php" class="text-decoration-none">
+                    <h1 style="color: #DAC1B1 !important;" class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
@@ -264,13 +258,13 @@ if (!$C_ID) {?>
 
 
     <!-- Page Header Start -->
-    <div class="container-fluid bg-secondary mb-5">
+    <div style="background-color: #051F20 !important;" class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3">Profile</h1>
+            <h1 style="color: #DAC1B1 !important;" class="font-weight-semi-bold text-uppercase mb-3">Profile</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
-                <p class="m-0 px-2">-</p>
-                <p class="m-0">Profile</p>
+                <p style="color: #DAC1B1 !important;" class="m-0"><a style="color: #DAC1B1 !important;" href="">Home</a></p>
+                <p style="color: #DAC1B1 !important;" class="m-0 px-2">-</p>
+                <p style="color: #DAC1B1 !important;" class="m-0">Profile</p>
             </div>
         </div>
     </div>
@@ -280,7 +274,7 @@ if (!$C_ID) {?>
     <!-- Contact Start -->
     <div class="container-fluid pt-5">
         <div class="text-center mb-4">
-            <h2 class="section-title px-5"><span class="px-2">Your Profile</span></h2>
+            <h2 style="color: #DAC1B1 !important;" class="section-title px-5"><span style="background: none;" class="px-2">Your Profile</span></h2>
         </div>
         <div class="row px-xl-12">
             <div class="col-lg-12 mb-5">
@@ -293,7 +287,7 @@ if (!$C_ID) {?>
 
 
 
-                    <div class="row mb-3 text-center">
+                    <div class="row mb-3 text-center" >
   <div class="col-md-12 col-lg-12">
     <img src="<?php echo $image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5jifLXKb2qo_5aXh54USNlvxI34oPpG3zTw&s" ?>" alt="Profile" id="profileImage" width="150px" height="150px">
     <div class="pt-2">
@@ -304,25 +298,25 @@ if (!$C_ID) {?>
 </div>
 
                         <div class="control-group">
-                            <input type="text" class="form-control" id="name" name="name" value="<?php echo $name ?>" placeholder="Your Name"
+                            <input style="background-color: #DAC1B1 !important;" type="text" class="form-control" id="name" name="name" value="<?php echo $name ?>" placeholder="Your Name"
                                 required="required" data-validation-required-message="Please enter your name" />
                             <p class="help-block text-danger"></p>
                         </div>
 
                         <div class="control-group">
-                            <input type="email" name="email" class="form-control" id="email" value="<?php echo $email ?>" placeholder="Your Email"
+                            <input style="background-color: #DAC1B1 !important;" type="email" name="email" class="form-control" id="email" value="<?php echo $email ?>" placeholder="Your Email"
                                 required="required" data-validation-required-message="Please enter your email" />
                             <p class="help-block text-danger"></p>
                         </div>
 
                         <div class="control-group">
-                            <input type="text" class="form-control" name="phone" value="<?php echo $phone ?>" id="subject" placeholder="Subject"
+                            <input style="background-color: #DAC1B1 !important;" type="text" class="form-control" name="phone" value="<?php echo $phone ?>" id="subject" placeholder="Subject"
                                 required="required" data-validation-required-message="Please enter a subject" />
                             <p class="help-block text-danger"></p>
                         </div>
 
                         <div class="control-group">
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Password" />
+                            <input style="background-color: #DAC1B1 !important;" type="password" class="form-control" name="password" id="password" placeholder="Password" />
                             <p class="help-block text-danger"></p>
                         </div>
 

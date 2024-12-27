@@ -107,7 +107,7 @@ if ($C_ID) {
     <link href="css/style.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="background-color: #051F20 !important;">
     <!-- Topbar Start -->
     <div class="container-fluid">
         <div class="row bg-secondary py-2 px-xl-5">
@@ -125,25 +125,19 @@ if ($C_ID) {
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
+
+
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a class="text-dark pl-2" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a>
+      
                 </div>
             </div>
         </div>
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
-                <a href="" class="text-decoration-none">
-                <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
+            <a href="./index.php" class="text-decoration-none">
+                    <h1 style="color: #DAC1B1 !important;" class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
@@ -220,13 +214,13 @@ if (!$C_ID) {?>
 
 
     <!-- Page Header Start -->
-    <div class="container-fluid bg-secondary mb-5">
-        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3">Checkout</h1>
+    <div style="background-color: #051F20 !important;" class="container-fluid bg-secondary mb-5">
+        <div  class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+            <h1 style="color: #DAC1B1 !important;" class="font-weight-semi-bold text-uppercase mb-3">Checkout</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
-                <p class="m-0 px-2">-</p>
-                <p class="m-0">Checkout</p>
+                <p style="color: #DAC1B1 !important;" class="m-0"><a style="background-color: #DAC1B1 !important;" href="">Home</a></p>
+                <p style="color: #DAC1B1 !important;" class="m-0 px-2">-</p>
+                <p style="color: #DAC1B1 !important;" class="m-0">Checkout</p>
             </div>
         </div>
     </div>
@@ -238,7 +232,7 @@ if (!$C_ID) {?>
         <div class="row px-xl-5">
             <div class="col-lg-12">
                 <div class="mb-4">
-                    <h4 class="font-weight-semi-bold mb-4">Checkout</h4>
+                    <h4 style="color: #DAC1B1 !important;" class="font-weight-semi-bold mb-4">Checkout</h4>
                     <form method="POST" accept="checkout.php?venue_id=<?php echo $venue_id ?>&option_id=<?php echo $option_id ?>" class="row">
 
                         <input type="hidden" name="place_id" value="<?php echo $venue_id ?>">
@@ -250,19 +244,19 @@ if (!$C_ID) {?>
 
                         <div class="col-md-12 form-group">
                             <label>Name On Card</label>
-                            <input class="form-control" type="text" placeholder="Jhon-doe" required>
+                            <input style="background-color: #DAC1B1 !important;" class="form-control" type="text" placeholder="Jhon-doe" required>
                         </div>
                         <div class="col-md-12 form-group">
                             <label>Card Number</label>
-                            <input class="form-control" type="text" placeholder="XXXX-XXXX-XXXX-XXXX" required>
+                            <input style="background-color: #DAC1B1 !important;" class="form-control" type="text" placeholder="XXXX-XXXX-XXXX-XXXX" required>
                         </div>
                         <div class="col-md-12 form-group">
                             <label>CVV</label>
-                            <input class="form-control" type="text" placeholder="XXX" required>
+                            <input style="background-color: #DAC1B1 !important;" class="form-control" type="text" placeholder="XXX" required>
                         </div>
                         <div class="col-md-12 form-group">
                             <label>Expiry Date</label>
-                            <input class="form-control" type="month" placeholder="MM/YYYY" required>
+                            <input style="background-color: #DAC1B1 !important;" class="form-control" type="month" placeholder="MM/YYYY" required>
                         </div>
 
 

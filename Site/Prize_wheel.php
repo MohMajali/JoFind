@@ -164,6 +164,7 @@ let colors = [];
 let itemDegs = {};
 let step = 360 / items.length; // Angle step for each segment
 let index2 = 0;
+let counterTaps = 0;
 
 function setupWheel() {
     step = 360 / items.length;
@@ -228,43 +229,70 @@ function draw() {
             // document.getElementById("winner").innerHTML = items[i].offer;
             if(pause) {
 
-                $.ajax({
-                    url: './AddWinner.php',
-                    type: 'POST',
-                    data: { customer_id, offer_id : items[i].id },
-                    success: function(response) {
+                console.log("items[i].id ===> ", items[i].id);
 
-                        res = JSON.parse(response);
+                if(items[i].id) {
+
+console.log("ffffffwwwwww", customer_id , items[i].id);
+
+                                    $.ajax({
+                                        url: './AddWinner.php',
+                                        type: 'POST',
+                                        data: { customer_id, offer_id : items[i].id },
+                                        success: function(response) {
+
+
+if(response) {
 
 
 
-                        if(!res['error']) {
+    res = JSON.parse(response);
 
+    if(!res['error']) {
 
-                            let name;
-                            if($items[i].discount >= 10 && $items[i].discount < 30) {
+        let name;
 
-                                name = 'Bronze'
-                            } else if($items[i].discount >= 30 && $items[i].discount < 60) {
+        if(items[i].discount >= 10 && items[i].discount < 30) {
 
-                                name = 'Silder'
-                            }
-                             else if($items[i].discount >= 60 && $items[i].discount <= 100) {
+            name = 'Bronze'
+        } else if(items[i].discount >= 30 && items[i].discount < 60) {
 
-                                name = 'Gold'
-                            }
+            name = 'Silver'
+        }
+         else if(items[i].discount >= 60 && items[i].discount <= 100) {
 
-                            alert(`You Won ${name}`)
+            name = 'Gold'
+        }
 
-                            document.location= `./Venue.php?venue_id=${venue_id}`;
-                        }
-                    },
-                    error: function() {
-                        alert('Error Adding Offer.');
-                    }
-});
+        alert(`You Won ${name}`)
 
+        document.location= `./Venue.php?venue_id=${venue_id}`;
+    } else {
+        alert('try again')
+    }
+} else {
+    alert('Try again')
+
+}
+                                        },
+                                        error: function() {
+                                            alert('Error Adding Offer.');
+                                        }
+                    });
+
+                } else {
+console.log("fffffffeeeeee");
+
+                    alert('Try again')
+                }
             }
+        } else {
+            
+            if(counterTaps > 0) {
+                console.log("fffee");
+                
+            }
+            
         }
 
     }
@@ -278,10 +306,10 @@ function animate() {
 
     speed = easeOutSine(getPercent(currentDeg, maxRotation, 0)) * 20;
     if (speed < 0.01) {
+        
         speed = 0;
         pause = true;
 
-        console.log('fffff');
 
     }
     currentDeg += speed;
@@ -290,6 +318,7 @@ function animate() {
 }
 
 function spin() {
+    counterTaps++;
     if (speed !== 0) return;
 
     currentDeg = 0;

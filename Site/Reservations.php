@@ -63,7 +63,7 @@ if ($C_ID) {
     </style>
 </head>
 
-<body>
+<body style="background-color: #051F20 !important;">
     <!-- Topbar Start -->
     <div class="container-fluid">
         <div class="row bg-secondary py-2 px-xl-5">
@@ -81,25 +81,19 @@ if ($C_ID) {
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
+
+
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a class="text-dark pl-2" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a>
+      
                 </div>
             </div>
         </div>
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
-                <a href="./index.php" class="text-decoration-none">
-                <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
+            <a href="./index.php" class="text-decoration-none">
+                    <h1 style="color: #DAC1B1 !important;" class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
@@ -175,13 +169,13 @@ if (!$C_ID) {?>
 
 
     <!-- Page Header Start -->
-    <div class="container-fluid bg-secondary mb-5">
+    <div style="background-color: #051F20 !important;" class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3">Reservations</h1>
+            <h1 style="color: #DAC1B1 !important;" class="font-weight-semi-bold text-uppercase mb-3">Reservations</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="./index.php">Home</a></p>
-                <p class="m-0 px-2">-</p>
-                <p class="m-0">Reservations</p>
+                <p style="color: #DAC1B1 !important;" class="m-0"><a style="color: #DAC1B1 !important;" href="./index.php">Home</a></p>
+                <p style="color: #DAC1B1 !important;" class="m-0 px-2">-</p>
+                <p style="color: #DAC1B1 !important;" class="m-0">Reservations</p>
             </div>
         </div>
     </div>
@@ -240,13 +234,13 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
 
                         <tr>
-                            <td class="align-middle"> <?php echo $venue_name ?></td>
-                            <td class="align-middle"><?php echo $date_time ?></td>
-                            <td class="align-middle"><?php echo ($offer ?? '-') ?></td>
-                            <td class="align-middle"><?php echo $price ?> JODs</td>
-                            <td class="align-middle"><?php echo $total_price ?> JODs</td>
-                            <td class="align-middle"><?php echo $status ?></td>
-                            <td class="align-middle" dir="rtl">
+                            <td style="color: #DAC1B1 !important;" class="align-middle"> <?php echo $venue_name ?></td>
+                            <td style="color: #DAC1B1 !important;" class="align-middle"><?php echo $date_time ?></td>
+                            <td style="color: #DAC1B1 !important;" class="align-middle"><?php echo ($offer ?? '-') ?></td>
+                            <td style="color: #DAC1B1 !important;" class="align-middle"><?php echo $price ?> JODs</td>
+                            <td style="color: #DAC1B1 !important;" class="align-middle"><?php echo $total_price ?> JODs</td>
+                            <td style="color: #DAC1B1 !important;" class="align-middle"><?php echo $status ?></td>
+                            <td style="color: #DAC1B1 !important;" class="align-middle" dir="rtl">
 
 <a href="Rate_Venue.php?Rate=5&place_id=<?php echo $place_id; ?>&C_ID=<?php echo $C_ID; ?>" role="button" class="star"><i title="5" class="fa fa-star"></i></a>
 
@@ -259,7 +253,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 <a href="Rate_Venue.php?Rate=1&place_id=<?php echo $place_id; ?>&C_ID=<?php echo $C_ID; ?>" role="button" class="star"><i title="1" class="fa fa-star"></i></a>
 
                             </td>
-                            <td class="align-middle"><a href="./Feedback.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm btn-primary">
+                            <td class="align-middle"><a  style="color: #DAC1B1 !important;" href="./Feedback.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm btn-primary">
 
                             Add Feedback
                             </a></td>

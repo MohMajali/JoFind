@@ -6,6 +6,7 @@ include "../Connect.php";
 $A_ID = $_SESSION['A_Log'];
 
 $place_id = $_GET['place_id'];
+$type = $_GET['type'];
 
 if (!$A_ID) {
 
@@ -25,6 +26,20 @@ if (!$A_ID) {
     $row2 = mysqli_fetch_array($sql2);
 
     $venue_name = $row2['name'];
+
+
+    $sqlQuery = "SELECT * from place_subscriptions ORDER BY id DESC";
+
+    if(isset($place_id)) {
+
+      $sqlQuery = "SELECT * from place_subscriptions WHERE place_id = '$place_id' ORDER BY id DESC";
+      
+    } else if(isset($type)) {
+      
+      $sqlQuery = "SELECT * from place_subscriptions WHERE subscription_type LIKE '%$type%' ORDER BY id DESC";
+    }
+ 
+    
 }
 
 ?>
@@ -138,13 +153,77 @@ if (!$A_ID) {
       <!-- End Page Title -->
       <section class="section">
 
+      <script>
+        function printDiv() {
+            var divContents = document.getElementById("div_print").innerHTML;
+            var a = window.open('', '', 'height=1000, width=5000');
+            a.document.write('<html>');
+            a.document.write('<body >');
+            a.document.write(divContents);
+            a.document.write('</body></html>');
+            a.document.close();
+            a.print();
+        }
+    </script>
 
+      <div class="mb-3">
+
+<input type="button" value="PRINT REPORT" class="btn btn-primary" onclick="printDiv()">
+</div>
 
 
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
-              <div class="card-body">
+              <div class="card-body" id="div_print">
+
+
+
+
+
+
+
+
+
+              <form action="<?php echo $place_id ? './Subscriptions.php?place_id=' . $place_id : './Subscriptions.php' ?>">
+
+
+
+
+<select name="place_id" id="">
+
+<option value="" selected disabled>Select Venue</option>
+  <?php
+$sql4444 = mysqli_query($con, "SELECT * from places WHERE active = 1 ORDER BY id DESC");
+
+while ($row44444 = mysqli_fetch_array($sql4444)) {
+
+    $place_id = $row44444['id'];
+    $place_name = $row44444['name'];
+
+    ?>
+
+<option value="<?php echo $place_id ?>"><?php echo $place_name ?></option>
+<?php
+}?>
+</select>
+
+
+
+
+<select name="type" id="">
+
+<option value="" selected disabled>Select Subscription type</option>
+<option value="3 Months Open Contract (First Time Only) (For Free)">3 Months Open Contract (First Time Only) (For Free)</option>
+                            <option value="6 Months Contract (300 JOD)">6 Months Contract (300 JOD)</option>
+                            <option value="12 Months COntract (600 JOD)">12 Months COntract (600 JOD)</option>
+</select>
+
+
+<button type="submit" >Filter</button>
+</form>
+
+
                 <!-- Table with stripped rows -->
                 <table class="table datatable">
                   <thead>
@@ -161,7 +240,7 @@ if (!$A_ID) {
                   </thead>
                   <tbody>
                   <?php
-$sql1 = $place_id ? mysqli_query($con, "SELECT * from place_subscriptions WHERE place_id = '$place_id' ORDER BY id DESC") : mysqli_query($con, "SELECT * from place_subscriptions ORDER BY id DESC");
+$sql1 = mysqli_query($con, $sqlQuery);
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 

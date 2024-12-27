@@ -33,8 +33,6 @@ if ($C_ID) {
 
     $venue_feedbacks_counts = $row3['reviews'];
 
-
-
     $sql4 = mysqli_query($con, "select * from place_menus where place_id='$venue_id'");
     $row4 = mysqli_fetch_array($sql4);
 
@@ -71,15 +69,32 @@ if ($C_ID) {
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+<link href='https://unpkg.com/fullcalendar@5/main.min.css' rel='stylesheet' />
+
+<script src='https://unpkg.com/fullcalendar@5/main.min.js'></script>
+
 
     <style>
         .selected-item {
             border-color: red !important;
         }
+
+        #fc-dom-1 {
+            color: red;
+        }
+
+        .fc-col-header-cell-cushion  {
+            color: #DAC1B1 !important;
+        }
+
+        .fc-daygrid-day-number {
+            color: #DAC1B1 !important;
+
+        }
     </style>
 </head>
 
-<body>
+<body style="background-color: #051F20 !important;">
     <!-- Topbar Start -->
     <div class="container-fluid">
         <div class="row bg-secondary py-2 px-xl-5">
@@ -97,25 +112,19 @@ if ($C_ID) {
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
+
+
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a class="text-dark pl-2" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a>
+
                 </div>
             </div>
         </div>
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
-                <a href="" class="text-decoration-none">
-                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
+            <a href="./index.php" class="text-decoration-none">
+                    <h1 style="color: #DAC1B1 !important;" class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
@@ -191,13 +200,13 @@ if (!$C_ID) {?>
 
 
     <!-- Page Header Start -->
-    <div class="container-fluid bg-secondary mb-5">
+    <div style="background-color: #051F20 !important;" class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3"><?php echo $venue_name ?> Detail</h1>
+            <h1 style="color: #DAC1B1 !important;" class="font-weight-semi-bold text-uppercase mb-3"><?php echo $venue_name ?> Detail</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
-                <p class="m-0 px-2">-</p>
-                <p class="m-0"><?php echo $venue_name ?> Detail</p>
+                <p style="color: #DAC1B1 !important;" class="m-0"><a style="color: #DAC1B1 !important;" href="">Home</a></p>
+                <p style="color: #DAC1B1 !important;" class="m-0 px-2">-</p>
+                <p style="color: #DAC1B1 !important;" class="m-0"><?php echo $venue_name ?> Detail</p>
             </div>
         </div>
     </div>
@@ -247,7 +256,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
             </div>
 
             <div class="col-lg-7 pb-5">
-                <h3 class="font-weight-semi-bold"><?php echo $venue_name ?></h3>
+                <h3 style="color: #DAC1B1 !important;" class="font-weight-semi-bold"><?php echo $venue_name ?></h3>
                 <div class="d-flex mb-3">
                     <div class="text-primary mr-2">
 
@@ -260,18 +269,18 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                     </div>
                     <small class="pt-1">(<?php echo $venue_feedbacks_counts ?> Reviews)</small>
                 </div>
-                <p class="mb-4"><?php echo $venue_description ?></p>
+                <p style="color: #DAC1B1 !important;" class="mb-4"><?php echo $venue_description ?></p>
 
-                <h3>Address : <?php echo $venue_address ?></h3>
-                <h3>Menu : <a href="../Place_Dashboard/<?php echo $menu_image ?>" target="_blank">View Menu</a></h3>
+                <h3 style="color: #DAC1B1 !important;">Address : <?php echo $venue_address ?></h3>
+                <h3 style="color: #DAC1B1 !important;">Menu : <a style="color: #DAC1B1 !important;" href="../Place_Dashboard/<?php echo $menu_image ?>" target="_blank">View Menu</a></h3>
 
                 <div class="container-fluid py-5">
         <div class="text-center mb-4">
-            <h2 class="section-title px-5"><span class="px-2">Play A Game To Get Offer</span></h2>
+            <h2 style="color: #DAC1B1 !important;" class="section-title px-5"><span style="background: none;" class="px-2">Play A Game To Get Offer</span></h2>
         </div>
 
         <div class="text-center mb-4">
-        <a href="./Prize_wheel.php?venue_id=<?php echo $venue_id ?>" class="btn btn-primary">Play Game</a>
+        <a style="color: #DAC1B1 !important;" href="./Prize_wheel.php?venue_id=<?php echo $venue_id ?>" class="btn btn-primary">Play Game</a>
         </div>
 
     </div>
@@ -285,36 +294,16 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
 
 
-        <div class="container-fluid py-5">
+
+
+
+    <div class="container-fluid py-5">
         <div class="text-center mb-4">
-            <h2 class="section-title px-5"><span class="px-2">Booking Options</span></h2>
+            <h2 style="color: #DAC1B1 !important;" class="section-title px-5"><span style="background: none;" class="px-2">Booking Options</span></h2>
         </div>
         <div class="row px-xl-5">
             <div class="col">
-                <div class="">
-
-                <?php
-$sql1 = mysqli_query($con, "SELECT * from booking_options WHERE active = 1 AND place_id = '$venue_id' ORDER BY id DESC");
-
-$counter = 0;
-
-while ($row1 = mysqli_fetch_array($sql1)) {
-
-    $option_id = $row1['id'];
-    $title = $row1['title'];
-    $date_time = $row1['date_time'];
-    $quantity = $row1['quantity'];
-    $has_soft_drinks = $row1['has_soft_drinks'];
-    $has_food = $row1['has_food'];
-    $price = $row1['price'];
-
-    $counter += 1;
-    ?>
-                    <div onclick="onDivClick(event)" id="option-<?php echo $option_id ?>-<?php echo $venue_id ?>" class="col-lg-3 col-md-6 col-sm-12 pb-1 border p-4">
-                        <h5 class="text-center">Date&Time : <?php echo $date_time ?></h5>
-                    </div>
-                   <?php
-}?>
+            <div id="calendar">
                 </div>
             </div>
         </div>
@@ -327,7 +316,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
         <div class="text-center mb-4">
             <!-- <h2 class="section-title px-5"><span class="px-2">Booking Options</span></h2> -->
 
-            <button onclick="navigate(event)" class="btn btn-primary px-5">Book Now!</a>
+            <button style="color: #DAC1B1 !important;" onclick="navigate(event)" class="btn btn-primary px-5">Book Now!</a>
         </div>
     </div>
     <?php }?>
@@ -335,55 +324,16 @@ while ($row1 = mysqli_fetch_array($sql1)) {
         <div class="row px-xl-5">
             <div class="col">
                 <div class="nav nav-tabs justify-content-center border-secondary mb-4">
-                    <a class="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Description</a>
+                    <a style="color: #DAC1B1 !important; background: none;" class="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Description</a>
                     <!-- <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Information</a> -->
-                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Reviews (<?php echo $venue_feedbacks_counts ?>)</a>
+                    <a style="color: #DAC1B1 !important; background: none;" class="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Reviews (<?php echo $venue_feedbacks_counts ?>)</a>
                 </div>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab-pane-1">
-                        <h4 class="mb-3"><?php echo $venue_name ?> Description</h4>
-                        <p><?php echo $venue_description ?></p>
+                        <h4 style="color: #DAC1B1 !important;" class="mb-3"><?php echo $venue_name ?> Description</h4>
+                        <p style="color: #DAC1B1 !important;"><?php echo $venue_description ?></p>
                     </div>
-                    <!-- <div class="tab-pane fade" id="tab-pane-2">
-                        <h4 class="mb-3">Additional Information</h4>
-                        <p>Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt.</p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item px-0">
-                                        Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                                    </li>
-                                  </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item px-0">
-                                        Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                                    </li>
-                                  </ul>
-                            </div>
-                        </div>
-                    </div> -->
-                    <div class="tab-pane fade" id="tab-pane-3">
-                        <div class="row">
+
 
                         <?php
 $sql1 = mysqli_query($con, "SELECT * from feedbacks WHERE place_id = '$venue_id' ORDER BY id DESC");
@@ -433,7 +383,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     <!-- Products Start -->
     <div class="container-fluid py-5">
         <div class="text-center mb-4">
-            <h2 class="section-title px-5"><span class="px-2">You May Also Like</span></h2>
+            <h2 style="color: #DAC1B1 !important;" class="section-title px-5"><span style="background: none;" class="px-2">You May Also Like</span></h2>
         </div>
         <div class="row px-xl-5">
             <div class="col">
@@ -466,15 +416,15 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                         <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                             <img class="img-fluid w-100" src="../Place_Dashboard/<?php echo $place_image ?>" alt="">
                         </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3"><?php echo $place_name ?></h6>
+                        <div style="background-color: #051F20 !important;" class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                            <h6 style="color: #DAC1B1 !important;" class="text-truncate mb-3"><?php echo $place_name ?></h6>
                             <div class="d-flex justify-content-center">
-                                <h6><?php echo $category_name ?></h6><h6 class="text-muted ml-2"></h6>
+                                <h6 style="color: #DAC1B1 !important;"><?php echo $category_name ?></h6><h6 class="text-muted ml-2"></h6>
                             </div>
                         </div>
 
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="./Venue.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                        <div style="background-color: #051F20 !important;" class="card-footer d-flex justify-content-between bg-light border">
+                            <a style="color: #DAC1B1 !important;" href="./Venue.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
                         </div>
                     </div>
 
@@ -512,6 +462,52 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     <script src="js/main.js"></script>
 
     <script src="./js/drop-down.js"></script>
+
+    <script>
+        let optionId;
+        let placeId;
+
+        const onDivClick = (e) => {
+
+        document.querySelectorAll('[id^="option-"]').forEach(div => div.classList.remove('selected-item'));
+
+        optionId = e.currentTarget.id.split('-')[1]
+        placeId = e.currentTarget.id.split('-')[2]
+        e.currentTarget.classList.add('selected-item')
+
+        document.getElementById('book_now').classList.remove('d-none')
+        }
+
+        const navigate = (e) => {
+            document.location = `./checkout.php?venue_id=${placeId}&option_id=${optionId}`
+        }
+    </script>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+
+    fetch(`./Get_Options.php?venue_id=<?php echo $venue_id ?>`)
+        .then(response => response.json())
+        .then(dates => {
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: [...dates.map(date => ({
+                    id: date.id,
+                    title: 'Available',
+                    start: date.date,
+                    allDay: true,
+                    color: 'green',
+                    url: `./checkout.php?venue_id=<?php echo $venue_id ?>&option_id=${date.id}`
+                }))],
+            });
+            calendar.render();
+        });
+});
+</script>
 </body>
 
 </html>

@@ -46,7 +46,7 @@ if ($C_ID) {
     <link href="css/style.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="background-color: #051F20 !important;">
     <!-- Topbar Start -->
     <div class="container-fluid">
         <div class="row bg-secondary py-2 px-xl-5">
@@ -64,25 +64,19 @@ if ($C_ID) {
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
+
+
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a class="text-dark pl-2" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a>
+      
                 </div>
             </div>
         </div>
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
                 <a href="./index.php" class="text-decoration-none">
-                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
+                    <h1 style="color: #DAC1B1 !important;" class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
@@ -119,7 +113,10 @@ if ($C_ID) {?>
             <div class="col-lg-12">
                 <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
                     <a href="./index.php" class="text-decoration-none d-block d-lg-none">
-                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
+                    <h1 style="color: #DAC1B1 !important;" class="m-0 display-5 font-weight-semi-bold">
+                        <span style="color: #DAC1B1 !important;" class="text-primary font-weight-bold border px-3 mr-1">JO</span>
+                        <span style="color: #DAC1B1 !important;">Find</span>
+                    </h1>
                     </a>
                     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                         <span class="navbar-toggler-icon"></span>
@@ -188,8 +185,8 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                             <img class="img-fluid" src="../Admin_Dashboard/<?php echo $slider_image ?>" alt="Image">
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                             <div class="p-3" style="max-width: 700px;">
-                                    <h4 class="text-light text-uppercase font-weight-medium mb-3">XXXXX XXXX XXXXX</h4>
-                                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">XXX XXXX XXXX XX</h3>
+                                    <h4 style="color: #DAC1B1 !important;" class="text-light text-uppercase font-weight-medium mb-3">XXXXX XXXX XXXXX</h4>
+                                    <h3 style="color: #DAC1B1 !important;" class="display-4 text-white font-weight-semi-bold mb-4">XXX XXXX XXXX XX</h3>
                                 </div>
                             </div>
                         </div>
@@ -235,7 +232,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 ">
                         <img class="img-fluid" src="../Admin_Dashboard/<?php echo $category_image ?>" style="width: 100%;" height="100px" alt="">
                     </a>
-                    <h5 class="font-weight-semi-bold m-0"><?php echo $category_name ?></h5>
+                    <h5 style="color: #DAC1B1 !important;" class="font-weight-semi-bold m-0"><?php echo $category_name ?></h5>
                 </div>
             </div>
 
@@ -250,7 +247,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
         <!-- TOPS Start -->
         <div class="container-fluid pt-5">
         <div class="text-center mb-4">
-            <h2 class="section-title px-5"><span class="px-2">Top Venues</span></h2>
+            <h2 style="color: #DAC1B1 !important;" class="section-title px-5"><span style="background: none;" class="px-2">Top Venues</span></h2>
         </div>
         <div class="row px-xl-5 pb-3">
 
@@ -280,20 +277,22 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
 
             <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card product-item border-0 mb-4">
+                <div style="background-color: #051F20 !important;" class="card product-item border-0 mb-4">
                     <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                         <img class="img-fluid w-100" src="../Place_Dashboard/<?php echo $place_image ?>" alt="">
                     </div>
                     <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                        <h6 class="text-truncate mb-3"><?php echo $place_name ?></h6>
-                        <div class="d-flex justify-content-center">
-                            <h6><?php echo $category_name ?></h6>
+                        <h6 style="color: #DAC1B1 !important;" class="text-truncate mb-3"><?php echo $place_name ?></h6>
+                        <div  class="d-flex justify-content-center">
+                            <h6 style="color: #DAC1B1 !important;"><?php echo $category_name ?></h6>
                         </div>
                     </div>
 
+                    <!-- style="color: #DAC1B1 !important;" -->
                     <?php if ($C_ID) {?>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="Venue.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                        <div style="background-color: #051F20 !important;" class="card-footer d-flex justify-content-between bg-light border">
+                            <a style="color: #DAC1B1 !important;" href="Venue.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm text-dark p-0">
+                                <i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
                         </div>
                         <?php }?>
                 </div>
@@ -358,7 +357,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     <!-- NearBy Start -->
     <div class="container-fluid pt-5">
         <div class="text-center mb-4">
-            <h2 class="section-title px-5"><span class="px-2">NearBy Venues</span></h2>
+            <h2 style="color: #DAC1B1 !important;" class="section-title px-5"><span style="background: none;" class="px-2">NearBy Venues</span></h2>
         </div>
 
         <script>

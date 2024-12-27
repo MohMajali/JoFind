@@ -37,14 +37,18 @@ if (isset($_POST['Submit'])) {
 
     }
 
-} else if (isset($category_id)) {
+} else if (isset($category_id) && $category_id !== 'all') {
 
-    $cookies = $con->prepare("INSERT INTO customer_logs (customer_id, category_id) VALUES (?, ?) ");
-    $cookies->bind_param("ii", $C_ID, $category_id);
-    $cookies->execute();
+
+    if($C_ID) {
+
+        $cookies = $con->prepare("INSERT INTO customer_logs (customer_id, category_id) VALUES (?, ?) ");
+        $cookies->bind_param("ii", $C_ID, $category_id);
+        $cookies->execute();
+    }
 
     $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND category_id = '$category_id'");
-
+ 
     while ($row1 = mysqli_fetch_array($query)) {
 
         $place_id = $row1['id'];
@@ -62,10 +66,33 @@ if (isset($_POST['Submit'])) {
             "place_image" => $place_image,
             "category_name" => $category_name,
         ];
-
     }
 
-} else if (isset($city_id)) {
+} else if (isset($category_id) && $category_id === 'all') {
+
+    $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2");
+
+    while ($row1 = mysqli_fetch_array($query)) {
+
+        $place_id = $row1['id'];
+        $place_name = $row1['name'];
+        $place_image = $row1['image'];
+        $category_id = $row1['category_id'];
+
+        $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+        $row3 = mysqli_fetch_array($sql3);
+
+        $category_name = $row3['name'];
+
+        $venues[] = [
+            "place_id" => $place_id,
+            "place_name" => $place_name,
+            "place_image" => $place_image,
+            "category_name" => $category_name,
+        ];
+    }
+
+} else if (isset($city_id) && $city_id !== 'all') {
 
     $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND city_id = '$city_id'");
 
@@ -90,6 +117,30 @@ if (isset($_POST['Submit'])) {
 
     }
 
+} else if (isset($city_id) && $city_id === 'all') {
+
+    $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2");
+
+    while ($row1 = mysqli_fetch_array($query)) {
+
+        $place_id = $row1['id'];
+        $place_name = $row1['name'];
+        $place_image = $row1['image'];
+        $category_id = $row1['category_id'];
+
+        $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+        $row3 = mysqli_fetch_array($sql3);
+
+        $category_name = $row3['name'];
+
+        $venues[] = [
+            "place_id" => $place_id,
+            "place_name" => $place_name,
+            "place_image" => $place_image,
+            "category_name" => $category_name,
+        ];
+
+    }
 } else if ($filter == 'popularity') {
 
     $query = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
@@ -210,7 +261,7 @@ if ($C_ID) {
     <link href="css/style.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="background-color: #051F20 !important;">
     <!-- Topbar Start -->
     <div class="container-fluid">
         <div class="row bg-secondary py-2 px-xl-5">
@@ -228,25 +279,19 @@ if ($C_ID) {
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-dark px-2" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
+
+
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-instagram"></i>
                     </a>
-                    <a class="text-dark pl-2" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a>
+
                 </div>
             </div>
         </div>
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
             <a href="./index.php" class="text-decoration-none">
-                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
+                    <h1 style="color: #DAC1B1 !important;" class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
@@ -320,13 +365,13 @@ if (!$C_ID) {?>
 
 
     <!-- Page Header Start -->
-    <div class="container-fluid bg-secondary mb-5">
+    <div style="background-color: #051F20 !important;" class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3">All Venues</h1>
+            <h1 style="color: #DAC1B1 !important;" class="font-weight-semi-bold text-uppercase mb-3">All Venues</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
-                <p class="m-0 px-2">-</p>
-                <p class="m-0">Venues</p>
+                <p style="color: #DAC1B1 !important;" class="m-0"><a style="color: #DAC1B1 !important;" href="">Home</a></p>
+                <p style="color: #DAC1B1 !important;" class="m-0 px-2">-</p>
+                <p style="color: #DAC1B1 !important;" class="m-0">Venues</p>
             </div>
         </div>
     </div>
@@ -473,6 +518,7 @@ while ($row12222111 = mysqli_fetch_array($sql122211)) {
             <option value="<?php echo $category_id_sql ?>"><?php echo $category_name_sql ?></option>
 <?php
 }?>
+<option value="all">All</option>
 
                                     </select>
                                 </div>
@@ -495,8 +541,9 @@ while ($row212121 = mysqli_fetch_array($sql212121)) {
     ?>
 
             <option value="<?php echo $city_id_sql ?>"><?php echo $city_name_sql ?></option>
-<?php
+            <?php
 }?>
+<option value="all">All</option>
 
                                     </select>
                                 </div>
@@ -522,7 +569,7 @@ while ($row212121 = mysqli_fetch_array($sql212121)) {
 
 
                                 <div class="d-flex align-items-center justify-content-center mt-3 col-12">
-    <button type="submit" class="btn btn-primary">Filter</button>
+    <button type="submit" class="btn btn-primary" style="color: #DAC1B1 !important;">Filter</button>
 </div>
 
 
@@ -540,20 +587,21 @@ foreach ($venues as $venue) {
 
     ?>
                     <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
-                        <div class="card product-item border-0 mb-4">
+                        <div style="background-color: #051F20 !important;" class="card product-item border-0 mb-4">
                             <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                                 <img class="img-fluid w-100" src="../Place_Dashboard/<?php echo $venue['place_image'] ?>" alt="">
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                <h6 class="text-truncate mb-3"><?php echo $venue['place_name'] ?></h6>
+                                <h6 style="color: #DAC1B1 !important;" class="text-truncate mb-3"><?php echo $venue['place_name'] ?></h6>
                                 <div class="d-flex justify-content-center">
-                                    <h6><?php echo $venue['category_name'] ?></h6>
+                                    <h6 style="color: #DAC1B1 !important;"><?php echo $venue['category_name'] ?></h6>
                                 </div>
                             </div>
 
                             <?php if ($C_ID) {?>
-                                <div class="card-footer d-flex justify-content-between bg-light border">
-                                    <a href="Venue.php?venue_id=<?php echo $venue['place_id'] ?>" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                                <div style="background-color: #051F20 !important;" class="card-footer d-flex justify-content-between bg-light border">
+                                    <a style="color: #DAC1B1 !important;" href="Venue.php?venue_id=<?php echo $venue['place_id'] ?>" class="btn btn-sm text-dark p-0">
+                                        <i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
                                 </div>
                                 <?php }?>
                         </div>
