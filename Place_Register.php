@@ -25,7 +25,7 @@ if (isset($_POST['Submit'])) {
     $image = $_FILES["file"]["name"];
     $commercial_register_file = $_FILES["commercial_register_file"]["name"];
     $image = 'Places_Images/' . $image;
-    $commercial_register_file = 'Places_Registers/' . $commercial_register_file;
+    // $commercial_register_file = 'Places_Registers/' . $commercial_register_file;
     $price;
     $status_id = 1;
 
@@ -35,7 +35,7 @@ if (isset($_POST['Submit'])) {
     if ($subscription_type == 1) {
 
         $end_date = date('Y-m-d', strtotime($start_date . ' +90 days'));
-        $subscription_type = "3 Months Open Contract (First Time Only) (For Free)";
+        $subscription_type = "1 Months Open Contract (First Time Only) (For Free)";
         $price = 0;
 
     } else if ($subscription_type == 2) {
@@ -62,10 +62,10 @@ if (isset($_POST['Submit'])) {
 
     } else {
 
-        $stmt = $con->prepare("INSERT INTO places (category_id, status_id, name, image, email, phone, password, city_id, commercial_register, address)
+        $stmt = $con->prepare("INSERT INTO places (category_id, status_id, name, image, email, phone, password, city_id, address)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-        $stmt->bind_param("iisssssiss", $category_id, $status_id, $name, $image, $email, $phone, $password, $city_id, $commercial_register_file, $address);
+        $stmt->bind_param("iisssssis", $category_id, $status_id, $name, $image, $email, $phone, $password, $city_id, $address);
 
         if ($stmt->execute()) {
 
@@ -90,7 +90,7 @@ if (isset($_POST['Submit'])) {
                 if ($stmt->execute() && $stmt2->execute()) {
 
                     move_uploaded_file($_FILES["file"]["tmp_name"], "./Place_Dashboard/Places_Images/" . $_FILES["file"]["name"]);
-                    move_uploaded_file($_FILES["commercial_register_file"]["tmp_name"], "./Place_Dashboard/Places_Registers/" . $_FILES["commercial_register_file"]["name"]);
+                    // move_uploaded_file($_FILES["commercial_register_file"]["tmp_name"], "./Place_Dashboard/Places_Registers/" . $_FILES["commercial_register_file"]["name"]);
 
                     try {
 
@@ -221,10 +221,10 @@ if (isset($_POST['Submit'])) {
                       </p>
                     </div>
 
-                    <form class="row g-3 needs-validation" method="POST" action="./Place_Register.php" enctype="multipart/form-data" id="login-form">
+                    <form class="row g-3 needs-validation" method="POST" action="./Place_Register.php" enctype="multipart/form-data" id="signup-form">
 
                       <div class="col-6">
-                        <label for="name" class="form-label">Name</label>
+                        <label for="name" class="form-label required">Name</label>
                         <div class="input-group has-validation">
 
                           <input
@@ -242,7 +242,7 @@ if (isset($_POST['Submit'])) {
                       </div>
 
                       <div class="col-6">
-                        <label for="name" class="form-label">Email</label>
+                        <label for="name" class="form-label required">Email</label>
                         <div class="input-group has-validation">
 
                           <input
@@ -257,8 +257,8 @@ if (isset($_POST['Submit'])) {
                       </div>
 
 
-                      <div class="col-6">
-                        <label for="name" class="form-label">Phone</label>
+                      <div class="col-12">
+                        <label for="name" class="form-label required">Phone</label>
                         <div class="input-group has-validation">
 
                           <input
@@ -275,8 +275,8 @@ if (isset($_POST['Submit'])) {
 
 
 
-                      <div class="col-6">
-                        <label for="yourPassword" class="form-label"
+                      <div class="col-12">
+                        <label for="yourPassword" class="form-label required"
                           >Password</label
                         >
                         <input
@@ -291,8 +291,22 @@ if (isset($_POST['Submit'])) {
                         </div>
                       </div>
 
-                      <div class="col-6">
-                        <label for="longitude" class="form-label">Longitude</label>
+                      <div class="col-12">
+    <label for="confirmPassword" class="form-label required">Confirm Password</label>
+    <input
+      type="password"
+      name="confirmPassword"
+      class="form-control"
+      id="confirmPassword"
+      required
+    />
+    <div class="invalid-feedback" id="con">
+      Passwords do not match!
+    </div>
+</div>
+
+                      <div class="col-12">
+                        <label for="longitude" class="form-label required">Longitude</label>
                         <div class="input-group has-validation">
 
                           <input
@@ -308,8 +322,8 @@ if (isset($_POST['Submit'])) {
 
 
 
-                      <div class="col-6">
-                        <label for="latitude" class="form-label"
+                      <div class="col-12">
+                        <label for="latitude required" class="form-label"
                           >Latitude</label
                         >
                         <input
@@ -325,7 +339,7 @@ if (isset($_POST['Submit'])) {
 
 
                       <div class="col-12">
-                        <label for="address" class="form-label"
+                        <label for="address" class="form-label required"
                           >Address</label
                         >
                         <input
@@ -339,7 +353,7 @@ if (isset($_POST['Submit'])) {
 
 
                       <div class="col-12">
-                        <label for="startDate" class="form-label"
+                        <label for="startDate" class="form-label required"
                           >Contract Start Date</label
                         >
                         <input
@@ -355,7 +369,7 @@ if (isset($_POST['Submit'])) {
 
 
                       <div class="col-12" id="endDateDiv" style="display: none;">
-                        <label for="endDate" class="form-label"
+                        <label for="endDate" class="form-label required"
                           >Contract End Date</label
                         >
                         <input
@@ -370,11 +384,11 @@ if (isset($_POST['Submit'])) {
 
 
                       <div class="col-12">
-                      <label for="subscription_type" class="form-label"
+                      <label for="subscription_type" class="form-label required"
                           >Select Contract Type</label
                         >
                         <select name="subscription_type" class="form-select" id="subscription_type" required>
-                            <option value="1">3 Months Open Contract (First Time Only) (For Free)</option>
+                            <option value="1">1 Months Open Contract (First Time Only) (For Free)</option>
                             <option value="2">6 Months Contract (300 JOD)</option>
                             <option value="3">12 Months COntract (600 JOD)</option>
                         </select>
@@ -383,7 +397,7 @@ if (isset($_POST['Submit'])) {
 
 
                       <div class="col-12">
-                      <label for="categoryId" class="form-label"
+                      <label for="categoryId" class="form-label required"
                           >Category</label
                         >
                         <select name="category_id" class="form-select" id="categoryId" required>
@@ -406,7 +420,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
 
                       <div class="col-12">
-                      <label for="cityId" class="form-label"
+                      <label for="cityId" class="form-label required"
                           >City</label
                         >
                         <select name="city_id" class="form-select" id="cityId" required>
@@ -430,7 +444,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
 
                       <div class="col-12">
-                        <label for="yourImage" class="form-label"
+                        <label for="yourImage" class="form-label required"
                           >Image</label
                         >
                         <input
@@ -443,9 +457,9 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
                       </div>
 
-
+<!-- 
                       <div class="col-12">
-                        <label for="commercial_register" class="form-label"
+                        <label for="commercial_register" class="form-label required"
                           >Commercial Register</label
                         >
                         <input
@@ -456,7 +470,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                           required
                         />
 
-                      </div>
+                      </div> -->
 
 
 
@@ -539,6 +553,23 @@ function updateEndDate() {
     endDateDiv.style.display = 'block';
   }
 }
+
+
+
+document.getElementById('signup-form').addEventListener('submit', function(event) {
+    const password = document.getElementById('yourPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+        // Prevent form submission
+        event.preventDefault();
+        // alert('Passwords do not match!');
+        // Optionally, focus the confirmPassword field
+        document.getElementById('con').style.display = 'block';
+
+        // document.getElementById('confirmPassword').focus();
+    }
+});
 
 
 

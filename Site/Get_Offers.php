@@ -5,9 +5,9 @@ include "../Connect.php";
 
 $C_ID = $_SESSION['C_Log'];
 
-if (isset($_POST['place_id'])) {
+if (isset($_GET['place_id'])) {
 
-    $place_id = $_POST['place_id'];
+    $place_id = $_GET['place_id'];
 
     if ($C_ID) {
 

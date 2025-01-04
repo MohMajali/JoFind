@@ -2,57 +2,76 @@
 session_start();
 
 include "./Connect.php";
+$type = $_GET['type'];
 
 if (isset($_POST['Submit'])) {
 
+    $type = $_POST['type'];
     $email = $_POST['email'];
-    $Password = ($_POST['password']);
+    $password = ($_POST['password']);
 
-    $query = mysqli_query($con, "SELECT * FROM places WHERE email ='$email' AND password = '$Password'");
+    if ($type === 'place') {
 
-    if (mysqli_num_rows($query) > 0) {
+        $query = mysqli_query($con, "SELECT * FROM places WHERE email ='$email'");
 
-        $row = mysqli_fetch_array($query);
+        if (mysqli_num_rows($query) > 0) {
 
-        $id = $row['id'];
-        $active = $row['active'];
-        $status_id = $row['status_id'];
+            $stmt = $con->prepare("UPDATE places SET password = ? WHERE email = ?");
+            $stmt->bind_param("ss", $password, $email);
 
-        if ($status_id == 2) {
+            if ($stmt->execute()) {
 
-            if ($active == 1) {
+                echo "<script language='JavaScript'>
+            alert ('Password Updated Successfully !');
+       </script>";
 
-                $_SESSION['P_Log'] = $id;
-
-                echo '<script language="JavaScript">
-              document.location="Place_Dashboard/";
-              </script>';
-
-            } else {
-
-                echo '<script language="JavaScript">
-                alert ("Your Account Is Not Active !")
-                </script>';
+                echo "<script language='JavaScript'>
+      document.location='./Place_Login.php';
+         </script>";
             }
-        } else if ($status_id == 3) {
-
-            echo '<script language="JavaScript">
-            alert ("Your Request Is Rejected, Please Contact Administrator !")
-            </script>';
         } else {
 
-            echo '<script language="JavaScript">
-            alert ("Your Request Is Still Pending !")
-            </script>';
+            echo "<script language='JavaScript'>
+          alert ('Email does not match with our records !');
+     </script>";
+
+            echo "<script language='JavaScript'>
+    document.location='./Place_Login.php';
+       </script>";
 
         }
 
     } else {
 
-        echo '<script language="JavaScript">
-	  alert ("Error ... Please Check Email Or Password !")
-      </script>';
+        $query = mysqli_query($con, "SELECT * FROM users WHERE email ='$email' AND password = '$Password'");
+
+        if (mysqli_num_rows($query) > 0) {
+
+            $stmt = $con->prepare("UPDATE users SET password = ? WHERE email = ?");
+            $stmt->bind_param("ss", $password, $email);
+
+            if ($stmt->execute()) {
+
+                echo "<script language='JavaScript'>
+            alert ('Password Updated Successfully !');
+       </script>";
+
+                echo "<script language='JavaScript'>
+      document.location='./Login.php';
+         </script>";
+            }
+        } else {
+            echo "<script language='JavaScript'>
+          alert ('Email does not match with our records !');
+     </script>";
+
+            echo "<script language='JavaScript'>
+      document.location='./Login.php';
+       </script>";
+        }
+
     }
+
 }
 ?>
 
@@ -62,7 +81,7 @@ if (isset($_POST['Submit'])) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Login Page</title>
+    <title>Forgot Password Page</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -108,14 +127,14 @@ if (isset($_POST['Submit'])) {
                 class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center"
               >
                 <div class="d-flex justify-content-center py-4">
-                  <a
-                    href="index.php"
-                    class="logo d-flex align-items-center w-auto"
+                <a
+                    href="Office_Login.php"
+                    class="d-flex align-items-center w-auto"
                   >
-                    <img src="assets/img/Logo.png" alt="" width="50px"/>
-                    <span class="d-none d-lg-block text-uppercase"
-                      >JoFind</span
-                    >
+                    <img src="assets/img/Logo.png" alt="" width="150px" height="150px"/>
+                    <!-- <span class="d-none d-lg-block text-uppercase"
+                      >Elite</span
+                    > -->
                   </a>
                 </div>
                 <!-- End Logo -->
@@ -124,23 +143,25 @@ if (isset($_POST['Submit'])) {
                   <div class="card-body">
                     <div class="pt-4 pb-2">
                       <h5 class="card-title text-center pb-0 fs-4">
-                        Login to Your Account
+                        Forgot Password
                       </h5>
-                      <p class="text-center small">
-                        Enter your Name & Password to login
-                      </p>
+
                     </div>
 
-                    <form class="row g-3 needs-validation" method="POST" action="Place_Login.php" id="login-form" >
+                    <form class="row g-3 needs-validation" method="POST" action="./Forgot-password.php?type=<?php echo $type ?>" id="login-form">
+
+
+                    <input type="hidden" value="<?php echo $type ?>" name="type">
+
                       <div class="col-12">
-                        <label for="name" class="form-label">Email</label>
+                        <label for="email" class="form-label">Email</label>
                         <div class="input-group has-validation">
 
                           <input
                             type="email"
                             name="email"
                             class="form-control"
-                            id="Name"
+                            id="email"
                             required
                           />
                           <div class="invalid-feedback">
@@ -149,9 +170,11 @@ if (isset($_POST['Submit'])) {
                         </div>
                       </div>
 
+
+
                       <div class="col-12">
                         <label for="yourPassword" class="form-label"
-                          >Password</label
+                          >New Password</label
                         >
                         <input
                           type="password"
@@ -166,41 +189,8 @@ if (isset($_POST['Submit'])) {
                       </div>
 
                       <div class="col-12">
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            name="remember"
-                            value="true"
-                            id="rememberMe"
-                          />
-                          <label class="form-check-label" for="rememberMe"
-                            >Remember me</label
-                          >
-                        </div>
-                      </div>
-
-
-
-
-
-                      <div class="col-12">
-                        <p class="small mb-0">
-                          <a href="./Forgot-password.php?type=place">Forgot your password?</a>
-                        </p>
-                      </div>
-
-
-
-                      <div class="col-12">
-                        <p class="small mb-0">
-                          Don't Have Account
-                          <a href="./Place_Register.php">Signup Now</a>
-                        </p>
-                      </div>
-                      <div class="col-12">
                         <button class="btn btn-primary w-100" type="submit" name="Submit">
-                          Login
+                          Submit
                         </button>
                       </div>
 

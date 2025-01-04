@@ -3,16 +3,13 @@ include "../Connect.php";
 session_start();
 
 $response = [
-    "error" => false
+    "error" => false,
 ];
 
-if (isset($_POST['customer_id']) && isset($_POST['offer_id'])) {
+if (isset($_GET['customer_id']) && isset($_GET['offer_id'])) {
 
-    $response['offer_id'] = $_POST['offer_id'] ?? "noooooo";
-    $response['customer_id'] = $_POST['customer_id'] ?? "cussssssss";
-
-    $customer_id = intval($_POST['customer_id']);
-    $offer_id = intval($_POST['offer_id']);
+    $customer_id = ($_GET['customer_id']);
+    $offer_id = ($_GET['offer_id']);
 
     $stmt = $con->prepare("INSERT INTO offer_winners (offer_id, customer_id) VALUES (?, ?)");
 

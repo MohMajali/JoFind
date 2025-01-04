@@ -23,16 +23,15 @@ if (!$P_ID) {
 
         $place_id = $_POST['place_id'];
         $title = $_POST['title'];
+        $tables_count = $_POST['tables_count'];
+        $people_count = $_POST['people_count'];
+        $price = $_POST['price'];
         $description = $_POST['description'];
         $date_time = date('Y-m-d H:i:s', strtotime($_POST['date_time']));
-        $quantity = $_POST['quantity'];
-        $has_food = $_POST['has_food'] == 'on' ? true : false;
-        $has_soft_drinks = $_POST['has_soft_drinks'] == 'on' ? true : false;
-        $price = $_POST['price'];
 
-        $stmt = $con->prepare("INSERT INTO booking_options (place_id, title, description, date_time, quantity, has_soft_drinks, has_food, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ");
+        $stmt = $con->prepare("INSERT INTO booking_options (place_id, title, date_time, tables_count, people_count, price, description) VALUES (?, ?, ?, ?, ?, ?, ?) ");
 
-        $stmt->bind_param("isssiiid", $place_id, $title, $description, $date_time, $quantity, $has_soft_drinks, $has_food, $price);
+        $stmt->bind_param("issiids", $place_id, $title, $date_time, $tables_count, $people_count, $price, $description);
 
         if ($stmt->execute()) {
 
@@ -166,7 +165,7 @@ if (!$P_ID) {
             data-bs-toggle="modal"
             data-bs-target="#verticalycentered"
           >
-            Add New Offer
+            Add New Option
           </button>
         </div>
 
@@ -176,7 +175,7 @@ if (!$P_ID) {
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">Category Information</h5>
+                <h5 class="modal-title">Option Information</h5>
                 <button
                   type="button"
                   class="btn-close"
@@ -210,10 +209,19 @@ if (!$P_ID) {
 
                   <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label"
-                      >Quantity</label
+                      >Tables Count</label
                     >
                     <div class="col-sm-8">
-                      <input type="number" name="quantity" class="form-control" required/>
+                      <input type="number" name="tables_count" class="form-control" required/>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >People Count</label
+                    >
+                    <div class="col-sm-8">
+                      <input type="number" name="people_count" class="form-control" required/>
                     </div>
                   </div>
 
@@ -236,21 +244,6 @@ if (!$P_ID) {
                   </div>
 
 
-
-
-                  <div class="form-check">
-                    <input class="form-check-input" name="has_food" type="checkbox" id="has_food">
-                    <label class="form-check-label" for="has_food">
-                        Has Food
-                    </label>
-                    </div>
-
-                  <div class="form-check">
-                    <input class="form-check-input" name="has_soft_drinks" type="checkbox" id="has_soft">
-                    <label class="form-check-label" for="has_soft">
-                        Has Soft Drinks
-                    </label>
-                    </div>
 
                   <div class="row mb-3">
                     <div class="text-end">
@@ -288,9 +281,8 @@ if (!$P_ID) {
                       <th scope="col">ID</th>
                       <th scope="col">Title</th>
                       <th scope="col">Date Time</th>
-                      <th scope="col">Quantity</th>
-                      <th scope="col">Has Soft Drinks</th>
-                      <th scope="col">Has Food</th>
+                      <th scope="col">Tables Count</th>
+                      <th scope="col">People Count</th>
                       <th scope="col">Price</th>
                       <th scope="col">Created At</th>
                       <th scope="col">Actions</th>
@@ -305,9 +297,8 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     $option_id = $row1['id'];
     $title = $row1['title'];
     $date_time = $row1['date_time'];
-    $quantity = $row1['quantity'];
-    $has_soft_drinks = $row1['has_soft_drinks'];
-    $has_food = $row1['has_food'];
+    $tables_count = $row1['tables_count'];
+    $people_count = $row1['people_count'];
     $price = $row1['price'];
     $created_at = $row1['created_at'];
     $active = $row1['active'];
@@ -317,9 +308,8 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                       <th scope="row"><?php echo $option_id ?></th>
                       <th scope="row"><?php echo $title ?></th>
                       <th scope="row"><?php echo date('Y-m-d H:i:s', strtotime($date_time)) ?></th>
-                      <th scope="row"><?php echo $quantity ?></th>
-                      <th scope="row"><?php echo ($has_soft_drinks ? "Yes" : "No") ?></th>
-                      <th scope="row"><?php echo ($has_food ? "Yes" : "No") ?></th>
+                      <th scope="row"><?php echo $tables_count ?></th>
+                      <th scope="row"><?php echo $people_count ?></th>
                       <th scope="row"><?php echo $created_at ?></th>
                       <th scope="row"><?php echo $price ?> JODs</th>
 

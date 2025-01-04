@@ -33,7 +33,6 @@ if (!$A_ID) {
     if (isset($_POST['Submit'])) {
 
         $advertisement_id = $_POST['advertisement_id'];
-        $place_id = $_POST['place_id'];
         $title = $_POST['title'];
         $price = $_POST['price'];
         $description = $_POST['description'];
@@ -43,9 +42,9 @@ if (!$A_ID) {
 
             $image = 'Advertisements_Images/' . $image;
 
-            $stmt = $con->prepare("UPDATE advertisements SET place_id = ?, title = ?, price = ?, description = ?, image = ? WHERE id = ? ");
+            $stmt = $con->prepare("UPDATE advertisements SET title = ?, price = ?, description = ?, image = ? WHERE id = ? ");
 
-            $stmt->bind_param("isdssi", $place_id, $title, $price, $description, $image, $advertisement_id);
+            $stmt->bind_param("sdssi", $title, $price, $description, $image, $advertisement_id);
 
             if ($stmt->execute()) {
 
@@ -62,9 +61,9 @@ if (!$A_ID) {
             }
         } else {
 
-            $stmt = $con->prepare("UPDATE advertisements SET place_id = ?, title = ?, price = ?, description = ? WHERE id = ? ");
+            $stmt = $con->prepare("UPDATE advertisements SET title = ?, price = ?, description = ? WHERE id = ? ");
 
-            $stmt->bind_param("isdsi", $place_id, $title, $price, $description, $advertisement_id);
+            $stmt->bind_param("sdsi", $title, $price, $description, $advertisement_id);
 
             if ($stmt->execute()) {
 
@@ -203,29 +202,7 @@ if (!$A_ID) {
 
                 <input type="hidden" name="advertisement_id" value="<?php echo $advertisement_id ?>">
 
-                  <div class="row mb-3">
-                    <label for="inputEmail3" class="col-sm-2 col-form-label"
-                      >Venues</label
-                    >
-                    <div class="col-sm-10">
-                    <select name="place_id" class="form-select" id="venue_id" required>
-
-
-<?php
-$placesSql = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 ORDER BY id DESC");
-
-while ($placeRow = mysqli_fetch_array($placesSql)) {
-
-    $place_id_1 = $placeRow['id'];
-    $place_name = $placeRow['name'];
-
-    ?>
-<option value="<?php echo $place_id_1 ?>" <?php echo ($place_id == $place_id_1) ? 'selected' : ''; ?>><?php echo $place_name ?></option>
-<?php
-}?>
-</select>
-                    </div>
-                  </div>
+  
 
                   <div class="row mb-3">
                     <label for="inputEmail3" class="col-sm-2 col-form-label"

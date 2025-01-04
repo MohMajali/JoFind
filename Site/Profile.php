@@ -22,92 +22,110 @@ if ($C_ID) {
         $name = $_POST['name'];
         $email = $_POST['email'];
         $phone = $_POST['phone'];
+        $old_pass = $_POST['old_pass'];
         $image = $_FILES["file"]["name"];
 
-        if ($image) {
+        $sql1 = mysqli_query($con, "select * from users where id='$C_ID'");
+        $row1 = mysqli_fetch_array($sql1);
 
-        $image = 'Users_Images/' . $image;
+        $oldPassword = $row1['password'];
 
+        if ($oldPassword !== $old_pass) {
 
-            if ($password) {
+            echo '<script language="JavaScript">
+            alert ("Sorry, Your old password does not match with our records !")
+            </script>';
 
-                $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ?, image = ? WHERE id = ? ");
-
-                $stmt->bind_param("sssssi", $name, $password, $phone, $email, $image, $C_ID);
-
-                if ($stmt->execute()) {
-
-                    
-                move_uploaded_file($_FILES["file"]["tmp_name"], "./Users_Images/" . $_FILES["file"]["name"]);
-
-                    echo "<script language='JavaScript'>
-                      alert ('Account Updated Successfully !');
-                 </script>";
-
-                    echo "<script language='JavaScript'>
-                document.location='./Profile.php';
-                   </script>";
-
-                }
-
-            } else {
-
-                $stmt = $con->prepare("UPDATE users SET name = ?, phone = ?, email = ?, image = ? WHERE id = ? ");
-
-                $stmt->bind_param("ssssi", $name, $phone, $email, $image, $C_ID);
-
-                if ($stmt->execute()) {
-
-                    move_uploaded_file($_FILES["file"]["tmp_name"], "./Users_Images/" . $_FILES["file"]["name"]);
-
-                    echo "<script language='JavaScript'>
-                      alert ('Account Updated Successfully !');
-                 </script>";
-
-                    echo "<script language='JavaScript'>
-                document.location='./Profile.php';
-                   </script>";
-
-                }
-            }
+            echo '<script language="JavaScript">
+            document.location="./Profile.php";
+            </script>';
 
         } else {
 
-            if ($password) {
+            if ($image) {
 
-                $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ? WHERE id = ? ");
+                $image = 'Users_Images/' . $image;
 
-                $stmt->bind_param("ssssi", $name, $password, $phone, $email, $C_ID);
+                if ($password) {
 
-                if ($stmt->execute()) {
+                    $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ?, image = ? WHERE id = ? ");
 
-                    echo "<script language='JavaScript'>
-                      alert ('Account Updated Successfully !');
-                 </script>";
+                    $stmt->bind_param("sssssi", $name, $password, $phone, $email, $image, $C_ID);
 
-                    echo "<script language='JavaScript'>
-                document.location='./Profile.php';
-                   </script>";
+                    if ($stmt->execute()) {
 
+                        move_uploaded_file($_FILES["file"]["tmp_name"], "./Users_Images/" . $_FILES["file"]["name"]);
+
+                        echo "<script language='JavaScript'>
+                          alert ('Account Updated Successfully !');
+                     </script>";
+
+                        echo "<script language='JavaScript'>
+                    document.location='./Profile.php';
+                       </script>";
+
+                    }
+
+                } else {
+
+                    $stmt = $con->prepare("UPDATE users SET name = ?, phone = ?, email = ?, image = ? WHERE id = ? ");
+
+                    $stmt->bind_param("ssssi", $name, $phone, $email, $image, $C_ID);
+
+                    if ($stmt->execute()) {
+
+                        move_uploaded_file($_FILES["file"]["tmp_name"], "./Users_Images/" . $_FILES["file"]["name"]);
+
+                        echo "<script language='JavaScript'>
+                          alert ('Account Updated Successfully !');
+                     </script>";
+
+                        echo "<script language='JavaScript'>
+                    document.location='./Profile.php';
+                       </script>";
+
+                    }
                 }
 
             } else {
 
-                $stmt = $con->prepare("UPDATE users SET name = ?, phone = ?, email = ? WHERE id = ? ");
+                if ($password) {
 
-                $stmt->bind_param("sssi", $name, $phone, $email, $C_ID);
+                    $stmt = $con->prepare("UPDATE users SET name = ?, password = ?, phone = ?, email = ? WHERE id = ? ");
 
-                if ($stmt->execute()) {
+                    $stmt->bind_param("ssssi", $name, $password, $phone, $email, $C_ID);
 
-                    echo "<script language='JavaScript'>
-                      alert ('Account Updated Successfully !');
-                 </script>";
+                    if ($stmt->execute()) {
 
-                    echo "<script language='JavaScript'>
-                document.location='./Profile.php';
-                   </script>";
+                        echo "<script language='JavaScript'>
+                          alert ('Account Updated Successfully !');
+                     </script>";
 
+                        echo "<script language='JavaScript'>
+                    document.location='./Profile.php';
+                       </script>";
+
+                    }
+
+                } else {
+
+                    $stmt = $con->prepare("UPDATE users SET name = ?, phone = ?, email = ? WHERE id = ? ");
+
+                    $stmt->bind_param("sssi", $name, $phone, $email, $C_ID);
+
+                    if ($stmt->execute()) {
+
+                        echo "<script language='JavaScript'>
+                          alert ('Account Updated Successfully !');
+                     </script>";
+
+                        echo "<script language='JavaScript'>
+                    document.location='./Profile.php';
+                       </script>";
+
+                    }
                 }
+
             }
 
         }
@@ -177,7 +195,7 @@ if ($C_ID) {
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-instagram"></i>
                     </a>
-      
+
                 </div>
             </div>
         </div>
@@ -316,7 +334,12 @@ if (!$C_ID) {?>
                         </div>
 
                         <div class="control-group">
-                            <input style="background-color: #DAC1B1 !important;" type="password" class="form-control" name="password" id="password" placeholder="Password" />
+                            <input style="background-color: #DAC1B1 !important;" type="password" class="form-control" name="old_pass" id="old_password" placeholder="Current Password" />
+                            <p class="help-block text-danger"></p>
+                        </div>
+
+                        <div class="control-group">
+                            <input style="background-color: #DAC1B1 !important;" type="password" class="form-control" name="password" id="password" placeholder="New Password" />
                             <p class="help-block text-danger"></p>
                         </div>
 

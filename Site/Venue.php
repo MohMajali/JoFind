@@ -34,9 +34,41 @@ if ($C_ID) {
     $venue_feedbacks_counts = $row3['reviews'];
 
     $sql4 = mysqli_query($con, "select * from place_menus where place_id='$venue_id'");
-    $row4 = mysqli_fetch_array($sql4);
 
-    $menu_image = $row4['menu_image'];
+    $menus = [
+        "link" => "",
+        "menus" => [],
+    ];
+
+    while ($row4 = mysqli_fetch_array($sql4)) {
+
+        if (is_null($row4['menu_link'])) {
+
+            $menus['menus'][] = $row4['menu_image'];
+        } else {
+
+            $menus['link'] = $row4['menu_link'];
+        }
+
+    }
+
+    $numberOfTimes = mysqli_query($con, "SELECT * FROM offer_winners WHERE customer_id ='$C_ID'");
+
+    $isSameVenue = false;
+
+    while ($row66666 = mysqli_fetch_array($numberOfTimes)) {
+
+        $id = $row66666['offer_id'];
+
+        $offer = mysqli_query($con, "SELECT * FROM offers WHERE id ='$id'");
+        $row7777 = mysqli_fetch_array($offer);
+
+        if ($row7777['place_id'] == $venue_id) {
+
+            $isSameVenue = true;
+            break;
+        }
+    }
 
 }
 
@@ -224,7 +256,7 @@ if (!$C_ID) {?>
 
 
                     <?php
-$sql1 = mysqli_query($con, "SELECT * from place_images ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * from place_images WHERE place_id = '$venue_id' ORDER BY id DESC");
 $counter = 0;
 while ($row1 = mysqli_fetch_array($sql1)) {
 
@@ -260,9 +292,18 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                 <div class="d-flex mb-3">
                     <div class="text-primary mr-2">
 
-                    <?php for ($i = 1; $i <= $venue_total_rate; $i++) {?>
+                    <?php for ($i = 1; $i <= 5; $i++) {?>
 
-                        <small class="fas fa-star"></small>
+                        <?php
+
+    if ($i <= $venue_total_rate) {
+
+        echo '<small class="fas fa-star" style="color: yellow;"></small>';
+    } else {
+
+        echo '<small class="fas fa-star"></small>';
+    }
+    ?>
 
                         <?php }?>
 
@@ -272,18 +313,36 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                 <p style="color: #DAC1B1 !important;" class="mb-4"><?php echo $venue_description ?></p>
 
                 <h3 style="color: #DAC1B1 !important;">Address : <?php echo $venue_address ?></h3>
-                <h3 style="color: #DAC1B1 !important;">Menu : <a style="color: #DAC1B1 !important;" href="../Place_Dashboard/<?php echo $menu_image ?>" target="_blank">View Menu</a></h3>
+
+
+                <?php
+
+if ($menus['link'] !== '') {
+    ?>
+
+<h3 style="color: #DAC1B1 !important;">Menu : <a style="color: lightblue !important;text-decoration: underline;" href="<?php echo $menus['link'] ?>" target="_blank">View Menu</a></h3>
+
+
+                <?php
+}?>
+
+
+<?php if (!$isSameVenue) {?>
+
 
                 <div class="container-fluid py-5">
-        <div class="text-center mb-4">
-            <h2 style="color: #DAC1B1 !important;" class="section-title px-5"><span style="background: none;" class="px-2">Play A Game To Get Offer</span></h2>
-        </div>
+
+                    <div class="text-center mb-4">
+                        <h2 style="color: #DAC1B1 !important;" class="section-title px-5"><span style="background: none;" class="px-2">Play A Game To Get Offer</span></h2>
+                    </div>
 
         <div class="text-center mb-4">
         <a style="color: #DAC1B1 !important;" href="./Prize_wheel.php?venue_id=<?php echo $venue_id ?>" class="btn btn-primary">Play Game</a>
         </div>
 
     </div>
+    <?php }?>
+
 
             </div>
         </div>
@@ -291,6 +350,39 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
 
 
+        <div class="container-fluid py-5">
+        <div class="text-center mb-4">
+            <h2 style="color: #DAC1B1 !important;" class="section-title px-5"><span style="background: none;" class="px-2"><?php echo $venue_name ?> Menus</span></h2>
+        </div>
+        <div class="row px-xl-5">
+            <div class="col">
+                <div class="owl-carousel related-carousel">
+
+
+                <?php
+
+if ($menus['menus']) {
+
+    foreach ($menus['menus'] as $menu) {
+
+        ?>
+
+                    <div class="card product-item border-0">
+                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                            <img class="img-fluid w-100" src="../Place_Dashboard/<?php echo $menu ?>" alt="">
+                        </div>
+
+                    </div>
+
+
+                    <?php
+}
+}?>
+
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -497,7 +589,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                 initialView: 'dayGridMonth',
                 events: [...dates.map(date => ({
                     id: date.id,
-                    title: 'Available',
+                    title: date.date,
                     start: date.date,
                     allDay: true,
                     color: 'green',

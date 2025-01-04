@@ -134,10 +134,10 @@ if (isset($_POST['Submit'])) {
                       </p>
                     </div>
 
-                    <form class="row g-3 needs-validation" method="POST" action="./Register.php" enctype="multipart/form-data" id="login-form">
+                    <form class="row g-3 needs-validation" method="POST" action="./Register.php" enctype="multipart/form-data" id="signup-form">
 
                       <div class="col-12">
-                        <label for="name" class="form-label">Name</label>
+                        <label for="name" class="form-label required">Name</label>
                         <div class="input-group has-validation">
 
                           <input
@@ -155,7 +155,7 @@ if (isset($_POST['Submit'])) {
                       </div>
 
                       <div class="col-12">
-                        <label for="name" class="form-label">Email</label>
+                        <label for="name" class="form-label required">Email</label>
                         <div class="input-group has-validation">
 
                           <input
@@ -171,7 +171,7 @@ if (isset($_POST['Submit'])) {
 
 
                       <div class="col-12">
-                        <label for="name" class="form-label">Phone</label>
+                        <label for="name" class="form-label required">Phone</label>
                         <div class="input-group has-validation">
 
                           <input
@@ -189,7 +189,7 @@ if (isset($_POST['Submit'])) {
 
 
                       <div class="col-12">
-                        <label for="yourPassword" class="form-label"
+                        <label for="yourPassword" class="form-label required"
                           >Password</label
                         >
                         <input
@@ -205,7 +205,7 @@ if (isset($_POST['Submit'])) {
                       </div>
 
                       <div class="col-12">
-                        <label for="confirmpassowrd" class="form-label"
+                        <label for="confirmpassowrd" class="form-label required"
                           >Confirm Password</label
                         >
                         <input
@@ -215,11 +215,14 @@ if (isset($_POST['Submit'])) {
                           id="confirmpassowrd"
                           required
                         />
+    <div class="invalid-feedback" id="con">
+      Passwords do not match!
+    </div>
                  
                       </div>
 
                       <div class="col-12">
-                        <label for="yourpicture" class="form-label"
+                        <label for="yourpicture" class="form-label required"
                           >Image</label
                         >
                         <input
@@ -274,5 +277,27 @@ if (isset($_POST['Submit'])) {
 
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
+
+    <script>
+
+
+
+document.getElementById('signup-form').addEventListener('submit', function(event) {
+    const password = document.getElementById('yourPassword').value;
+    const confirmPassword = document.getElementById('confirmpassowrd').value;
+
+    if (password !== confirmPassword) {
+        // Prevent form submission
+        event.preventDefault();
+        // alert('Passwords do not match!');
+        // Optionally, focus the confirmPassword field
+        document.getElementById('con').style.display = 'block';
+
+        // document.getElementById('confirmPassword').focus();
+    }
+});
+
+
+    </script>
   </body>
 </html>

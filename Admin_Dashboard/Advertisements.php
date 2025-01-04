@@ -21,16 +21,15 @@ if (!$A_ID) {
 
     if (isset($_POST['Submit'])) {
 
-        $place_id = $_POST['place_id'];
         $title = $_POST['title'];
         $price = $_POST['price'];
         $description = $_POST['description'];
         $image = $_FILES["file"]["name"];
         $image = 'Advertisements_Images/' . $image;
 
-        $stmt = $con->prepare("INSERT INTO advertisements (place_id, title, description, image, price) VALUES (?, ?, ?, ?, ?) ");
+        $stmt = $con->prepare("INSERT INTO advertisements (title, description, image, price) VALUES (?, ?, ?, ?) ");
 
-        $stmt->bind_param("isssd", $place_id, $title, $description, $image, $price);
+        $stmt->bind_param("sssd", $title, $description, $image, $price);
 
         if ($stmt->execute()) {
 
@@ -189,32 +188,6 @@ if (!$A_ID) {
 
 
 
-                <div class="row mb-3">
-                    <label for="venue_id" class="col-sm-4 col-form-label"
-                      >Venue</label
-                    >
-                    <div class="col-sm-8">
-                    <select name="place_id" class="form-select" id="venue_id" required>
-
-                    <option value="" default selected>Select Venue</option>
-
-                    <?php
-$placesSql = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 ORDER BY id DESC");
-
-while ($placeRow = mysqli_fetch_array($placesSql)) {
-
-    $place_id = $placeRow['id'];
-    $place_name = $placeRow['name'];
-
-    ?>
-                    <option value="<?php echo $place_id ?>"><?php echo $place_name ?></option>
-<?php
-}?>
-                    </select>
-                    </div>
-                  </div>
-
-
 
                   <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label"
@@ -289,7 +262,6 @@ while ($placeRow = mysqli_fetch_array($placesSql)) {
                     <tr>
                       <th scope="col">ID</th>
                       <th scope="col">Image</th>
-                      <th scope="col">Venue Name</th>
                       <th scope="col">Title</th>
                       <th scope="col">Price</th>
                       <th scope="col">Created At</th>
@@ -313,16 +285,11 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     $created_at = $row1['created_at'];
 
 
-    $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
-    $row2 = mysqli_fetch_array($sql2);
-
-    $place_name = $row2['name'];
 
     ?>
                     <tr>
                       <th scope="row"><?php echo $advertisement_id ?></th>
                       <th scope="row"><img src="<?php echo $image ?>" alt="" width="150px" height="150px"></th>
-                      <th scope="row"><?php echo $place_name ?></th>
                       <th scope="row"><?php echo $title ?></th>
                       <th scope="row"><?php echo $price ?> JODs</th>
                       <th scope="row"><?php echo $created_at ?></th>

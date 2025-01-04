@@ -37,10 +37,70 @@ if (isset($_POST['Submit'])) {
 
     }
 
+} else if ((isset($category_id) && $category_id !== 'all') && (isset($city_id) && $city_id !== 'all') && (isset($filter))) {
+
+    if ($filter == 'popularity') {
+
+        $query = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
+
+        while ($row1 = mysqli_fetch_array($query)) {
+
+            $place_id = $row1['place_id'];
+
+            $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id' AND category_id = '$category_id' AND city_id = '$city_id' AND active = 1 AND status_id = 2");
+            $row2 = mysqli_fetch_array($sql2);
+
+            $placeId = $row2['id'];
+            $place_name = $row2['name'];
+            $place_image = $row2['image'];
+            $category_id = $row2['category_id'];
+
+            $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+            $row3 = mysqli_fetch_array($sql3);
+
+            $category_name = $row3['name'];
+
+            if ($place_id == $placeId) {
+
+                $venues[] = [
+                    "place_id" => $place_id,
+                    "place_name" => $place_name,
+                    "place_image" => $place_image,
+                    "category_name" => $category_name,
+                ];
+            }
+
+        }
+
+    } else {
+
+        $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND category_id = '$category_id' AND city_id = '$city_id' AND total_rate >= 4.5");
+
+        while ($row1 = mysqli_fetch_array($query)) {
+
+            $place_id = $row1['id'];
+            $place_name = $row1['name'];
+            $place_image = $row1['image'];
+            $category_id = $row1['category_id'];
+
+            $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+            $row3 = mysqli_fetch_array($sql3);
+
+            $category_name = $row3['name'];
+
+            $venues[] = [
+                "place_id" => $place_id,
+                "place_name" => $place_name,
+                "place_image" => $place_image,
+                "category_name" => $category_name,
+            ];
+
+        }
+    }
+
 } else if (isset($category_id) && $category_id !== 'all') {
 
-
-    if($C_ID) {
+    if ($C_ID) {
 
         $cookies = $con->prepare("INSERT INTO customer_logs (customer_id, category_id) VALUES (?, ?) ");
         $cookies->bind_param("ii", $C_ID, $category_id);
@@ -48,7 +108,7 @@ if (isset($_POST['Submit'])) {
     }
 
     $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND category_id = '$category_id'");
- 
+
     while ($row1 = mysqli_fetch_array($query)) {
 
         $place_id = $row1['id'];
@@ -592,9 +652,9 @@ foreach ($venues as $venue) {
                                 <img class="img-fluid w-100" src="../Place_Dashboard/<?php echo $venue['place_image'] ?>" alt="">
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                <h6 style="color: #DAC1B1 !important;" class="text-truncate mb-3"><?php echo $venue['place_name'] ?></h6>
+                                <b><h6 style="color: #DAC1B1 !important; font-weight: bold;" class="text-truncate mb-3"><?php echo $venue['place_name'] ?></h6></b>
                                 <div class="d-flex justify-content-center">
-                                    <h6 style="color: #DAC1B1 !important;"><?php echo $venue['category_name'] ?></h6>
+                                    <h3 style="color: #DAC1B1 !important;"><?php echo $venue['category_name'] ?></h3>
                                 </div>
                             </div>
 

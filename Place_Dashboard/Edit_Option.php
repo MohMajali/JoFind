@@ -24,27 +24,24 @@ if (!$P_ID) {
     $row2 = mysqli_fetch_array($sql2);
 
     $title = $row2['title'];
-    $description = $row2['description'];
     $date_time = $row2['date_time'];
-    $quantity = $row2['quantity'];
-    $has_soft_drinks = $row2['has_soft_drinks'];
-    $has_food = $row2['has_food'];
+    $tables_count = $row2['tables_count'];
+    $people_count = $row2['people_count'];
     $price = $row2['price'];
+    $description = $_POST['description'];
 
     if (isset($_POST['Submit'])) {
 
         $option_id = $_POST['option_id'];
         $title = $_POST['title'];
-        $date_time = date('Y-m-d', strtotime($_POST['date_time']));
-        $quantity = $_POST['quantity'];
+        $tables_count = $_POST['tables_count'];
+        $people_count = $_POST['people_count'];
         $price = $_POST['price'];
-        $description = $_POST['description'];
-        $has_food = $_POST['has_food'] == 'on' ? true : false;
-        $has_soft_drinks = $_POST['has_soft_drinks'] == 'on' ? true : false;
+        $date_time = date('Y-m-d H:i:s', strtotime($_POST['date_time']));
 
-        $stmt = $con->prepare("UPDATE booking_options SET title = ?, date_time = ?, quantity = ?, price = ?, description = ?, has_food = ?, has_soft_drinks = ? WHERE id = ? ");
+        $stmt = $con->prepare("UPDATE booking_options SET title = ?, date_time = ?, tables_count = ?, price = ?, people_count = ?, description = ? WHERE id = ? ");
 
-        $stmt->bind_param("ssidsiii", $title, $date_time, $quantity, $price, $description, $has_food, $has_soft_drinks, $option_id);
+        $stmt->bind_param("ssidisi", $title, $date_time, $tables_count, $price, $people_count, $description, $option_id);
 
         if ($stmt->execute()) {
 
@@ -68,7 +65,7 @@ if (!$P_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title>Category - JoFind</title>
+    <title><?php echo $title ?> - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -195,16 +192,25 @@ if (!$P_ID) {
                       >Date Time</label
                     >
                     <div class="col-sm-10">
-                      <input type="datetime-local" name="date_time" value="<?php echo $date_time ?>" class="form-control" id="date_time" required/>
+                      <input type="datetime-local" name="date_time" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $date_time ?>" class="form-control" id="date_time" required/>
                     </div>
                   </div>
 
                   <div class="row mb-3">
-                    <label for="quantity" class="col-sm-2 col-form-label"
-                      >Quantity</label
+                    <label for="tables_count" class="col-sm-2 col-form-label"
+                      >Tables Count</label
                     >
                     <div class="col-sm-10">
-                      <input type="text" name="quantity" value="<?php echo $quantity ?>" class="form-control" id="quantity" required/>
+                      <input type="text" name="tables_count" value="<?php echo $tables_count ?>" class="form-control" id="tables_count" required/>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <label for="people_count" class="col-sm-2 col-form-label"
+                      >People Count</label
+                    >
+                    <div class="col-sm-10">
+                      <input type="text" name="people_count" value="<?php echo $people_count ?>" class="form-control" id="people_count" required/>
                     </div>
                   </div>
 
@@ -225,20 +231,6 @@ if (!$P_ID) {
                       <textarea name="description" class="form-control" id="" value="<?php echo $description ?>"><?php echo $description ?></textarea>
                     </div>
                   </div>
-
-                  <div class="form-check">
-                    <input class="form-check-input" name="has_food" type="checkbox" id="has_food" <?php echo ($has_food ? "checked" : "") ?>>
-                    <label class="form-check-label" for="has_food">
-                        Has Food
-                    </label>
-                    </div>
-
-                  <div class="form-check">
-                    <input class="form-check-input" name="has_soft_drinks" type="checkbox" id="has_soft" <?php echo ($has_soft_drinks ? "checked" : "") ?>>
-                    <label class="form-check-label" for="has_soft">
-                        Has Soft Drinks
-                    </label>
-                    </div>
 
 
                   <div class="text-end">

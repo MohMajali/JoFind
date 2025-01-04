@@ -22,15 +22,10 @@ if ($C_ID) {
 $sql2 = mysqli_query($con, "select * from advertisements where id='$advertisement_id'");
 $row2 = mysqli_fetch_array($sql2);
 
-$place_id = $row2['place_id'];
 $title = $row2['title'];
 $description = $row2['description'];
 $image = $row2['image'];
 
-$sql3 = mysqli_query($con, "select * from places where id='$place_id'");
-$row3 = mysqli_fetch_array($sql3);
-
-$venue_name = $row3['name'];
 
 ?>
 
@@ -64,7 +59,7 @@ $venue_name = $row3['name'];
     <link href="css/style.css" rel="stylesheet">
 </head>
 
-<body>
+<body style="background-color: #051F20 !important;">
     <!-- Topbar Start -->
     <div class="container-fluid">
         <div class="row bg-secondary py-2 px-xl-5">
@@ -100,7 +95,7 @@ $venue_name = $row3['name'];
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
                 <a href="./index.php" class="text-decoration-none">
-                <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
+                <h1 style="color: #DAC1B1 !important;" class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
@@ -174,13 +169,13 @@ if (!$C_ID) {?>
 
 
     <!-- Page Header Start -->
-    <div class="container-fluid bg-secondary mb-5">
+    <div style="background-color: #051F20 !important;" class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3"><?php echo $title ?> Details</h1>
+            <h1 style="color: #DAC1B1 !important;" class="font-weight-semi-bold text-uppercase mb-3"><?php echo $title ?> Details</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href="./index.php">Home</a></p>
-                <p class="m-0 px-2">-</p>
-                <p class="m-0"><?php echo $title ?></p>
+                <p style="color: #DAC1B1 !important;" class="m-0"><a style="color: #DAC1B1 !important;" href="./index.php">Home</a></p>
+                <p style="color: #DAC1B1 !important;" class="m-0 px-2">-</p>
+                <p style="color: #DAC1B1 !important;" class="m-0"><?php echo $title ?></p>
             </div>
         </div>
     </div>
@@ -197,9 +192,8 @@ if (!$C_ID) {?>
         </div>
         <div class="row px-xl-5">
             <div class="text-center col-lg-12 mb-5">
-                <h3 class="font-weight-semi-bold mb-3"><?php echo $title ?></h3>
-                <h5 class="font-weight-semi-bold mb-3"><?php echo $venue_name ?></h5>
-                <p><?php echo $description ?></p>
+                <h3 style="color: #DAC1B1 !important;" class="font-weight-semi-bold mb-3"><?php echo $title ?></h3>
+                <p style="color: #DAC1B1 !important;"><?php echo $description ?></p>
       
             </div>
         </div>

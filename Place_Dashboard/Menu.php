@@ -22,37 +22,65 @@ if (!$P_ID) {
     if (isset($_POST['Submit'])) {
 
         $place_id = $_POST['place_id'];
+        $link = $_POST['link'];
         $image = $_FILES["file"]["name"];
-        $image = 'Places_Images/' . $image;
 
         $query = mysqli_query($con, "SELECT * FROM place_menus WHERE place_id ='$place_id'");
+        $data = mysqli_fetch_array($query);
 
-        if (mysqli_num_rows($query) > 0) {
+        if (!is_null($data['menu_link'])) {
 
             echo "<script language='JavaScript'>
-          alert ('Place Already Has Menu Exist !');
-     </script>";
+          alert ('Venue only has menu links !');
+          </script>";
+
+            echo "<script language='JavaScript'>
+          document.location='./Menu.php';
+          </script>";
 
         } else {
 
-            $stmt = $con->prepare("INSERT INTO place_menus (place_id, menu_image) VALUES (?, ?)");
+            if (isset($link)) {
 
-            $stmt->bind_param("is", $place_id, $image);
+                $stmt = $con->prepare("INSERT INTO place_menus (place_id, menu_link) VALUES (?, ?)");
 
-            if ($stmt->execute()) {
+                $stmt->bind_param("is", $place_id, $link);
 
-                move_uploaded_file($_FILES["file"]["tmp_name"], "./Places_Images/" . $_FILES["file"]["name"]);
+                if ($stmt->execute()) {
 
-                echo "<script language='JavaScript'>
+                    echo "<script language='JavaScript'>
+              alert ('A New Menu Has Been Added Successfully !');
+              </script>";
+
+                    echo "<script language='JavaScript'>
+              document.location='./Menu.php';
+              </script>";
+
+                }
+
+            } else {
+
+                $image = 'Places_Images/' . $image;
+
+                $stmt = $con->prepare("INSERT INTO place_menus (place_id, menu_image) VALUES (?, ?)");
+
+                $stmt->bind_param("is", $place_id, $image);
+
+                if ($stmt->execute()) {
+
+                    move_uploaded_file($_FILES["file"]["tmp_name"], "./Places_Images/" . $_FILES["file"]["name"]);
+
+                    echo "<script language='JavaScript'>
                 alert ('A New Menu Has Been Added Successfully !');
            </script>";
 
-                echo "<script language='JavaScript'>
+                    echo "<script language='JavaScript'>
           document.location='./Menu.php';
              </script>";
 
-            }
+                }
 
+            }
         }
 
     }
@@ -199,14 +227,63 @@ if (!$P_ID) {
 
                 <input type="hidden" name="place_id" value="<?php echo $P_ID ?>">
 
-                  <div class="row mb-3">
+
+                <div class="row mb-3">
                     <label for="inputText" class="col-sm-4 col-form-label"
-                      >Menu</label
+                      >Type</label
+                    >
+                    <div class="col-sm-8">
+                      <!-- <input type="file" name="file" class="form-control" /> -->
+                       <select name="type" class="form-select" id="typeId">
+                        <option value="1">Link</option>
+                        <option value="2">Image</option>
+                       </select>
+                    </div>
+                  </div>
+
+
+
+
+                  <div class="row mb-3" id="image">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Menu Image</label
                     >
                     <div class="col-sm-8">
                       <input type="file" name="file" class="form-control" />
                     </div>
                   </div>
+
+
+                  <div class="row mb-3" id="link">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Menu link</label
+                    >
+                    <div class="col-sm-8">
+                      <input type="text" name="link" class="form-control" />
+                    </div>
+                  </div>
+
+
+                  <script>
+
+
+document.getElementById('typeId').addEventListener('change', function(e){
+
+
+              if(e.target.value == 1) {
+
+                  document.getElementById('image').style.display = 'none'
+                  document.getElementById('link').style.display = 'flex'
+
+              } else {
+
+document.getElementById('link').style.display = 'none'
+document.getElementById('image').style.display = 'flex'
+
+              }
+
+})
+                </script>
 
 
 

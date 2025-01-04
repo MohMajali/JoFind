@@ -15,6 +15,14 @@ if ($C_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
+    $sql2 = mysqli_query($con, "select * from booking_options where id='$option_id'");
+    $row2 = mysqli_fetch_array($sql2);
+
+    $tables_count = $row2['tables_count'];
+    $people_count = $row2['people_count'];
+    $description = $row2['description'];
+    $price = $row2['price'];
+
     if (isset($_POST['Submit'])) {
 
         $place_id = $_POST['place_id'];
@@ -130,7 +138,7 @@ if ($C_ID) {
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-instagram"></i>
                     </a>
-      
+
                 </div>
             </div>
         </div>
@@ -163,7 +171,7 @@ if ($C_ID) {
         <div class="row border-top px-xl-5">
 
 
-     
+
 
             <div class="col-lg-12">
                 <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
@@ -240,7 +248,25 @@ if (!$C_ID) {?>
                         <input type="hidden" name="option_id" value="<?php echo $option_id ?>">
 
 
+                        <div class="col-md-12 form-group">
+                            <label>Tables Count</label>
+                            <input style="background-color: #DAC1B1 !important;" class="form-control" type="text" value="<?php echo $tables_count?>" placeholder="Jhon-doe" readonly>
+                        </div>
 
+                        <div class="col-md-12 form-group">
+                            <label>People Count</label>
+                            <input style="background-color: #DAC1B1 !important;" class="form-control" type="text" value="<?php echo $people_count?>" placeholder="Jhon-doe" readonly>
+                        </div>
+
+                        <div class="col-md-12 form-group">
+                            <label>Description</label>
+                             <textarea name="" style="background-color: #DAC1B1 !important;" class="form-control" id="" readonly><?php echo $description?></textarea>
+                        </div>
+
+                        <div class="col-md-12 form-group">
+                            <label>Price</label>
+                            <input style="background-color: #DAC1B1 !important;" class="form-control" type="text" value="<?php echo $price?>" placeholder="Jhon-doe" readonly>
+                        </div>
 
                         <div class="col-md-12 form-group">
                             <label>Name On Card</label>

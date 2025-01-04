@@ -47,6 +47,12 @@ if ($C_ID) {
 </head>
 
 <body style="background-color: #051F20 !important;">
+
+<div id="cookieConsent" style="display: none; position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); color: white; text-align: center; padding: 10px; z-index: 1000;">
+    This site uses cookies to improve your experience. <button onclick="acceptCookies()">Accept</button>
+</div>
+
+
     <!-- Topbar Start -->
     <div class="container-fluid">
         <div class="row bg-secondary py-2 px-xl-5">
@@ -362,6 +368,16 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
         <script>
 document.addEventListener("DOMContentLoaded", function() {
+
+
+    if (!localStorage.getItem('cookieConsent')) {
+        document.getElementById('cookieConsent').style.display = 'block';
+    }
+
+
+
+
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
@@ -455,6 +471,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     <script>
+
+
+function acceptCookies() {
+    localStorage.setItem('cookieConsent', 'true');
+    document.getElementById('cookieConsent').style.display = 'none';
+}
 
         const navigate = (e) => {
             

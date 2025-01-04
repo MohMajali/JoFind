@@ -167,6 +167,14 @@ if (isset($_POST['Submit'])) {
                           >
                         </div>
                       </div>
+
+                      
+                      <div class="col-12">
+                        <p class="small mb-0">
+                          <a href="./Forgot-password.php?type=user">Forgot your password?</a>
+                        </p>
+                      </div>
+
                       <div class="col-12">
                         <p class="small mb-0">
                           Don't Have Account
