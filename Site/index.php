@@ -58,11 +58,11 @@ if ($C_ID) {
         <div class="row bg-secondary py-2 px-xl-5">
             <div class="col-lg-6 d-none d-lg-block">
                 <div class="d-inline-flex align-items-center">
-                    <a class="text-dark" href="">FAQs</a>
+                    <!-- <a class="text-dark" href="">FAQs</a>
                     <span class="text-muted px-2">|</span>
                     <a class="text-dark" href="">Help</a>
                     <span class="text-muted px-2">|</span>
-                    <a class="text-dark" href="">Support</a>
+                    <a class="text-dark" href="">Support</a> -->
                 </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
@@ -187,12 +187,12 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     $counter++;
     ?>
-                        <div class="carousel-item <?php echo ($counter == 1 ? 'active' : '') ?>" style="height: 410px;" id="<?php echo $slider_id ?>">
+                        <div class="carousel-item <?php echo ($counter == 1 ? 'active' : '') ?>" style="height: 410px; " id="<?php echo $slider_id ?>">
                             <img class="img-fluid" src="../Admin_Dashboard/<?php echo $slider_image ?>" alt="Image">
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                             <div class="p-3" style="max-width: 700px;">
-                                    <h4 style="color: #DAC1B1 !important;" class="text-light text-uppercase font-weight-medium mb-3">XXXXX XXXX XXXXX</h4>
-                                    <h3 style="color: #DAC1B1 !important;" class="display-4 text-white font-weight-semi-bold mb-4">XXX XXXX XXXX XX</h3>
+                                    <h4 style="color:rgb(241, 237, 234) !important;" class="text-light text-uppercase font-weight-medium mb-3">ABOUT US</h4>
+                                    <h3 style="color:rgb(245, 242, 240) !important;" class="display-4 text-white font-weight-semi-bold mb-4">JO FIND WHERE GREAT PLACES MEET GREAT TASTES </h3>
                                 </div>
                             </div>
                         </div>
@@ -234,9 +234,9 @@ while ($row1 = mysqli_fetch_array($sql1)) {
             <div class="col-lg-4 col-md-6 pb-1">
                 <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;height: 100%;">
                     <a href="Venues.php?category_id=<?php echo $category_id ?>" class="cat-img position-relative overflow-hidden mb-3" style="
-    height: 260px;
+    height: 300px;
 ">
-                        <img class="img-fluid" src="../Admin_Dashboard/<?php echo $category_image ?>" style="width: 100%;" height="100px" alt="">
+                        <img class="" src="../Admin_Dashboard/<?php echo $category_image ?>" style="width: 100%;height:100%;object-fit: contain;"  alt="">
                     </a>
                     <h5 style="color: #DAC1B1 !important;" class="font-weight-semi-bold m-0"><?php echo $category_name ?></h5>
                 </div>
@@ -332,8 +332,8 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     $advCounter++;
     ?>
-                        <div onclick="navigate(event)" class="carousel-item <?php echo ($advCounter == 1 ? 'active' : '') ?> <?php echo 'adv-'.$adv_id ?>" style="height: 410px;" id="<?php echo $adv_id ?>">
-                            <img class="img-fluid" src="../Admin_Dashboard/<?php echo $adv_image ?>" alt="Image">
+                        <div onclick="navigate(event)" class="carousel-item <?php echo ($advCounter == 1 ? 'active' : '') ?> <?php echo 'adv-'.$adv_id ?>" style="height: 470px ; width: 100%;" id="<?php echo $adv_id ?>">
+                            <img class="img-fluid" style="object-fit: fill;" src="../Admin_Dashboard/<?php echo $adv_image ?>" alt="Image">
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center <?php echo 'adv-'.$adv_id ?>">
                         
                             </div>
