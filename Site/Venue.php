@@ -132,11 +132,11 @@ if ($C_ID) {
         <div class="row bg-secondary py-2 px-xl-5">
             <div class="col-lg-6 d-none d-lg-block">
                 <div class="d-inline-flex align-items-center">
-                    <a class="text-dark" href="">FAQs</a>
+                    <!-- <a class="text-dark" href="">FAQs</a>
                     <span class="text-muted px-2">|</span>
                     <a class="text-dark" href="">Help</a>
                     <span class="text-muted px-2">|</span>
-                    <a class="text-dark" href="">Support</a>
+                    <a class="text-dark" href="">Support</a> -->
                 </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
@@ -203,6 +203,7 @@ if ($C_ID) {?>
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Account</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                 <a href="Reservations.php" class="dropdown-item">Reservations</a>
+                                <a href="Favorties.php" class="dropdown-item">Favorties</a>
                                     <a href="Profile.php" class="dropdown-item">Profile</a>
                                     <a href="Logout.php" class="dropdown-item">Logout</a>
                                 </div>

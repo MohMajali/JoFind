@@ -5,6 +5,37 @@ include "../Connect.php";
 
 $C_ID = $_SESSION['C_Log'];
 
+$venues = [];
+
+$query = mysqli_query($con, "SELECT * from favorites WHERE customer_id = '$C_ID'");
+
+while ($row1 = mysqli_fetch_array($query)) {
+
+    $fav_id = $row1['id'];
+    $place_id = $row1['venue_id'];
+
+    $sql554444 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
+    $row2222222 = mysqli_fetch_array($sql554444);
+
+    $place_name = $row2222222['name'];
+    $place_image = $row2222222['image'];
+    $category_id = $row2222222['category_id'];
+
+    $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+    $row3 = mysqli_fetch_array($sql3);
+
+    $category_name = $row3['name'];
+
+    $venues[] = [
+        "fav_id" => $fav_id,
+        "place_id" => $place_id,
+        "place_name" => $place_name,
+        "place_image" => $place_image,
+        "category_name" => $category_name,
+    ];
+
+}
+
 if ($C_ID) {
 
     $sql1 = mysqli_query($con, "select * from users where id='$C_ID'");
@@ -15,36 +46,7 @@ if ($C_ID) {
 
 }
 
-
-
-
-if (isset($_POST['Submit'])) {
-
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $subject = $_POST['subject'];
-    $message = $_POST['message'];
-
-    $stmt = $con->prepare("INSERT INTO contacts (name, email, subject, message) VALUES (?, ?, ?, ?) ");
-
-    $stmt->bind_param("ssss", $name, $email, $subject, $message);
-
-    if ($stmt->execute()) {
-
-
-        echo "<script language='JavaScript'>
-          alert ('Message Sent Successfully, Thank you for contacting us !');
-     </script>";
-
-        echo "<script language='JavaScript'>
-    document.location='./contact.php';
-       </script>";
-
-    }
-}
-
 ?>
-
 
 
 <!DOCTYPE html>
@@ -63,7 +65,7 @@ if (isset($_POST['Submit'])) {
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -73,6 +75,28 @@ if (isset($_POST['Submit'])) {
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+
+    <style>
+
+.love-icon {
+    position: absolute;
+    top: 10px; /* Adjust this value based on your needs */
+    right: 10px; /* Adjust this value based on your needs */
+    color: red; /* Color for the heart icon */
+    z-index: 10; /* Makes sure the icon is above other elements */
+    font-size: 20px; /* Size of the heart icon */
+}
+
+.not-fav {
+
+    position: absolute;
+    top: 10px; /* Adjust this value based on your needs */
+    right: 10px; /* Adjust this value based on your needs */
+    color: white; /* Color for the heart icon */
+    z-index: 10; /* Makes sure the icon is above other elements */
+    font-size: 20px; /* Size of the heart icon */
+}
+    </style>
 </head>
 
 <body style="background-color: #051F20 !important;">
@@ -98,7 +122,7 @@ if (isset($_POST['Submit'])) {
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-instagram"></i>
                     </a>
-      
+
                 </div>
             </div>
         </div>
@@ -132,8 +156,8 @@ if (isset($_POST['Submit'])) {
 
             <div class="col-lg-12">
                 <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
-                    <a href="./index.php" class="text-decoration-none d-block d-lg-none">
-                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
+                    <a href="" class="text-decoration-none d-block d-lg-none">
+                        <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">JO</span>Find</h1>
                     </a>
                     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                         <span class="navbar-toggler-icon"></span>
@@ -141,8 +165,8 @@ if (isset($_POST['Submit'])) {
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
                         <a href="index.php" class="nav-item nav-link ">Home</a>
-                            <a href="Venues.php" class="nav-item nav-link ">Venues</a>
-                            <a href="contact.php" class="nav-item nav-link active">Contact</a>
+                            <a href="Venues.php" class="nav-item nav-link active">Venues</a>
+                            <a href="contact.php" class="nav-item nav-link">Contact</a>
                             <?php
 
 if ($C_ID) {?>
@@ -182,78 +206,72 @@ if (!$C_ID) {?>
     <!-- Page Header Start -->
     <div style="background-color: #051F20 !important;" class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 style="color: #DAC1B1 !important;" class="font-weight-semi-bold text-uppercase mb-3">Contact Us</h1>
+            <h1 style="color: #DAC1B1 !important;" class="font-weight-semi-bold text-uppercase mb-3">Favorite Venues</h1>
             <div class="d-inline-flex">
                 <p style="color: #DAC1B1 !important;" class="m-0"><a style="color: #DAC1B1 !important;" href="">Home</a></p>
                 <p style="color: #DAC1B1 !important;" class="m-0 px-2">-</p>
-                <p style="color: #DAC1B1 !important;" class="m-0">Contact</p>
+                <p style="color: #DAC1B1 !important;" class="m-0">Favorite Venues</p>
             </div>
         </div>
     </div>
     <!-- Page Header End -->
 
 
-    <!-- Contact Start -->
+    <!-- Shop Start -->
     <div class="container-fluid pt-5">
-        <div class="text-center mb-4">
-            <h2 style="color: #DAC1B1 !important;" class="section-title px-5"><span class="px-2" style="background: none;">Contact For Any Queries</span></h2>
-        </div>
         <div class="row px-xl-5">
-            <div class="col-lg-7 mb-5">
-                <div class="contact-form">
-                    <div id="success"></div>
-                    <form method="POST" action="./contact.php" novalidate="novalidate">
-                        <div class="control-group">
-                            <input style="background-color: #DAC1B1 !important;" type="text" class="form-control" id="name" name="name" placeholder="Your Name"
-                                required="required" data-validation-required-message="Please enter your name" />
-                            <p class="help-block text-danger"></p>
+
+            <!-- Shop Product Start -->
+            <div class="col-lg-12 col-md-12">
+                <div class="row pb-3">
+
+
+
+
+                    <?php
+
+foreach ($venues as $venue) {
+
+    ?>
+                    <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
+                        <div style="background-color: #051F20 !important;" class="card product-item border-0 mb-4">
+                            <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+
+
+                            <a href="./DeleteFromFav.php?id=<?php echo $venue['fav_id'] ?>"><i class="fa fa-heart love-icon"></i></a>
+
+
+                                <img class="img-fluid w-100" src="../Place_Dashboard/<?php echo $venue['place_image'] ?>" alt="">
+                            </div>
+                            <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                <b><h6 style="color: #DAC1B1 !important; font-weight: bold;" class="text-truncate mb-3"><?php echo $venue['place_name'] ?></h6></b>
+                                <div class="d-flex justify-content-center">
+                                    <h3 style="color: #DAC1B1 !important;"><?php echo $venue['category_name'] ?></h3>
+                                </div>
+                            </div>
+
+                            <?php if ($C_ID) {?>
+                                <div style="background-color: #051F20 !important;" class="card-footer d-flex justify-content-between bg-light border">
+                                    <a style="color: #DAC1B1 !important;" href="Venue.php?venue_id=<?php echo $venue['place_id'] ?>" class="btn btn-sm text-dark p-0">
+                                        <i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                                </div>
+                                <?php }?>
                         </div>
-                        <div class="control-group">
-                            <input style="background-color: #DAC1B1 !important;" type="email" class="form-control" id="email" name="email" placeholder="Your Email"
-                                required="required" data-validation-required-message="Please enter your email" />
-                            <p class="help-block text-danger"></p>
-                        </div>
-                        <div class="control-group">
-                            <input style="background-color: #DAC1B1 !important;" type="text" class="form-control" id="subject" name="subject" placeholder="Subject"
-                                required="required" data-validation-required-message="Please enter a subject" />
-                            <p class="help-block text-danger"></p>
-                        </div>
-                        <div class="control-group">
-                            <textarea style="background-color: #DAC1B1 !important;" class="form-control" rows="6" id="message" name="message" placeholder="Message"
-                                required="required"
-                                data-validation-required-message="Please enter your message"></textarea>
-                            <p class="help-block text-danger"></p>
-                        </div>
-                        <div>
-                            <button class="btn btn-primary py-2 px-4" type="submit" name="Submit" >Send
-                                Message</button>
-                        </div>
-                    </form>
+                    </div>
+
+                    <?php
+}?>
+
                 </div>
             </div>
-            <div class="col-lg-5 mb-5">
-                <h5 style="color: #DAC1B1 !important;" class="font-weight-semi-bold mb-3">Get In Touch</h5>
-                <p style="color: #DAC1B1 !important;">Justo sed diam ut sed amet duo amet lorem amet stet sea ipsum, sed duo amet et. Est elitr dolor elitr erat sit sit. Dolor diam et erat clita ipsum justo sed.</p>
-                <div class="d-flex flex-column mb-3">
-                    <h5 style="color: #DAC1B1 !important;" class="font-weight-semi-bold mb-3">Store 1</h5>
-                    <p style="color: #DAC1B1 !important;" class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
-                    <p style="color: #DAC1B1 !important;" class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
-                    <p style="color: #DAC1B1 !important;" class="mb-2"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
-                </div>
-                <div class="d-flex flex-column">
-                    <h5 style="color: #DAC1B1 !important;" class="font-weight-semi-bold mb-3">Store 2</h5>
-                    <p style="color: #DAC1B1 !important;" class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
-                    <p style="color: #DAC1B1 !important;" class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
-                    <p style="color: #DAC1B1 !important;" class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
-                </div>
-            </div>
+            <!-- Shop Product End -->
         </div>
     </div>
-    <!-- Contact End -->
+    <!-- Shop End -->
 
 
     <!-- Footer Start -->
-    <?php require './Footer.php'?>
+        <?php require './Footer.php'?>
     <!-- Footer End -->
 
 
@@ -274,7 +292,10 @@ if (!$C_ID) {?>
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
+
+
     <script src="./js/drop-down.js"></script>
+
 </body>
 
 </html>

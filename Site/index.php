@@ -44,6 +44,28 @@ if ($C_ID) {
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+
+    <style>
+
+.love-icon {
+    position: absolute;
+    top: 10px; /* Adjust this value based on your needs */
+    right: 10px; /* Adjust this value based on your needs */
+    color: red; /* Color for the heart icon */
+    z-index: 10; /* Makes sure the icon is above other elements */
+    font-size: 20px; /* Size of the heart icon */
+}
+
+.not-fav {
+
+    position: absolute;
+    top: 10px; /* Adjust this value based on your needs */
+    right: 10px; /* Adjust this value based on your needs */
+    color: white; /* Color for the heart icon */
+    z-index: 10; /* Makes sure the icon is above other elements */
+    font-size: 20px; /* Size of the heart icon */
+}
+    </style>
 </head>
 
 <body style="background-color: #051F20 !important;">
@@ -75,7 +97,7 @@ if ($C_ID) {
                     <a class="text-dark px-2" href="">
                         <i class="fab fa-instagram"></i>
                     </a>
-      
+
                 </div>
             </div>
         </div>
@@ -140,6 +162,7 @@ if ($C_ID) {?>
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Account</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                 <a href="Reservations.php" class="dropdown-item">Reservations</a>
+                                <a href="Favorties.php" class="dropdown-item">Favorties</a>
                                     <a href="Profile.php" class="dropdown-item">Profile</a>
                                     <a href="Logout.php" class="dropdown-item">Logout</a>
                                 </div>
@@ -262,6 +285,8 @@ while ($row1 = mysqli_fetch_array($sql1)) {
         <?php
 $sql1 = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
 
+$isFavorite = false;
+
 while ($row1 = mysqli_fetch_array($sql1)) {
 
     $top_id = $row1['id'];
@@ -279,30 +304,47 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     $category_name = $row3['name'];
 
+    if ($C_ID) {
+
+        $sql2222 = mysqli_query($con, "SELECT * from favorites ORDER BY id DESC");
+
+        while ($row2222 = mysqli_fetch_array($sql2222)) {
+
+            if ($C_ID == $row2222['customer_id'] && $place_id == $row2222['venue_id']) {
+                $isFavorite = true;
+            }
+
+        }
+    }
+
     ?>
 
 
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div style="background-color: #051F20 !important;" class="card product-item border-0 mb-4">
-                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                        <img class="img-fluid w-100" src="../Place_Dashboard/<?php echo $place_image ?>" alt="">
-                    </div>
-                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                        <h6 style="color: #DAC1B1 !important;" class="text-truncate mb-3"><?php echo $place_name ?></h6>
-                        <div  class="d-flex justify-content-center">
-                            <h6 style="color: #DAC1B1 !important;"><?php echo $category_name ?></h6>
-                        </div>
-                    </div>
+<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+    <div class="card product-item border-0 mb-4" style="background-color: #051F20 !important;">
+        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
 
-                    <!-- style="color: #DAC1B1 !important;" -->
-                    <?php if ($C_ID) {?>
-                        <div style="background-color: #051F20 !important;" class="card-footer d-flex justify-content-between bg-light border">
-                            <a style="color: #DAC1B1 !important;" href="Venue.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm text-dark p-0">
-                                <i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                        </div>
-                        <?php }?>
-                </div>
+        <?php if($C_ID) {?>
+            <i id="icon-<?php echo $place_id ?>" onclick="addToFav(<?php echo $C_ID?>, <?php echo $place_id?>)" class="<?php echo $isFavorite ? 'fa fa-heart love-icon' : 'fa fa-heart not-fav' ?>"></i>
+            <?php }?>
+
+            <img class="img-fluid w-100" src="../Place_Dashboard/<?php echo $place_image ?>" alt="">
+        </div>
+        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+            <h6 style="color: #DAC1B1 !important;" class="text-truncate mb-3"><?php echo $place_name ?></h6>
+            <div class="d-flex justify-content-center">
+                <h6 style="color: #DAC1B1 !important;"><?php echo $category_name ?></h6>
             </div>
+        </div>
+        <?php if ($C_ID) {?>
+            <div class="card-footer d-flex justify-content-between bg-light border" style="background-color: #051F20 !important;">
+                <a href="Venue.php?venue_id=<?php echo $place_id ?>" class="btn btn-sm text-dark p-0" style="color: #DAC1B1 !important;">
+                    <i class="fas fa-eye text-primary mr-1"></i>View Detail
+                </a>
+            </div>
+        <?php }?>
+    </div>
+</div>
 
 
 <?php
@@ -332,10 +374,10 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     $advCounter++;
     ?>
-                        <div onclick="navigate(event)" class="carousel-item <?php echo ($advCounter == 1 ? 'active' : '') ?> <?php echo 'adv-'.$adv_id ?>" style="height: 470px ; width: 100%;" id="<?php echo $adv_id ?>">
+                        <div onclick="navigate(event)" class="carousel-item <?php echo ($advCounter == 1 ? 'active' : '') ?> <?php echo 'adv-' . $adv_id ?>" style="height: 470px ; width: 100%;" id="<?php echo $adv_id ?>">
                             <img class="img-fluid" style="object-fit: fill;" src="../Admin_Dashboard/<?php echo $adv_image ?>" alt="Image">
-                            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center <?php echo 'adv-'.$adv_id ?>">
-                        
+                            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center <?php echo 'adv-' . $adv_id ?>">
+
                             </div>
                         </div>
                  <?php
@@ -463,7 +505,7 @@ document.addEventListener("DOMContentLoaded", function() {
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script> 
+    <script src="mail/jqBootstrapValidation.min.js"></script>
     <script src="mail/contact.js"></script>
 
     <!-- Template Javascript -->
@@ -472,6 +514,43 @@ document.addEventListener("DOMContentLoaded", function() {
 
     <script>
 
+const addToFav = (customerId, placeId) => {
+
+
+
+
+                fetch(`./AddToFavorite.php?customer_id=${customerId}&venue_id=${placeId}`)
+                .then((response) => response.json())
+                .then(data => {
+
+
+
+                    if (!data["error"]) {
+
+
+                        document.getElementById(`icon-${placeId}`).classList.remove('fa', 'fa-heart', 'not-fav');
+                        document.getElementById(`icon-${placeId}`).classList.add('fa', 'fa-heart', 'love-icon');
+
+
+
+
+                    } else {
+
+
+                        alert(data['message'])
+                        
+                    }
+
+
+                })
+
+
+
+
+
+
+
+}
 
 function acceptCookies() {
     localStorage.setItem('cookieConsent', 'true');
@@ -479,7 +558,7 @@ function acceptCookies() {
 }
 
         const navigate = (e) => {
-            
+
             window.location = `./Adverisement.php?advertisement_id=${e.target.classList[5].split('-')[1]}`
         }
     </script>

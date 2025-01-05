@@ -29,7 +29,10 @@ if (isset($_POST['latitude']) && isset($_POST['longitude'])) {
 
     if (mysqli_num_rows($result) > 0) {
 
+        $className = 'fa fa-heart not-fav';
+
         while ($row = mysqli_fetch_assoc($result)) {
+
             $place_id = $row['place_id'];
             $place_name = $row['place_name'];
             $place_image = $row['place_image'];
@@ -38,10 +41,26 @@ if (isset($_POST['latitude']) && isset($_POST['longitude'])) {
 
             if ($C_ID) {
 
+                $sql2222 = mysqli_query($con, "SELECT * from favorites ORDER BY id DESC");
+
+                while ($row2222 = mysqli_fetch_array($sql2222)) {
+
+                    if ($C_ID == $row2222['customer_id'] && $place_id == $row2222['venue_id']) {
+                        $className = 'fa fa-heart love-icon';
+                    }
+
+                }
+            }
+
+            if ($C_ID) {
+
                 echo "
                 <div class='col-lg-3 col-md-6 col-sm-12 pb-1'>
                     <div style='background-color: #051F20 !important;' class='card product-item border-0 mb-4'>
                         <div class='card-header product-img position-relative overflow-hidden bg-transparent border p-0'>
+
+                                    <i id='icon-$place_id' onclick='addToFav($C_ID, $place_id)' class='$className'></i>
+
                             <img class='img-fluid w-100' src='../Place_Dashboard/$place_image' alt='$place_name'>
                         </div>
                         <div class='card-body border-left border-right text-center p-0 pt-4 pb-3'>
