@@ -88,7 +88,10 @@ if ($C_ID) {
     <!-- Favicon -->
     <link href="../assets/img/Logo.png" rel="icon" />
     <link href="../assets/img/Logo.png" rel="apple-touch-icon" />
-
+    <link
+      href="../assets/vendor/bootstrap/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -316,6 +319,45 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                 <h3 style="color: #DAC1B1 !important;">Address : <?php echo $venue_address ?></h3>
 
 
+                <div class="modal fade" id="verticalycentered" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+
+                <form method="POST" enctype="multipart/form-data">
+
+
+                  <div class="row mb-3">
+                    <img src="" id="menu-img" alt="">
+                  </div>
+
+   
+
+          
+                </form>
+
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
                 <?php
 
 if ($menus['link'] !== '') {
@@ -351,6 +393,10 @@ if ($menus['link'] !== '') {
 
 
 
+                <?php
+
+if ($menus['menus']) {?>
+
         <div class="container-fluid py-5">
         <div class="text-center mb-4">
             <h2 style="color: #DAC1B1 !important;" class="section-title px-5"><span style="background: none;" class="px-2"><?php echo $venue_name ?> Menus</span></h2>
@@ -359,31 +405,33 @@ if ($menus['link'] !== '') {
             <div class="col">
                 <div class="owl-carousel related-carousel">
 
+<?php
+foreach ($menus['menus'] as $menu) {
 
-                <?php
-
-if ($menus['menus']) {
-
-    foreach ($menus['menus'] as $menu) {
-
-        ?>
+    ?>
 
                     <div class="card product-item border-0">
                         <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="../Place_Dashboard/<?php echo $menu ?>" alt="">
+                            <img  class="img-fluid w-100" src="../Place_Dashboard/<?php echo $menu ?>" alt="" data-bs-toggle="modal" data-bs-target="#verticalycentered" onclick="openBox(event)">
                         </div>
 
                     </div>
 
+                    <script>
+                        const openBox = (e) => {
+  document.getElementById("menu-img").src = e.target.src;
+};
+
+                    </script>
 
                     <?php
-}
 }?>
 
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
+</div>
+</div>
+</div>
+<?php }?>
 
 
 
@@ -417,14 +465,14 @@ if ($menus['menus']) {
         <div class="row px-xl-5">
             <div class="col">
                 <div class="nav nav-tabs justify-content-center border-secondary mb-4">
-                    <a style="color: #DAC1B1 !important; background: none;" class="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Description</a>
+                    <!-- <a style="color: #DAC1B1 !important; background: none;" class="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Description</a> -->
                     <!-- <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Information</a> -->
                     <a style="color: #DAC1B1 !important; background: none;" class="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Reviews (<?php echo $venue_feedbacks_counts ?>)</a>
                 </div>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab-pane-1">
-                        <h4 style="color: #DAC1B1 !important;" class="mb-3"><?php echo $venue_name ?> Description</h4>
-                        <p style="color: #DAC1B1 !important;"><?php echo $venue_description ?></p>
+                        <!-- <h4 style="color: #DAC1B1 !important;" class="mb-3"><?php echo $venue_name ?> Description</h4> -->
+                        <!-- <p style="color: #DAC1B1 !important;"><?php echo $venue_description ?></p> -->
                     </div>
 
 
@@ -543,6 +591,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="lib/easing/easing.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
