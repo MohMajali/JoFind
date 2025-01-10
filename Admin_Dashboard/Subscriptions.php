@@ -7,6 +7,7 @@ $A_ID = $_SESSION['A_Log'];
 
 $place_id = $_GET['place_id'];
 $type = $_GET['type'];
+$status = $_GET['status'];
 
 if (!$A_ID) {
 
@@ -37,6 +38,13 @@ if (!$A_ID) {
     } else if(isset($type)) {
       
       $sqlQuery = "SELECT * from place_subscriptions WHERE subscription_type LIKE '%$type%' ORDER BY id DESC";
+    } else if(isset($status)) {
+
+      if($status !== 'All') {
+        $sqlQuery = "SELECT * from place_subscriptions WHERE active = '$status' ORDER BY id DESC";
+      } else {
+        $sqlQuery = "SELECT * from place_subscriptions ORDER BY id DESC";
+      }
     }
  
     
@@ -158,7 +166,8 @@ if (!$A_ID) {
             var divContents = document.getElementById("div_print").innerHTML;
             var a = window.open('', '', 'height=1000, width=5000');
             a.document.write('<html>');
-            a.document.write('<body >');
+            a.document.write('<body>');
+            a.document.write('<p>Subscriptions</p>');
             a.document.write(divContents);
             a.document.write('</body></html>');
             a.document.close();
@@ -175,7 +184,7 @@ if (!$A_ID) {
         <div class="row">
           <div class="col-lg-12">
             <div class="card">
-              <div class="card-body" id="div_print">
+              <div class="card-body" >
 
 
 
@@ -211,10 +220,24 @@ while ($row44444 = mysqli_fetch_array($sql4444)) {
 
 
 
+<select name="status" id="">
+
+<option value="" selected disabled>Select Status</option>
+
+
+<option value="1">Active</option>
+<option value="2">De-Activated</option>
+<option value="All">All</option>
+
+</select>
+
+
+
+
 <select name="type" id="">
 
 <option value="" selected disabled>Select Subscription type</option>
-<option value="3 Months Open Contract (First Time Only) (For Free)">3 Months Open Contract (First Time Only) (For Free)</option>
+<option value="1 Months Open Contract (First Time Only) (For Free)">1 Months Open Contract (First Time Only) (For Free)</option>
                             <option value="6 Months Contract (300 JOD)">6 Months Contract (300 JOD)</option>
                             <option value="12 Months COntract (600 JOD)">12 Months COntract (600 JOD)</option>
 </select>
@@ -224,55 +247,71 @@ while ($row44444 = mysqli_fetch_array($sql4444)) {
 </form>
 
 
-                <!-- Table with stripped rows -->
-                <table class="table datatable">
-                  <thead>
-                    <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Venue Name</th>
-                      <th scope="col">Subscription Type</th>
-                      <th scope="col">Start Date</th>
-                      <th scope="col">End Date</th>
-                      <th scope="col">Price</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Created At</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <?php
-$sql1 = mysqli_query($con, $sqlQuery);
+                <!-- Table with stripped rows -->.
+                 <div id="div_print">
 
-while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $subscription_id = $row1['id'];
-    $place_id = $row1['place_id'];
-    $subscription_type = $row1['subscription_type'];
-    $start_date = $row1['start_date'];
-    $end_date = $row1['end_date'];
-    $price = $row1['price'];
-    $active = $row1['active'];
-    $created_at = $row1['created_at'];
-
-    $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
-    $row2 = mysqli_fetch_array($sql2);
-
-    $venue_name = $row2['name'];
-
-    ?>
-                    <tr>
-                      <th scope="row"><?php echo $place_id ?></th>
-                      <th scope="row"><?php echo $venue_name ?></th>
-                      <th scope="row"><?php echo $subscription_type ?></th>
-                      <th scope="row"><?php echo $start_date ?></th>
-                      <th scope="row"><?php echo $end_date ?></th>
-                      <th scope="row"><?php echo $price ?> JOD</th>
-                      <th scope="row"><?php echo $active == 1 ? 'Active' : 'Expired' ?></th>
-                      <th scope="row"><?php echo $created_at ?></th>
-                    </tr>
-<?php
-}?>
-                  </tbody>
-                </table>
+                   <table class="table ">
+                     <thead>
+                       <tr>
+                         <th scope="col">ID</th>
+                         <th scope="col">Venue Name</th>
+                         <th scope="col">Subscription Type</th>
+                         <th scope="col">Start Date</th>
+                         <th scope="col">End Date</th>
+                         <th scope="col">Price</th>
+                         <th scope="col">Status</th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                     <?php
+   $sql1 = mysqli_query($con, $sqlQuery);
+   
+   $totalPrice = 0;
+   
+   while ($row1 = mysqli_fetch_array($sql1)) {
+   
+       $subscription_id = $row1['id'];
+       $place_id = $row1['place_id'];
+       $subscription_type = $row1['subscription_type'];
+       $start_date = $row1['start_date'];
+       $end_date = $row1['end_date'];
+       $price = $row1['price'];
+       $active = $row1['active'];
+       $created_at = $row1['created_at'];
+   
+       $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id'");
+       $row2 = mysqli_fetch_array($sql2);
+   
+       $venue_name = $row2['name'];
+   
+       $totalPrice += $price;
+   
+       ?>
+                       <tr>
+                         <th scope="row"><?php echo $place_id ?></th>
+                         <th scope="row"><?php echo $venue_name ?></th>
+                         <th scope="row"><?php echo $subscription_type ?></th>
+                         <th scope="row"><?php echo $start_date ?></th>
+                         <th scope="row"><?php echo $end_date ?></th>
+                         <th scope="row"><?php echo $price ?> JOD</th>
+                         <th scope="row"><?php echo $active == 1 ? 'Active' : 'Expired' ?></th>
+                       </tr>
+   <?php
+   }?>
+   
+   <tr>
+   <th scope="row"><?php echo $place_id ?></th>
+                         <th scope=""></th>
+                         <th scope=""></th>
+                         <th scope=""></th>
+                         <th scope=""></th>
+                         <th scope=""><?php echo $totalPrice ?> JOD</th>
+                         <th scope=""></th>
+   </tr>
+                     </tbody>
+                   </table>
+                 </div>
                 <!-- End Table with stripped rows -->
               </div>
             </div>

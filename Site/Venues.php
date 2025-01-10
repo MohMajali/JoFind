@@ -5,7 +5,7 @@ include "../Connect.php";
 
 $C_ID = $_SESSION['C_Log'];
 
-$category_id = $_GET['category_id'];
+$category_id_query = $_GET['category_id'];
 $city_id = $_GET['city_id'];
 $filter = $_GET['pop_id'];
 
@@ -37,9 +37,465 @@ if (isset($_POST['Submit'])) {
 
     }
 
-} else if ((isset($category_id) && $category_id !== 'all') && (isset($city_id) && $city_id !== 'all') && (isset($filter))) {
+} else if (isset($category_id_query) && isset($city_id) && isset($filter)) {
 
-    if ($filter == 'popularity') {
+    if ($category_id_query !== 'all' && $city_id !== 'all') {
+
+        if ($filter === 'popularity') {
+
+            $query = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
+
+            while ($row1 = mysqli_fetch_array($query)) {
+
+                $place_id = $row1['place_id'];
+
+                $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id' AND category_id = '$category_id_query' AND city_id = '$city_id' AND active = 1 AND status_id = 2");
+                $row2 = mysqli_fetch_array($sql2);
+
+                $placeId = $row2['id'];
+                $place_name = $row2['name'];
+                $place_image = $row2['image'];
+                $category_id = $row2['category_id'];
+                $total_rate = $row2['total_rate'];
+
+                $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+                $row3 = mysqli_fetch_array($sql3);
+
+                $category_name = $row3['name'];
+
+                if ($place_id == $placeId) {
+
+                    $venues[] = [
+                        "place_id" => $place_id,
+                        "place_name" => $place_name,
+                        "place_image" => $place_image,
+                        "category_name" => $category_name,
+                        "total_rate" => $total_rate,
+                    ];
+                }
+            }
+        } else {
+
+            $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND category_id = '$category_id_query' AND city_id = '$city_id' AND total_rate >= 3.5");
+
+            while ($row1 = mysqli_fetch_array($query)) {
+
+                $place_id = $row1['id'];
+                $place_name = $row1['name'];
+                $place_image = $row1['image'];
+                $category_id = $row1['category_id'];
+                $total_rate = $row1['total_rate'];
+
+                $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+                $row3 = mysqli_fetch_array($sql3);
+
+                $category_name = $row3['name'];
+
+                $venues[] = [
+                    "place_id" => $place_id,
+                    "place_name" => $place_name,
+                    "place_image" => $place_image,
+                    "category_name" => $category_name,
+                    "total_rate" => $total_rate,
+                ];
+            }
+        }
+    } else if ($category_id_query !== 'all' && $city_id === 'all') {
+
+        if ($filter === 'popularity') {
+
+            $query = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
+
+            while ($row1 = mysqli_fetch_array($query)) {
+
+                $place_id = $row1['place_id'];
+
+                $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id' AND category_id = '$category_id_query' AND active = 1 AND status_id = 2");
+                $row2 = mysqli_fetch_array($sql2);
+
+                $placeId = $row2['id'];
+                $place_name = $row2['name'];
+                $place_image = $row2['image'];
+                $category_id = $row2['category_id'];
+                $total_rate = $row2['total_rate'];
+
+                $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+                $row3 = mysqli_fetch_array($sql3);
+
+                $category_name = $row3['name'];
+
+                if ($place_id == $placeId) {
+
+                    $venues[] = [
+                        "place_id" => $place_id,
+                        "place_name" => $place_name,
+                        "place_image" => $place_image,
+                        "category_name" => $category_name,
+                        "total_rate" => $total_rate,
+                    ];
+                }
+            }
+        } else {
+
+            $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND category_id = '$category_id_query' AND total_rate >= 3.5");
+
+            while ($row1 = mysqli_fetch_array($query)) {
+
+                $place_id = $row1['id'];
+                $place_name = $row1['name'];
+                $place_image = $row1['image'];
+                $category_id = $row1['category_id'];
+                $total_rate = $row1['total_rate'];
+
+                $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+                $row3 = mysqli_fetch_array($sql3);
+
+                $category_name = $row3['name'];
+
+                $venues[] = [
+                    "place_id" => $place_id,
+                    "place_name" => $place_name,
+                    "place_image" => $place_image,
+                    "category_name" => $category_name,
+                    "total_rate" => $total_rate,
+                ];
+            }
+        }
+    } else if ($category_id_query === 'all' && $city_id !== 'all') {
+
+        if ($filter === 'popularity') {
+
+            $query = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
+
+            while ($row1 = mysqli_fetch_array($query)) {
+
+                $place_id = $row1['place_id'];
+
+                $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id' AND city_id = '$city_id' AND active = 1 AND status_id = 2");
+                $row2 = mysqli_fetch_array($sql2);
+
+                $placeId = $row2['id'];
+                $place_name = $row2['name'];
+                $place_image = $row2['image'];
+                $category_id = $row2['category_id'];
+                $total_rate = $row2['total_rate'];
+
+                $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+                $row3 = mysqli_fetch_array($sql3);
+
+                $category_name = $row3['name'];
+
+                if ($place_id == $placeId) {
+
+                    $venues[] = [
+                        "place_id" => $place_id,
+                        "place_name" => $place_name,
+                        "place_image" => $place_image,
+                        "category_name" => $category_name,
+                        "total_rate" => $total_rate,
+                    ];
+                }
+            }
+        } else {
+
+            $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND city_id = '$city_id' AND total_rate >= 3.5");
+
+            while ($row1 = mysqli_fetch_array($query)) {
+
+                $place_id = $row1['id'];
+                $place_name = $row1['name'];
+                $place_image = $row1['image'];
+                $category_id = $row1['category_id'];
+                $total_rate = $row1['total_rate'];
+
+                $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+                $row3 = mysqli_fetch_array($sql3);
+
+                $category_name = $row3['name'];
+
+                $venues[] = [
+                    "place_id" => $place_id,
+                    "place_name" => $place_name,
+                    "place_image" => $place_image,
+                    "category_name" => $category_name,
+                    "total_rate" => $total_rate,
+                ];
+            }
+        }
+    } else if ($category_id_query === 'all' && $city_id === 'all') {
+
+        if ($filter === 'popularity') {
+
+            $query = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
+
+            while ($row1 = mysqli_fetch_array($query)) {
+
+                $place_id = $row1['place_id'];
+
+                $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id' AND active = 1 AND status_id = 2");
+                $row2 = mysqli_fetch_array($sql2);
+
+                $placeId = $row2['id'];
+                $place_name = $row2['name'];
+                $place_image = $row2['image'];
+                $category_id = $row2['category_id'];
+                $total_rate = $row2['total_rate'];
+
+                $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+                $row3 = mysqli_fetch_array($sql3);
+
+                $category_name = $row3['name'];
+
+                if ($place_id == $placeId) {
+
+                    $venues[] = [
+                        "place_id" => $place_id,
+                        "place_name" => $place_name,
+                        "place_image" => $place_image,
+                        "category_name" => $category_name,
+                        "total_rate" => $total_rate,
+                    ];
+                }
+            }
+        } else {
+
+            $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND total_rate >= 3.5");
+
+            while ($row1 = mysqli_fetch_array($query)) {
+
+                $place_id = $row1['id'];
+                $place_name = $row1['name'];
+                $place_image = $row1['image'];
+                $category_id = $row1['category_id'];
+                $total_rate = $row1['total_rate'];
+
+                $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+                $row3 = mysqli_fetch_array($sql3);
+
+                $category_name = $row3['name'];
+
+                $venues[] = [
+                    "place_id" => $place_id,
+                    "place_name" => $place_name,
+                    "place_image" => $place_image,
+                    "category_name" => $category_name,
+                    "total_rate" => $total_rate,
+                ];
+            }
+        }
+    }
+} else if (isset($category_id_query) && isset($city_id)) {
+
+    if ($category_id_query !== 'all' && $city_id !== 'all') {
+
+        $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND category_id = '$category_id_query' AND city_id = '$city_id' AND total_rate >= 3.5");
+
+        while ($row1 = mysqli_fetch_array($query)) {
+
+            $place_id = $row1['id'];
+            $place_name = $row1['name'];
+            $place_image = $row1['image'];
+            $category_id = $row1['category_id'];
+            $total_rate = $row1['total_rate'];
+
+            $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+            $row3 = mysqli_fetch_array($sql3);
+
+            $category_name = $row3['name'];
+
+            $venues[] = [
+                "place_id" => $place_id,
+                "place_name" => $place_name,
+                "place_image" => $place_image,
+                "category_name" => $category_name,
+                "total_rate" => $total_rate,
+            ];
+        }
+    } else if ($category_id_query !== 'all' && $city_id === 'all') {
+
+        $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND category_id = '$category_id_query' AND total_rate >= 3.5");
+
+        while ($row1 = mysqli_fetch_array($query)) {
+
+            $place_id = $row1['id'];
+            $place_name = $row1['name'];
+            $place_image = $row1['image'];
+            $category_id = $row1['category_id'];
+            $total_rate = $row1['total_rate'];
+
+            $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+            $row3 = mysqli_fetch_array($sql3);
+
+            $category_name = $row3['name'];
+
+            $venues[] = [
+                "place_id" => $place_id,
+                "place_name" => $place_name,
+                "place_image" => $place_image,
+                "category_name" => $category_name,
+                "total_rate" => $total_rate,
+            ];
+        }
+    } else if ($category_id_query === 'all' && $city_id !== 'all') {
+
+        $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND city_id = '$city_id' AND total_rate >= 3.5");
+
+        while ($row1 = mysqli_fetch_array($query)) {
+
+            $place_id = $row1['id'];
+            $place_name = $row1['name'];
+            $place_image = $row1['image'];
+            $category_id = $row1['category_id'];
+            $total_rate = $row1['total_rate'];
+
+            $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+            $row3 = mysqli_fetch_array($sql3);
+
+            $category_name = $row3['name'];
+
+            $venues[] = [
+                "place_id" => $place_id,
+                "place_name" => $place_name,
+                "place_image" => $place_image,
+                "category_name" => $category_name,
+                "total_rate" => $total_rate,
+            ];
+        }
+    } else if ($category_id_query === 'all' && $city_id === 'all') {
+
+        $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND total_rate >= 3.5");
+
+        while ($row1 = mysqli_fetch_array($query)) {
+
+            $place_id = $row1['id'];
+            $place_name = $row1['name'];
+            $place_image = $row1['image'];
+            $category_id = $row1['category_id'];
+            $total_rate = $row1['total_rate'];
+
+            $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+            $row3 = mysqli_fetch_array($sql3);
+
+            $category_name = $row3['name'];
+
+            $venues[] = [
+                "place_id" => $place_id,
+                "place_name" => $place_name,
+                "place_image" => $place_image,
+                "category_name" => $category_name,
+                "total_rate" => $total_rate,
+            ];
+        }
+    }
+} else if (isset($category_id_query)) {
+
+    if ($category_id_query !== 'all') {
+
+        $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND category_id = '$category_id_query' AND total_rate >= 3.5");
+
+        while ($row1 = mysqli_fetch_array($query)) {
+
+            $place_id = $row1['id'];
+            $place_name = $row1['name'];
+            $place_image = $row1['image'];
+            $category_id = $row1['category_id'];
+            $total_rate = $row1['total_rate'];
+
+            $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+            $row3 = mysqli_fetch_array($sql3);
+
+            $category_name = $row3['name'];
+
+            $venues[] = [
+                "place_id" => $place_id,
+                "place_name" => $place_name,
+                "place_image" => $place_image,
+                "category_name" => $category_name,
+                "total_rate" => $total_rate,
+            ];
+        }
+    } else if ($category_id_query === 'all') {
+
+        $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND total_rate >= 3.5");
+
+        while ($row1 = mysqli_fetch_array($query)) {
+
+            $place_id = $row1['id'];
+            $place_name = $row1['name'];
+            $place_image = $row1['image'];
+            $category_id = $row1['category_id'];
+            $total_rate = $row1['total_rate'];
+
+            $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+            $row3 = mysqli_fetch_array($sql3);
+
+            $category_name = $row3['name'];
+
+            $venues[] = [
+                "place_id" => $place_id,
+                "place_name" => $place_name,
+                "place_image" => $place_image,
+                "category_name" => $category_name,
+                "total_rate" => $total_rate,
+            ];
+        }
+    }
+} else if (isset($city_id)) {
+
+    if ($city_id !== 'all') {
+
+        $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND city_id = '$city_id' AND total_rate >= 3.5");
+
+        while ($row1 = mysqli_fetch_array($query)) {
+
+            $place_id = $row1['id'];
+            $place_name = $row1['name'];
+            $place_image = $row1['image'];
+            $category_id = $row1['category_id'];
+            $total_rate = $row1['total_rate'];
+
+            $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+            $row3 = mysqli_fetch_array($sql3);
+
+            $category_name = $row3['name'];
+
+            $venues[] = [
+                "place_id" => $place_id,
+                "place_name" => $place_name,
+                "place_image" => $place_image,
+                "category_name" => $category_name,
+                "total_rate" => $total_rate,
+            ];
+        }
+    } else if ($city_id === 'all') {
+
+        $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND total_rate >= 3.5");
+
+        while ($row1 = mysqli_fetch_array($query)) {
+
+            $place_id = $row1['id'];
+            $place_name = $row1['name'];
+            $place_image = $row1['image'];
+            $category_id = $row1['category_id'];
+            $total_rate = $row1['total_rate'];
+
+            $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
+            $row3 = mysqli_fetch_array($sql3);
+
+            $category_name = $row3['name'];
+
+            $venues[] = [
+                "place_id" => $place_id,
+                "place_name" => $place_name,
+                "place_image" => $place_image,
+                "category_name" => $category_name,
+                "total_rate" => $total_rate,
+            ];
+        }
+    }
+} else if (isset($filter)) {
+
+    if ($filter === 'popularity') {
 
         $query = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
 
@@ -47,13 +503,14 @@ if (isset($_POST['Submit'])) {
 
             $place_id = $row1['place_id'];
 
-            $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id' AND category_id = '$category_id' AND city_id = '$city_id' AND active = 1 AND status_id = 2");
+            $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id' AND active = 1 AND status_id = 2");
             $row2 = mysqli_fetch_array($sql2);
 
             $placeId = $row2['id'];
             $place_name = $row2['name'];
             $place_image = $row2['image'];
             $category_id = $row2['category_id'];
+            $total_rate = $row2['total_rate'];
 
             $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
             $row3 = mysqli_fetch_array($sql3);
@@ -67,14 +524,13 @@ if (isset($_POST['Submit'])) {
                     "place_name" => $place_name,
                     "place_image" => $place_image,
                     "category_name" => $category_name,
+                    "total_rate" => $total_rate,
                 ];
             }
-
         }
-
     } else {
 
-        $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND category_id = '$category_id' AND city_id = '$city_id' AND total_rate >= 4.5");
+        $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND total_rate >= 4.5");
 
         while ($row1 = mysqli_fetch_array($query)) {
 
@@ -82,6 +538,7 @@ if (isset($_POST['Submit'])) {
             $place_name = $row1['name'];
             $place_image = $row1['image'];
             $category_id = $row1['category_id'];
+            $total_rate = $row1['total_rate'];
 
             $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
             $row3 = mysqli_fetch_array($sql3);
@@ -93,168 +550,11 @@ if (isset($_POST['Submit'])) {
                 "place_name" => $place_name,
                 "place_image" => $place_image,
                 "category_name" => $category_name,
+                "total_rate" => $total_rate,
             ];
-
         }
     }
-
-} else if (isset($category_id) && $category_id !== 'all') {
-
-    if ($C_ID) {
-
-        $cookies = $con->prepare("INSERT INTO customer_logs (customer_id, category_id) VALUES (?, ?) ");
-        $cookies->bind_param("ii", $C_ID, $category_id);
-        $cookies->execute();
-    }
-
-    $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND category_id = '$category_id'");
-
-    while ($row1 = mysqli_fetch_array($query)) {
-
-        $place_id = $row1['id'];
-        $place_name = $row1['name'];
-        $place_image = $row1['image'];
-
-        $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
-        $row3 = mysqli_fetch_array($sql3);
-
-        $category_name = $row3['name'];
-
-        $venues[] = [
-            "place_id" => $place_id,
-            "place_name" => $place_name,
-            "place_image" => $place_image,
-            "category_name" => $category_name,
-        ];
-    }
-
-} else if (isset($category_id) && $category_id === 'all') {
-
-    $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2");
-
-    while ($row1 = mysqli_fetch_array($query)) {
-
-        $place_id = $row1['id'];
-        $place_name = $row1['name'];
-        $place_image = $row1['image'];
-        $category_id = $row1['category_id'];
-
-        $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
-        $row3 = mysqli_fetch_array($sql3);
-
-        $category_name = $row3['name'];
-
-        $venues[] = [
-            "place_id" => $place_id,
-            "place_name" => $place_name,
-            "place_image" => $place_image,
-            "category_name" => $category_name,
-        ];
-    }
-
-} else if (isset($city_id) && $city_id !== 'all') {
-
-    $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND city_id = '$city_id'");
-
-    while ($row1 = mysqli_fetch_array($query)) {
-
-        $place_id = $row1['id'];
-        $place_name = $row1['name'];
-        $place_image = $row1['image'];
-        $category_id = $row1['category_id'];
-
-        $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
-        $row3 = mysqli_fetch_array($sql3);
-
-        $category_name = $row3['name'];
-
-        $venues[] = [
-            "place_id" => $place_id,
-            "place_name" => $place_name,
-            "place_image" => $place_image,
-            "category_name" => $category_name,
-        ];
-
-    }
-
-} else if (isset($city_id) && $city_id === 'all') {
-
-    $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2");
-
-    while ($row1 = mysqli_fetch_array($query)) {
-
-        $place_id = $row1['id'];
-        $place_name = $row1['name'];
-        $place_image = $row1['image'];
-        $category_id = $row1['category_id'];
-
-        $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
-        $row3 = mysqli_fetch_array($sql3);
-
-        $category_name = $row3['name'];
-
-        $venues[] = [
-            "place_id" => $place_id,
-            "place_name" => $place_name,
-            "place_image" => $place_image,
-            "category_name" => $category_name,
-        ];
-
-    }
-} else if ($filter == 'popularity') {
-
-    $query = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
-
-    while ($row1 = mysqli_fetch_array($query)) {
-
-        $place_id = $row1['place_id'];
-
-        $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id' AND active = 1 AND status_id = 2");
-        $row2 = mysqli_fetch_array($sql2);
-
-        $place_name = $row2['name'];
-        $place_image = $row2['image'];
-        $category_id = $row2['category_id'];
-
-        $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
-        $row3 = mysqli_fetch_array($sql3);
-
-        $category_name = $row3['name'];
-
-        $venues[] = [
-            "place_id" => $place_id,
-            "place_name" => $place_name,
-            "place_image" => $place_image,
-            "category_name" => $category_name,
-        ];
-    }
-
-} else if ($filter == 'best_rating') {
-
-    $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2 AND total_rate >= 4.5");
-
-    while ($row1 = mysqli_fetch_array($query)) {
-
-        $place_id = $row1['id'];
-        $place_name = $row1['name'];
-        $place_image = $row1['image'];
-        $category_id = $row1['category_id'];
-
-        $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
-        $row3 = mysqli_fetch_array($sql3);
-
-        $category_name = $row3['name'];
-
-        $venues[] = [
-            "place_id" => $place_id,
-            "place_name" => $place_name,
-            "place_image" => $place_image,
-            "category_name" => $category_name,
-        ];
-
-    }
 } else {
-
     $query = mysqli_query($con, "SELECT * from places WHERE active = 1 AND status_id = 2");
 
     while ($row1 = mysqli_fetch_array($query)) {
@@ -263,6 +563,7 @@ if (isset($_POST['Submit'])) {
         $place_name = $row1['name'];
         $place_image = $row1['image'];
         $category_id = $row1['category_id'];
+        $total_rate = $row1['total_rate'];
 
         $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
         $row3 = mysqli_fetch_array($sql3);
@@ -274,10 +575,9 @@ if (isset($_POST['Submit'])) {
             "place_name" => $place_name,
             "place_image" => $place_image,
             "category_name" => $category_name,
+            "total_rate" => $total_rate,
         ];
-
     }
-
 }
 
 if ($C_ID) {
@@ -442,117 +742,7 @@ if (!$C_ID) {?>
     <!-- Shop Start -->
     <div class="container-fluid pt-5">
         <div class="row px-xl-5">
-            <!-- Shop Sidebar Start -->
-            <!-- <div class="col-lg-3 col-md-12">
-                <div class="border-bottom mb-4 pb-4">
-                    <h5 class="font-weight-semi-bold mb-4">Filter by price</h5>
-                    <form>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="price-all">
-                            <label class="custom-control-label" for="price-all">All Price</label>
-                            <span class="badge border font-weight-normal">1000</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-1">
-                            <label class="custom-control-label" for="price-1">$0 - $100</label>
-                            <span class="badge border font-weight-normal">150</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-2">
-                            <label class="custom-control-label" for="price-2">$100 - $200</label>
-                            <span class="badge border font-weight-normal">295</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-3">
-                            <label class="custom-control-label" for="price-3">$200 - $300</label>
-                            <span class="badge border font-weight-normal">246</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-4">
-                            <label class="custom-control-label" for="price-4">$300 - $400</label>
-                            <span class="badge border font-weight-normal">145</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="price-5">
-                            <label class="custom-control-label" for="price-5">$400 - $500</label>
-                            <span class="badge border font-weight-normal">168</span>
-                        </div>
-                    </form>
-                </div>
 
-                <div class="border-bottom mb-4 pb-4">
-                    <h5 class="font-weight-semi-bold mb-4">Filter by color</h5>
-                    <form>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="color-all">
-                            <label class="custom-control-label" for="price-all">All Color</label>
-                            <span class="badge border font-weight-normal">1000</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-1">
-                            <label class="custom-control-label" for="color-1">Black</label>
-                            <span class="badge border font-weight-normal">150</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-2">
-                            <label class="custom-control-label" for="color-2">White</label>
-                            <span class="badge border font-weight-normal">295</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-3">
-                            <label class="custom-control-label" for="color-3">Red</label>
-                            <span class="badge border font-weight-normal">246</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-4">
-                            <label class="custom-control-label" for="color-4">Blue</label>
-                            <span class="badge border font-weight-normal">145</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="color-5">
-                            <label class="custom-control-label" for="color-5">Green</label>
-                            <span class="badge border font-weight-normal">168</span>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="mb-5">
-                    <h5 class="font-weight-semi-bold mb-4">Filter by size</h5>
-                    <form>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="size-all">
-                            <label class="custom-control-label" for="size-all">All Size</label>
-                            <span class="badge border font-weight-normal">1000</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-1">
-                            <label class="custom-control-label" for="size-1">XS</label>
-                            <span class="badge border font-weight-normal">150</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-2">
-                            <label class="custom-control-label" for="size-2">S</label>
-                            <span class="badge border font-weight-normal">295</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-3">
-                            <label class="custom-control-label" for="size-3">M</label>
-                            <span class="badge border font-weight-normal">246</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-4">
-                            <label class="custom-control-label" for="size-4">L</label>
-                            <span class="badge border font-weight-normal">145</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="size-5">
-                            <label class="custom-control-label" for="size-5">XL</label>
-                            <span class="badge border font-weight-normal">168</span>
-                        </div>
-                    </form>
-                </div>
-            </div> -->
-            <!-- Shop Sidebar End -->
 
 
             <!-- Shop Product Start -->
@@ -576,7 +766,7 @@ while ($row12222111 = mysqli_fetch_array($sql122211)) {
 
     ?>
 
-            <option value="<?php echo $category_id_sql ?>"><?php echo $category_name_sql ?></option>
+            <option value="<?php echo $category_id_sql ?>" <?php echo $category_id_query == $category_id_sql ? 'selected' : '' ?>><?php echo $category_name_sql ?></option>
 <?php
 }?>
 <option value="all">All</option>
@@ -601,7 +791,7 @@ while ($row212121 = mysqli_fetch_array($sql212121)) {
 
     ?>
 
-            <option value="<?php echo $city_id_sql ?>"><?php echo $city_name_sql ?></option>
+            <option value="<?php echo $city_id_sql ?>" <?php echo $city_id == $city_id_sql ? 'selected' : '' ?>><?php echo $city_name_sql ?></option>
             <?php
 }?>
 <option value="all">All</option>
@@ -620,8 +810,8 @@ while ($row212121 = mysqli_fetch_array($sql212121)) {
 
                                     <option value="" disabled selected>Select </option>
 
-            <option value="popularity">Popularity</option>
-            <option value="best_rating">Best Rating</option>
+            <option value="popularity" <?php echo $filter == 'popularity' ? 'selected' : '' ?>>Popularity</option>
+            <option value="best_rating" <?php echo $filter == 'popularity' ? 'best_rating' : '' ?>>Best Rating</option>
             <option value="All">All</option>
 
 
@@ -654,6 +844,19 @@ foreach ($venues as $venue) {
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                                 <b><h6 style="color: #DAC1B1 !important; font-weight: bold;" class="text-truncate mb-3"><?php echo $venue['place_name'] ?></h6></b>
+                                <?php for ($i = 1; $i <= 5; $i++) {?>
+
+                                    <?php
+
+        if ($i <= $total_rate) {
+
+            echo '<small class="fas fa-star" style="color: yellow;"></small>';
+        } else {
+
+            echo '<small class="fas fa-star"></small>';
+        }
+        ?>
+                                <?php }?>
                                 <div class="d-flex justify-content-center">
                                     <h3 style="color: #DAC1B1 !important;"><?php echo $venue['category_name'] ?></h3>
                                 </div>

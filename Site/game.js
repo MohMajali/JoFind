@@ -15,9 +15,60 @@ const balloonContainer = document.getElementById("balloon-container");
 const canvasContainer = document.getElementById("canvas");
 
 const categories = {
-  animals: ["Cat", "Dog", "Kangaroo", "Rabbit"],
-  movies: ["Spiderman", "Batman", "Superman", "Transformers"],
-  books: ["Math", "Physics", "Chemestry", "Art"],
+  animals: [
+    {
+      name: "Cat",
+      hint: "Mewo Mewo",
+    },
+    {
+      name: "Dog",
+      hint: "Hawo Hawoo",
+    },
+    {
+      name: "Kangaroo",
+      hint: "Has A Pocket",
+    },
+    {
+      name: "Rabbit",
+      hint: "Jumping Jumping",
+    },
+  ],
+  movies: [
+    {
+      name: "Spiderman",
+      hine: "Spider Saves World",
+    },
+    {
+      name: "Batman",
+      hint: "Bat Saves World",
+    },
+    {
+      name: "Superman",
+      hint: "Super power Saves World",
+    },
+    {
+      name: "Transformers",
+      hint: "Robots Saves World",
+    },
+  ],
+  books: [
+    {
+      name: "Math",
+      hint: "Calculations",
+    },
+    {
+      name: "Physics",
+      hint: "Newten",
+    },
+    {
+      name: "Chemestry",
+      hint: "H2o and others",
+    },
+    {
+      name: "Art",
+      hint: "Drawning and creative ideas",
+    },
+  ],
 };
 
 let chosenWord = "";
@@ -52,12 +103,19 @@ const homePage = () => {
       welcomeUser.classList.add("user");
       welcomeUser.innerHTML = `Welcome ${localStorage.getItem("username")}`;
 
+      const hintWord = document.createElement("p");
+      hintWord.classList.add("user");
+      hintWord.id = "hindID";
+      hintWord.style.display = "none";
+      hintWord.innerHTML = `Hint : `;
+
       //Create Div for categories
       categoryDiv.classList.add("categories");
       categoryDiv.id = "categoriesId";
 
       //Append the h3 & div to home-page section
       document.querySelector(".home-page").append(welcomeUser);
+      document.querySelector(".home-page").append(hintWord);
       document.querySelector(".home-page").append(categoryDiv);
 
       //Adding Categories to it's div
@@ -145,10 +203,18 @@ const generateWords = (event) => {
 
   //Take the value(Array) of the key which equals to innerhtml
   let words = categories[event.target.innerHTML];
+  let wordIndex = Math.floor(Math.random() * words.length);
   //Choose the random word of the array
-  chosenWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
+  chosenWord = words[wordIndex].name.toUpperCase();
+  let hint = words[wordIndex].hint;
+  const hintDiv = document.getElementById('hindID')
+  hintDiv.style.display = 'block'
+  hintDiv.innerText = `Hint : ${hint}`
   //Replace every letter from the choosen word with _ (underscore)
-  let wordDashed = chosenWord.replace(/./g, '<span class="dashes">_</span>');
+  let wordDashed = chosenWord.replace(
+    /./g,
+    `<span class="dashes" style="background-color: #DAC1B1;">_</span>`
+  );
   //let the user input equals to the worddhased : ex "CAT" --> "_ _ _"
   userInputSection.innerHTML = wordDashed;
 };
@@ -193,7 +259,7 @@ const startGame = () => {
       clearInterval(x);
       mp3.pause();
       balloonContainer.remove();
-      resultText.innerHTML = `<h2 class='lose-msg'>You Lose!!</h2><p>The word was <span>${chosenWord}</span></p><p>Your Score Is <span>${winCount}</span></p>`;
+      resultText.innerHTML = `<h2 class='lose-msg'>You Lose!!</h2><p>The word was <span>${chosenWord}</span></p><p style="color: #DAC1B1">Your Score Is <span>${winCount}</span></p>`;
       blocker();
       // resultText.innerHTML = ""
       counter = 0;
@@ -258,7 +324,6 @@ const startGame = () => {
                   clearInterval(x);
                   counter = 0;
 
-                  
                   fetch(
                     `./AddWinner.php?offer_id=${randomElement.id}&customer_id=${CID}`
                   )

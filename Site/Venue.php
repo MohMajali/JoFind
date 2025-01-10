@@ -27,6 +27,7 @@ if ($C_ID) {
     $venue_total_rate = $row2['total_rate'];
     $venue_phone = $row2['phone'];
     $venue_address = $row2['address'];
+    $category_id = $row2['category_id'];
 
     $sql3 = mysqli_query($con, "select COUNT(id) AS reviews from feedbacks where place_id='$venue_id'");
     $row3 = mysqli_fetch_array($sql3);
@@ -314,7 +315,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                     </div>
                     <small class="pt-1">(<?php echo $venue_feedbacks_counts ?> Reviews)</small>
                 </div>
-                <p style="color: #DAC1B1 !important;" class="mb-4"><?php echo $venue_description ?></p>
+                <p style="color: #DAC1B1 !important;font-size: 36px;" class="mb-4"><?php echo $venue_description ?></p>
 
                 <h3 style="color: #DAC1B1 !important;">Address : <?php echo $venue_address ?></h3>
 
@@ -532,19 +533,15 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
 
                 <?php
-$sql1 = mysqli_query($con, "SELECT * from tops ORDER BY id DESC");
+$sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id' AND active = 1 AND status_id = 2 AND category_id = '$category_id'");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $top_id = $row1['id'];
-    $place_id = $row1['place_id'];
 
-    $sql2 = mysqli_query($con, "SELECT * from places WHERE id = '$place_id' AND active = 1 AND status_id = 2");
-    $row2 = mysqli_fetch_array($sql2);
-
-    $place_name = $row2['name'];
-    $place_image = $row2['image'];
-    $category_id = $row2['category_id'];
+    $place_id = $row1['id'];
+    $place_name = $row1['name'];
+    $place_image = $row1['image'];
+    $category_id = $row1['category_id'];
 
     $sql3 = mysqli_query($con, "SELECT * from categories WHERE id = '$category_id' AND active = 1");
     $row3 = mysqli_fetch_array($sql3);

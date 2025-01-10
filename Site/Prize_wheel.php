@@ -27,7 +27,7 @@ if ($C_ID) {
     <title>HangMan</title>
     <link rel="stylesheet" href="./game.css">
 </head>
-<body>
+<body style="background-color: #051F20 !important;">
     
     <!-- Start Welcome Section-->
     <section class="welcome-section">
@@ -35,9 +35,9 @@ if ($C_ID) {
         <!-- <h3 class="welcome p-top-15 m-b-20">Welcome To HangMan</h3> -->
 
         <div class="form">
-            <label id="user-label" class="user-label-cl" for="">User Name</label>
-            <input class="user-name m-b-20 m-b-20 m-t-15" type="text" placeholder="Write your name">
-            <button class="btn">Let's Game</button>
+            <label id="user-label" class="user-label-cl" for="" style="color: #DAC1B1;">User Name</label>
+            <input class="user-name m-b-20 m-b-20 m-t-15" type="text" placeholder="Write your name" required>
+            <button class="btn" style="background-color: #DAC1B1;">Let's Game</button>
         </div>
     </section>
     <!-- End Welcome Section -->
@@ -58,7 +58,7 @@ if ($C_ID) {
         <p id="demo" class="timer"></p>
         <div id="user-input-section"></div>
         <canvas id="canvas"></canvas>
-        <div id="new-game-container" class="new-game-pop hide">
+        <div id="new-game-container" class="new-game-pop hide" style="background-color: #051F20 !important;">
             <div id="result-text"></div>
             <div id="balloon-container"></div>
             <button id="new-game-button" class="buttons">New Game</button>
