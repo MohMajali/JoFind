@@ -336,23 +336,23 @@ const startGame = () => {
                           randomElement.discount >= 10 &&
                           randomElement.discount < 30
                         ) {
-                          name = "Bronze";
+                          name = `Bronze ${randomElement.discount}`;
                         } else if (
                           randomElement.discount >= 30 &&
                           randomElement.discount < 60
                         ) {
-                          name = "Silver";
+                          name = `Silver ${randomElement.discount}`;
                         } else if (
                           randomElement.discount >= 60 &&
                           randomElement.discount <= 100
                         ) {
-                          name = "Gold";
+                          name = `Gold ${randomElement.discount}`;
                         }
 
                         setTimeout(() => {
                           alert(`You Won ${name}`);
                           document.location = `./Venue.php?venue_id=${venueId}`;
-                        }, 10000);
+                        }, 5000);
                       }
                     });
                 });

@@ -145,7 +145,7 @@ if (!$P_ID) {
                       <th scope="col">Date Time</th>
                       <th scope="col">Offer</th>
                       <th scope="col">Price</th>
-                      <th scope="col">Total Price</th>
+                      <!-- <th scope="col">Total Price</th> -->
                       <th scope="col">Status</th>
                       <th scope="col">Created At</th>
                     </tr>
@@ -200,7 +200,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                       <td scope="row"><?php echo $date_time ?></td>
                       <th scope="row"><?php echo $offer ?></th>
                       <th scope="row"><?php echo $price ?></th>
-                      <th scope="row"><?php echo $total_price ?></th>
+                      <!-- <th scope="row"><?php echo $total_price ?></th> -->
                       <th scope="row"><?php echo $status ?></th>
                       <th scope="row"><?php echo $created_at ?></th>
 

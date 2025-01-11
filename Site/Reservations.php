@@ -194,7 +194,7 @@ if (!$C_ID) {?>
                             <th>Date Time</th>
                             <th>Offer</th>
                             <th>Price</th>
-                            <th>Total Price</th>
+                            <!-- <th>Total Price</th> -->
                             <th>Status</th>
                             <th>Rate</th>
                             <th>Actions</th>
@@ -240,7 +240,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
                             <td style="color: #DAC1B1 !important;" class="align-middle"><?php echo ($offer ?? '-') ?></td>
                             <td style="color: #DAC1B1 !important;" class="align-middle"><?php echo $price ?> JODs</td>
                             <td style="color: #DAC1B1 !important;" class="align-middle"><?php echo $total_price ?> JODs</td>
-                            <td style="color: #DAC1B1 !important;" class="align-middle"><?php echo $status ?></td>
+                            <!-- <td style="color: #DAC1B1 !important;" class="align-middle"><?php echo $status ?></td> -->
                             <td style="color: #DAC1B1 !important;" class="align-middle" dir="rtl">
 
 <a href="Rate_Venue.php?Rate=5&place_id=<?php echo $place_id; ?>&C_ID=<?php echo $C_ID; ?>" role="button" class="star"><i title="5" class="fa fa-star"></i></a>
