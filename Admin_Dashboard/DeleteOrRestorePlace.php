@@ -4,6 +4,7 @@ include "../Connect.php";
 
 $isActive = $_GET['isActive'];
 $place_id = $_GET['place_id'];
+$category_id = $_GET['category_id'];
 
 $stmt = $con->prepare("UPDATE places SET active = ? WHERE id = ? ");
 
@@ -18,7 +19,7 @@ if ($stmt->execute()) {
         </script>";
 
         echo "<script language='JavaScript'>
-        document.location='./Places.php';
+        document.location='./Places.php?category_id={$category_id}';
         </script>";
 
     } else {
@@ -27,7 +28,7 @@ alert ('Place Has Been Restored Successfully !');
 </script>";
 
         echo "<script language='JavaScript'>
-document.location='./Places.php';
+document.location='./Places.php?category_id={$category_id}';
 </script>";
     }
 

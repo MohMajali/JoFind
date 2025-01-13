@@ -5,9 +5,6 @@ include "../Connect.php";
 
 $A_ID = $_SESSION['A_Log'];
 
-$category_id = $_GET['category_id'];
-$sub_category_id = $_GET['sub_category_id'];
-
 if (!$A_ID) {
 
     echo '<script language="JavaScript">
@@ -22,10 +19,6 @@ if (!$A_ID) {
     $name = $row1['name'];
     $email = $row1['email'];
 
-    $sql2 = $category_id ? mysqli_query($con, "select * from categories where id='$category_id'") : mysqli_query($con, "select * from sub_categories where id='$sub_category_id'");
-    $row2 = mysqli_fetch_array($sql2);
-
-    $category_name = $row2['name'];
 }
 
 ?>
@@ -36,7 +29,7 @@ if (!$A_ID) {
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
-    <title><?php echo $category_name ?> - JoFind</title>
+    <title>Contacts - JoFind</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
 
@@ -128,81 +121,124 @@ if (!$A_ID) {
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1><?php echo $category_name ?></h1>
+        <h1>Feedbacks</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item"><?php echo $category_name ?></li>
+            <li class="breadcrumb-item">Feedbacks</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
       <section class="section">
+      <div class="modal fade" id="verticalycentered" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Message</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
 
-        <div class="row">
+                <form  id="form-note">
+
+
+                  <div class="row mb-3">
+                    <label for="inputText" class="col-sm-4 col-form-label"
+                      >Message</label
+                    >
+                    <div class="col-sm-8">
+
+                      <textarea id="message" class="form-control" disabled></textarea>
+                    </div>
+                  </div>
+
+                  <div class="row mb-3">
+                    <div class="text-end">
+                      <button type="submit" name="Submit" class="btn btn-primary">
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" >
           <div class="col-lg-12">
             <div class="card">
-              <div class="card-body">
+              <div class="card-body" id="div_print">
                 <!-- Table with stripped rows -->
+
                 <table class="table datatable">
                   <thead>
                     <tr>
-                      <th scope="col">Image</th>
-                      <th scope="col">ID</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Phone</th>
-                      <th scope="col">Status</th>
+                      <th scope="col">Customer Name</th>
+                      <th scope="col">Venue Name</th>
                       <th scope="col">Created At</th>
-                      <th scope="col">Actions</th>
+                      <th scope="col">View Message</th>
                     </tr>
                   </thead>
                   <tbody>
+
+
                   <?php
-$sql1 = mysqli_query($con, "SELECT * from places WHERE category_id = '$category_id' ORDER BY id DESC");
+$sql1 = mysqli_query($con, "SELECT * FROM feedbacks");
 
 while ($row1 = mysqli_fetch_array($sql1)) {
 
-    $place_id = $row1['id'];
-    $status_id = $row1['status_id'];
-    $place_name = $row1['name'];
-    $place_email = $row1['email'];
-    $place_phone = $row1['phone'];
-    $place_image = $row1['image'];
-    $active = $row1['active'];
+    $feedback_id = $row1['id'];
+    $customer_id = $row1['customer_id'];
+    $place_id = $row1['place_id'];
+    $message = $row1['message'];
     $created_at = $row1['created_at'];
 
-    $sql3 = mysqli_query($con, "SELECT * from statuses WHERE id = '$status_id'");
+    $sql2 = mysqli_query($con, "SELECT * FROM users WHERE id = '$customer_id'");
+    $row2 = mysqli_fetch_array($sql2);
+
+    $customer_name = $row2['name'];
+
+    $sql3 = mysqli_query($con, "SELECT * FROM places WHERE id = '$place_id'");
     $row3 = mysqli_fetch_array($sql3);
 
-    $status_name = $row3['name'];
+    $venue_name = $row3['name'];
 
     ?>
                     <tr>
-                      <th scope="row"><img src="../Place_Dashboard/<?php echo $place_image ?>" alt="" width="150px" height="150px"></th>
-                      <th scope="row"><?php echo $place_id ?></th>
-                      <td scope="row"><?php echo $place_name ?></td>
-                      <td scope="row"><?php echo $place_email ?></td>
-                      <td scope="row"><?php echo $place_phone ?></td>
-                      <td scope="row"><?php echo $status_name ?></td>
+                      <td scope="row"><?php echo $customer_name ?></td>
+                      <td scope="row"><?php echo $venue_name ?></td>
                       <th scope="row"><?php echo $created_at ?></th>
-                      <td>
+                      <th scope="row">
 
-                        <div class="d-flex flex-column">
-                        <?php if ($active == 1) {?>
-
-<a href="./DeleteOrRestorePlace.php?place_id=<?php echo $place_id ?>&isActive=<?php echo 0 ?>&category_id=<?php echo $category_id?>" class="btn btn-danger mb-2">Delete</a>
-
-<?php } else {?>
-
-  <a href="./DeleteOrRestorePlace.php?place_id=<?php echo $place_id ?>&isActive=<?php echo 1 ?>&category_id=<?php echo $category_id?>" class="btn btn-primary mb-2">Restore</a>
-
-<?php }?>
-
-<a href="./Subscriptions.php?place_id=<?php echo $place_id ?>" class="btn btn-primary mb-2">Subscriptions</a>
-<a href="./Offers.php?place_id=<?php echo $place_id ?>" class="btn btn-primary">Offers</a>
-                        </div>
-                      </td>
+                      <a href="./DeleteFeedback.php?feedback_id=<?php echo $feedback_id ?>" class="btn btn-danger">Delete</a>
+                      <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#verticalycentered"
+            id="btn-<?php echo $message ?>"
+            onclick="getId(event)"
+          >
+            View
+          </button>
+                      </th>
                     </tr>
 <?php
 }?>
@@ -234,7 +270,7 @@ while ($row1 = mysqli_fetch_array($sql1)) {
 
     <script>
     window.addEventListener('DOMContentLoaded', (event) => {
-     document.querySelector('#sidebar-nav .nav-item:nth-child(5) .nav-link').classList.remove('collapsed')
+     document.querySelector('#sidebar-nav .nav-item:nth-child(11) .nav-link').classList.remove('collapsed')
    });
 </script>
 
@@ -248,7 +284,22 @@ while ($row1 = mysqli_fetch_array($sql1)) {
     <script src="../assets/vendor/tinymce/tinymce.min.js"></script>
     <script src="../assets/vendor/php-email-form/validate.js"></script>
 
+
+
+
     <!-- Template Main JS File -->
     <script src="../assets/js/main.js"></script>
+
+
+
+    <script>
+        const getId = (e) => {
+
+          document.getElementById('message').value = e.target.id.split('-')[1]
+
+        }
+    </script>
+
+
   </body>
 </html>

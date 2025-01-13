@@ -64,6 +64,12 @@
       </a>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="./Feedbacks.php">
+        <i class="bi bi-calendar3"></i><span>Feedbacks</span>
+      </a>
+    </li>
+
 
   </ul>
 </aside>
